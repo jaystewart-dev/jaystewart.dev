@@ -17,7 +17,7 @@ export const site = {
   email: 'jay@jaystewart.dev',
   github: 'https://github.com/jaystewart-dev',
   githubHandle: 'jaystewart-dev',
-  linkedin: 'https://www.linkedin.com/in/jaystewartdev',
+  linkedin: 'https://www.linkedin.com/in/jaystewart-dev',
 
   /** Used as the default meta description and the OG description on the home page. */
   description:
