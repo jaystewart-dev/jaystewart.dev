@@ -1,0 +1,66 @@
+---
+title: When cost is the architecture
+description: A generated-audio product where each session cost real money to produce, and the caching design that followed — including the failure mode that would have been invisible until the bill arrived.
+date: 2026-07-20
+topic: Cost engineering
+order: 2
+---
+
+PressPlay is an audio-only workout coach: a model writes the routine, a
+text-to-speech voice narrates every cue, and you never look at the screen.
+
+The interesting constraint is that generating one session costs real money.
+Roughly thirty thousand characters of speech per workout, at a per-character
+rate, is somewhere around forty-five cents each time. At a five-dollar monthly
+subscription, a user who generates eleven workouts a month is unprofitable.
+
+That single figure determined the architecture more than any other
+consideration.
+
+## Content-addressed caching
+
+Both expensive artefacts are cached by the hash of everything that determines
+their content. The workout plan is keyed by the hash of its generation inputs;
+each audio clip is keyed by the hash of model, voice, instructions and text.
+
+Two users who ask for the same thing get the same bytes, generated once. Since
+a large fraction of cues are common across workouts — the counts, the
+transitions, the encouragement — the hit rate is high in exactly the places
+that matter.
+
+Content addressing rather than a time-to-live because there is no staleness
+problem here: identical inputs to a deterministic-enough pipeline should
+produce the same output, and if the inputs change, the key changes. A TTL
+would throw away valid work on a timer.
+
+## The failure mode worth writing down
+
+The cache has two layers: an index in the database that records what exists,
+and a blob store holding the bytes.
+
+In local development the blob driver writes to the OS temp directory. On
+serverless infrastructure, that path is ephemeral and per-instance. Deploy with
+the local driver by accident and you get a cache that is _permanently_ missing
+— every request regenerates the audio, pays full price, and writes it somewhere
+that will vanish.
+
+The part that makes it dangerous is that the database index still says
+"cached". Nothing errors. Nothing alerts. The system is functionally correct
+and quietly burning money, and the first signal is the invoice.
+
+So the application refuses to boot in production with the local driver
+configured. It is three lines and it converts an expensive, invisible,
+slow-burning failure into a loud one at startup, which is the only time anyone
+is watching.
+
+That trade — turning a silent cost leak into a crash — is one I would make
+every time. A service that will not start gets fixed in ten minutes. A service
+that runs perfectly and overspends gets found next month.
+
+## What I would keep
+
+The generalisable parts are small:
+
+- **Price the unit of work before designing.** "What does one of these cost to serve" is a design input, not a finance question, and it changes the architecture when you ask it first.
+- **Cache by content, not by clock**, when the inputs fully determine the output.
+- **Make misconfiguration fail loudly.** Any setting whose wrong value is expensive but not visible deserves a startup assertion.

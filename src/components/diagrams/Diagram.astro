@@ -1,0 +1,59 @@
+---
+/**
+ * Architecture diagram frame.
+ *
+ * These diagrams are laid out with CSS and made of real text — not images, not
+ * a rendering library. That decision buys several things at once: they weigh
+ * nothing, they restyle with the theme, they stay sharp at any zoom, they are
+ * selectable and searchable, and a screen reader reads the actual node names
+ * instead of an alt attribute someone wrote once and never revisited.
+ *
+ * The cost is that layout is hand-fitted rather than automatic, which is fine
+ * at this scale — a handful of diagrams that change rarely.
+ */
+
+interface Props {
+  caption: string;
+  /** Optional prose summary for readers who cannot perceive the arrangement. */
+  summary?: string;
+  class?: string;
+}
+
+const { caption, summary, class: className = '' } = Astro.props;
+---
+
+<figure class={`not-prose my-8 ${className}`}>
+  <div
+    class="overflow-x-auto rounded-lg border border-line bg-surface p-5 sm:p-8"
+    style="background-image: radial-gradient(circle at 1px 1px, var(--c-line) 1px, transparent 0); background-size: 22px 22px;"
+  >
+    <div class="flex min-w-fit flex-col items-center gap-0">
+      <slot />
+    </div>
+  </div>
+
+  <figcaption class="mt-3 text-sm text-muted">
+    {caption}
+    {
+      summary && (
+        // Visually redundant for sighted readers, essential for anyone who
+        // gets the nodes read out without their arrangement.
+        <span class="sr-only"> {summary}</span>
+      )
+    }
+  </figcaption>
+</figure>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+</style>
