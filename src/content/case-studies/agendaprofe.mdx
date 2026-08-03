@@ -1,0 +1,363 @@
+---
+title: AgendaProfe
+summary: Scheduling, payments and live video teaching for independent language teachers, running in production in Mexico.
+description: An engineering case study on AgendaProfe — a production SaaS handling cross-border payouts, self-hosted live video with AI captions, and a two-tier release gate, designed and operated by one engineer.
+status: In production
+period: 2026 — present
+role: Architecture, implementation, infrastructure, operations
+order: 1
+url: https://agendaprofe.com
+anonymised: false
+stack:
+  - Next.js
+  - React Native
+  - Postgres
+  - Stripe
+  - LiveKit
+  - Terraform
+  - Fly.io
+metrics:
+  - label: Database models
+    from: agendaprofe.databaseModels
+  - label: API routes
+    from: agendaprofe.apiRoutes
+  - label: Test files
+    from: agendaprofe.testFiles
+  - label: Decision records
+    from: agendaprofe.decisionRecords
+---
+
+An independent language teacher runs a business with none of the tooling a
+school would hand them. Booking happens in WhatsApp. Payment happens by
+transfer, or in cash, or not at all until someone remembers to ask. Reminders
+are a message typed by hand the night before. Class materials live in a folder
+nobody can find, and the video call is whatever link was free that week.
+
+Every one of those is a solved problem in isolation. The difficulty is that a
+teacher does not have a booking problem or a payments problem — they have one
+business, and the tools do not know about each other. A booking that does not
+know whether it was paid for is not much better than a note in a diary.
+
+AgendaProfe is the attempt to make those parts one product: a public booking
+page per teacher, package purchases and subscriptions, payouts that cross a
+border, live classes with AI-translated captions, homework and materials, and
+an admin console to run it.
+
+It has been live since May 2026, carrying real bookings and real money.
+
+## Constraints that shaped it
+
+Four constraints did more to determine the architecture than any preference of
+mine.
+
+**The launch market was Mexico, and Stripe Connect does not serve it.** Payouts
+are the entire value proposition for a teacher — a booking system that cannot
+pay them is a calendar. This one fact forced a second payout rail before
+launch rather than after.
+
+**Teachers are on Android, students are on anything.** The mobile client is
+Android-only, which is a scope decision rather than an oversight. Building for
+one platform properly beat building for two badly, and the split matches who
+actually needs an app rather than a browser.
+
+**Two languages, asymmetrically.** Teachers work in Spanish. Students are
+learning English, so student-facing copy is in English on purpose — the product
+is part of the lesson. That asymmetry is a product decision that leaks straight
+into the i18n design.
+
+**One engineer, indefinitely.** Not a temporary state to be corrected by
+hiring. Every choice had to be evaluated against whether one person could
+operate it at 3am, which ruled out a great deal of otherwise reasonable
+architecture.
+
+## Architecture
+
+Two clients, one API, six backing services.
+
+<Diagram
+  caption="Both clients talk to the same route handlers. There is no separate mobile backend and no BFF layer — the mobile surface is a namespace within the same API, sharing the same validated wire types."
+  summary="A web app and an Android app both call a shared API layer, which talks to Postgres, a background job runner, a self-hosted video server, object storage, an email and push service, and payment providers."
+>
+  <Row>
+    <Node
+      title="Web app"
+      meta="Next.js · Server Components"
+      detail="agendaprofe.com"
+    />
+    <Node
+      title="Android app"
+      meta="Expo · React Native"
+      detail="Google Play, OTA updates"
+    />
+  </Row>
+  <Arrow label="HTTPS · shared Zod types" />
+  <Node
+    title="API layer"
+    meta="Route handlers + Server Actions"
+    tone="accent"
+  />
+  <Arrow />
+  <Row>
+    <Node title="Postgres" meta="Neon · Prisma" detail="74 models" />
+    <Node title="Background jobs" meta="Inngest" detail="29 functions" />
+    <Node
+      title="Live video"
+      meta="Self-hosted LiveKit"
+      detail="+ captions worker"
+    />
+  </Row>
+  <Row class="mt-3">
+    <Node title="Object storage" meta="Cloudflare R2" tone="ghost" />
+    <Node title="Email &amp; push" meta="SES · Expo" tone="ghost" />
+    <Node title="Payments" meta="Stripe · Wise" tone="ghost" />
+  </Row>
+</Diagram>
+
+The web app is Next.js on the App Router — Server Components by default,
+client islands only where interaction demands them, mutations through Server
+Actions. There is no tRPC or GraphQL layer and no client-side global store.
+That is not minimalism for its own sake: it removes an entire category of
+state-synchronisation bug, because for most of this product the server _is_ the
+state, and a second copy of it in the browser is a second thing that can be
+wrong.
+
+The Android app mirrors the web app's route groups — teacher dashboard, student
+portal, public booking, admin — so both clients share one mental model of the
+product. When a route moves on the web, the corresponding mobile screen is
+obvious.
+
+<Figure
+  caption="The public booking page a teacher shares. It is the only page most students ever see, and the only one that has to work for someone who has never used the product."
+  ratio="wide"
+/>
+
+## Payments, and the rail that had to exist
+
+Payments touch three different Stripe products: Checkout for one-off package
+purchases, Connect Express for teacher payouts, and Billing for the platform's
+own subscriptions. Collapsing them into one abstraction was tempting and would
+have been a mistake — they have different failure modes, different webhooks and
+different reconciliation stories. Hiding that behind a shared interface would
+have hidden the bugs, not prevented them.
+
+<Diagram
+  caption="Three Stripe flows, and a deliberately separate manual rail for markets Stripe Connect does not reach — including the launch market."
+  summary="Student payments flow through Stripe Checkout into a ledger. Teacher payouts go through either Stripe Connect for supported countries or a manual Wise rail for unsupported ones. Platform subscriptions run through Stripe Billing."
+>
+  <Row>
+    <Node
+      title="Student pays"
+      meta="Stripe Checkout"
+      detail="Packages, single classes"
+    />
+    <Node
+      title="Teacher subscribes"
+      meta="Stripe Billing"
+      detail="Free · Pro · Founding"
+    />
+  </Row>
+  <Arrow label="webhook · idempotent" />
+  <Node
+    title="Ledger"
+    meta="Integer minor units"
+    detail="Never a float"
+    tone="accent"
+  />
+  <Arrow label="settled net, read back" />
+  <Row>
+    <Node
+      title="Stripe Connect"
+      meta="Supported countries"
+      detail="Automated transfer"
+    />
+    <Node
+      title="Wise"
+      meta="Everywhere else"
+      detail="Operator-confirmed"
+      tone="ghost"
+    />
+  </Row>
+</Diagram>
+
+Three details in there matter more than the shape:
+
+**Money is stored as integers, in minor units, everywhere.** No floats, ever.
+This is old advice and it is still correct, and the discipline has to be total
+— one `parseFloat` at a boundary reintroduces the whole class of bug.
+
+**Payouts read back the settled net before transferring.** Not the amount the
+invoice said, not the amount charged — the actual figure from Stripe's balance
+transactions after fees. Computing the fee locally means maintaining a model of
+someone else's pricing, and being quietly wrong about it every time it changes.
+
+**The Wise rail is separate, not unified.** It would have been cleaner to force
+both payout paths behind one interface. But one is automated and idempotent and
+one requires a human to confirm a transfer happened; pretending they are the
+same operation would mean the abstraction lies about the most important
+property either has.
+
+## Infrastructure
+
+Every server is provisioned as code, across three providers. Nothing was
+clicked into existence.
+
+<Diagram
+  caption="Three providers, chosen per workload rather than per vendor relationship. The video server runs on a free tier because a media server has different economics from an app server."
+  summary="Terraform provisions application hosting on Fly.io, Postgres on Neon, object storage and a documentation site on Cloudflare, CI runners on Hetzner, and a self-hosted video server on Oracle Cloud free tier."
+>
+  <Node
+    title="Terraform"
+    meta="OpenTofu"
+    detail="One source of truth"
+    tone="accent"
+  />
+  <Arrow label="provisions" />
+  <Row>
+    <Node title="App" meta="Fly.io" detail="Two machines, production" />
+    <Node title="Postgres" meta="Neon" detail="Branch per preview" />
+    <Node title="Storage &amp; docs" meta="Cloudflare" detail="R2 + Workers" />
+  </Row>
+  <Row class="mt-3">
+    <Node
+      title="CI runners"
+      meta="Hetzner"
+      detail="Self-hosted pool"
+      tone="ghost"
+    />
+    <Node
+      title="Video server"
+      meta="Oracle free tier"
+      detail="LiveKit"
+      tone="ghost"
+    />
+  </Row>
+</Diagram>
+
+Secrets are managed with separate scopes for preview, production and the
+infrastructure layer itself. That last separation is the one worth naming: the
+credentials that _provision_ infrastructure never sync into the running
+application. A compromised app runtime can read the database; it cannot reach
+the account that could delete it.
+
+### The release gate
+
+A release is a gate, not a `git push`.
+
+Merging to `main` deploys a preview environment with its own disposable
+database branch. Production is a separate branch that only advances by
+fast-forward, and only after static analysis, unit tests, a real-Postgres
+integration suite, a mobile native-code guard, mobile smoke tests and a full
+end-to-end run have passed against the promote candidate.
+
+The end-to-end suite is deliberately not in the per-PR checks. It exercises the
+whole booking-to-payment path against a production build and it is slow;
+running it on every commit would make day-to-day merges painful enough that
+someone would start skipping it. Running it once, at the point where it
+actually gates something, keeps it credible.
+
+Database rollback gets its own mechanism, because a code rollback does not
+undo a migration. Reverting the deploy leaves the schema where the migration
+put it, and the previous release meets a database it does not recognise. So
+rollback is a database branch checkpoint taken before promotion, restored
+independently of the application.
+
+## Where the hard problems actually were
+
+### Live video, and owning the media server
+
+Classes run over a self-hosted LiveKit server rather than a managed video API.
+That is more operational work, and it bought one specific capability: a
+separate worker can join a room as a participant, stream each speaker's audio
+to a transcription service, translate it, and republish captions into the call
+live — gated per speaker by explicit consent.
+
+That is not possible as a customer of a video API. It is possible when you own
+the media server, and it is the feature the product is actually differentiated
+by. The worker runs as its own deployable service on its own box, not bundled
+into the web app, because a captions pipeline crashing should not take down
+booking.
+
+### Sessions that can be revoked
+
+Sessions are database-backed rather than stateless JWTs. The usual argument for
+JWTs is avoiding a database round trip per request; the usual cost is that you
+cannot revoke one before it expires.
+
+For a product holding payment details and running live video into people's
+homes, being able to inspect and kill a session server-side was worth the round
+trip. The admin console has its own capability-based role ladder — superadmin,
+finance, support, tester, engineer — enforced at the route layer, not by
+hiding buttons in the UI.
+
+### Mobile updates that cannot silently break
+
+Over-the-air updates are the reason to use Expo and the fastest way to break
+an app in the field. An OTA bundle assumes the native code it was built
+against; ship a JavaScript update that calls a native module the installed
+binary does not have, and it crashes on launch with no path to recover.
+
+So CI fails the build if native code changed without a matching runtime-version
+bump, and the promote step diffs the candidate against what is actually live
+rather than against the previous commit. The check exists because the failure
+is invisible until it reaches real devices.
+
+### Internationalisation as a ratchet
+
+The i18n catalogue is hand-rolled rather than a framework, because the
+asymmetry between teacher-Spanish and student-English does not fit the
+"one locale per user" model most libraries assume.
+
+The interesting part is not the catalogue, it is the enforcement. A lint rule
+plus a ratchet test fail CI on _new_ hardcoded strings while tolerating the
+existing ones. The migration is genuinely unfinished; the ratchet means it can
+only get better, and nobody has to do a big-bang rewrite to stop the bleeding.
+
+### Monitoring that costs what it is worth
+
+Errors and product analytics are deliberately separate tools, and session
+replay only captures on error — full-session capture ate most of a free-tier
+quota during testing alone.
+
+Production is also probed directly every twelve hours: the homepage, the health
+check, a public booking page, video server reachability, and a forged-signature
+request against the payment webhook to confirm it is still rejecting them. That
+last one is the only check in the set that would catch a signature-verification
+regression, which is exactly the kind of change that looks harmless in review.
+
+## What it cost
+
+The honest version is more useful than the brochure version.
+
+**The stack was migrated once, mid-flight.** The product started on a different
+hosting and database provider and moved to the current one. The old
+infrastructure code was deleted rather than left in place "in case" — but the
+migration consumed weeks, and it happened because the original choice was made
+before the workload was understood.
+
+**Some of the documentation rotted.** An audit found dozens of source comments
+still reasoning from decommissioned infrastructure — instructions that were
+true when written and actively misleading afterwards. Stale context is worse
+than absent context, because it is followed with confidence.
+
+**The test suite is uneven.** Coverage is enforced by a ratchet on changed
+lines rather than a global threshold, which is a pragmatic choice that also
+means older modules are less covered than newer ones, and the number does not
+tell you which is which.
+
+**Android only.** iOS teachers cannot use the mobile app. That is a real
+product gap being carried deliberately.
+
+## Where it stands
+
+Live since May 2026, deliberately as a single-teacher alpha rather than an open
+launch — real bookings, real payments, a real person whose income depends on
+it working, and a scope small enough that a bug is a phone call rather than an
+incident.
+
+A pre-launch audit set a conditional go and flagged payment edge cases that
+needed closing before general availability. I have been closing those against
+real usage since.
+
+It is further from finished than a portfolio piece usually admits, and further
+along than most side projects reach, because it is carrying real money and real
+people's schedules today.

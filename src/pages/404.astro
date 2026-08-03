@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+
+/**
+ * GitHub Pages serves this automatically for unmatched paths. The previous
+ * site rendered its homepage for any unknown URL, which is worse than it
+ * sounds: a typo looked like a working page, and crawlers indexed duplicates
+ * of the home page under every wrong path they tried.
+ */
+---
+
+<Base title="Page not found" description="That page does not exist." noindex>
+  <section class="mx-auto max-w-content px-5 py-24 sm:px-8 sm:py-32">
+    <p class="eyebrow">404</p>
+    <h1 class="mt-3 text-4xl sm:text-5xl">That page does not exist.</h1>
+    <p class="mt-5 text-lg text-muted">
+      It may have moved, or the link may be wrong. These do exist:
+    </p>
+
+    <ul class="mt-10 divide-y divide-line border-y border-line">
+      <li class="py-4">
+        <a href="/work/" class="link-underline text-lg">Case studies</a>
+        <p class="mt-1 text-sm text-muted">Two systems, written up in full.</p>
+      </li>
+      <li class="py-4">
+        <a href="/notes/" class="link-underline text-lg">Notes</a>
+        <p class="mt-1 text-sm text-muted">Shorter engineering write-ups.</p>
+      </li>
+      <li class="py-4">
+        <a href="/about/" class="link-underline text-lg">About</a>
+        <p class="mt-1 text-sm text-muted">Background and experience.</p>
+      </li>
+      <li class="py-4">
+        <a href="/contact/" class="link-underline text-lg">Contact</a>
+        <p class="mt-1 text-sm text-muted">How to reach me.</p>
+      </li>
+    </ul>
+  </section>
+</Base>

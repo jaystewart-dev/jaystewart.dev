@@ -1,0 +1,74 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Diagram from '../../components/diagrams/Diagram.astro';
+import Node from '../../components/diagrams/Node.astro';
+import Row from '../../components/diagrams/Row.astro';
+import Arrow from '../../components/diagrams/Arrow.astro';
+import Figure from '../../components/Figure.astro';
+import { absolute, site } from '../../data/site.ts';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('notes', ({ data }) => !data.draft);
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { data } = entry;
+
+const formatted = data.date.toLocaleDateString('en-GB', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const schema = [
+  {
+    '@type': 'TechArticle',
+    '@id': `${absolute(`/notes/${entry.id}/`)}#article`,
+    headline: data.title,
+    description: data.description,
+    datePublished: data.date.toISOString().slice(0, 10),
+    author: { '@id': `${site.origin}/#person` },
+    inLanguage: 'en-GB',
+  },
+];
+---
+
+<Base title={data.title} description={data.description} ogType="article" schema={schema}>
+  <article class="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-20">
+    <nav aria-label="Breadcrumb" class="mb-6">
+      <a href="/notes/" class="eyebrow transition-colors hover:text-accent">← Notes</a>
+    </nav>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="tag">{data.topic}</span>
+      <time
+        datetime={data.date.toISOString().slice(0, 10)}
+        class="font-mono text-xs text-muted"
+      >
+        {formatted}
+      </time>
+    </div>
+
+    <h1 class="mt-4 text-3xl sm:text-4xl">{data.title}</h1>
+    <p class="mt-4 text-lg text-muted">{data.description}</p>
+
+    {
+      data.repo && (
+        <p class="mt-5 text-sm">
+          <a href={data.repo} rel="noopener" class="link-underline text-accent">
+            Source on GitHub ↗
+          </a>
+        </p>
+      )
+    }
+
+    <hr class="mt-10 border-line" />
+
+    <div class="prose mt-10">
+      <Content components={{ Diagram, Node, Row, Arrow, Figure }} />
+    </div>
+  </article>
+</Base>

@@ -1,0 +1,61 @@
+---
+title: A compiler for agent context
+description: Code that lies gets caught by a compiler. The instruction files we hand coding agents get executed instead. groundtruth turns those claims into assertions that fail in CI.
+date: 2026-07-26
+topic: Open source
+order: 2
+repo: https://github.com/jaystewart-dev/groundtruth
+---
+
+Most repositories now carry an instruction file for coding agents —
+`CLAUDE.md`, `AGENTS.md`, or something like them. It states where things live,
+which environment variables exist, which scripts to run, which conventions
+hold.
+
+It is prose, so nothing checks it. And unlike a stale comment, which a human
+reads sceptically, it gets _executed_: an agent reads a claim about the
+codebase and acts on it.
+
+Code that lies gets caught by a compiler. Agent context that lies gets followed.
+
+## The finding that started it
+
+Auditing a production repository of my own, I found four live examples in one
+file: environment variables for infrastructure decommissioned months earlier, a
+configuration block pointing at a database that no longer existed, and a stated
+pull-request policy the project itself had stopped following.
+
+Every one of those had been true when it was written. That is what makes it a
+drift problem rather than a carelessness problem, and drift is exactly the kind
+of thing worth automating.
+
+## What it does
+
+`groundtruth check` parses an agent-context file and turns the statements it
+can verify into executable assertions: does that path exist, is that script
+defined, is that environment variable actually referenced, does that symbol
+exist in the codebase. It reports what has drifted and exits non-zero, so it
+can sit in CI as a gate.
+
+## Fail closed, and say so
+
+The design decision worth defending is what happens with a claim the checker
+cannot verify.
+
+The tempting behaviour is to skip it silently — a clean run feels better. But
+silently skipping what you cannot verify is precisely the failure this tool
+exists to prevent, applied to the tool itself. A green check that quietly
+ignored half the file would be more dangerous than no check at all.
+
+So unverifiable assertions never fail the run, and are always printed. The
+report distinguishes three states rather than two: verified, drifted, and _not
+checkable_ — and the last one is visible, so the number of claims nobody is
+validating is a fact you can watch rather than a blind spot.
+
+## Honest about its stage
+
+It is an early MVP: a small working core with a narrow set of assertion types,
+not published to a package registry yet, and its own limitations documented as
+limitations rather than omitted. It is also the only piece of this work that is
+public, which is the other reason it is here — everything else on this site is
+described, and this one can be read.

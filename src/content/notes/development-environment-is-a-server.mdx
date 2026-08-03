@@ -1,0 +1,94 @@
+---
+title: My development environment is a server
+description: One always-on machine, provisioned like production, that is simultaneously a warm CI runner and the place I actually work — why, and what it cost.
+date: 2026-07-28
+topic: Infrastructure
+order: 1
+---
+
+Not a container and not a hosted workspace. One always-on machine, provisioned
+with the same infrastructure-as-code discipline as production, that is
+simultaneously a warm CI runner and the place I do my work.
+
+## The laptop was the bottleneck
+
+I run several coding-agent sessions at once. On a machine with 8 GB of memory
+that is not a workflow, it is a queue. Builds and agents compete, and the
+laptop spends its time swapping.
+
+The obvious fix is a bigger laptop. The better fix was noticing that almost
+none of that work needs to happen where I am sitting. So the compute moved to a
+cloud box — 8 vCPU, 16 GB — and the laptop became what it had quietly already
+been: a terminal and a browser.
+
+## One box, two jobs
+
+The same machine is also the CI runner, and that is the part that actually
+pays for it.
+
+Ephemeral runner pools are correct for most projects and wrong for this one.
+A pool that scales to zero takes 30 to 60 minutes to come back, and a queued
+job that waits an hour is indistinguishable from broken CI — you stop trusting
+it, then you stop waiting for it, then you start merging without it. A warm
+runner that is always up because it is also my desk removes that failure mode
+entirely.
+
+## Keeping CI from starving the work
+
+Two jobs on one box means they compete. The interesting part is that CPU and
+memory need opposite treatment.
+
+CPU is compressible. A build that gets less of it runs slower and still
+finishes, so CPU is allocated by _weight_ — the interactive session outranks CI
+by roughly ten to one, and when nothing interactive is happening CI gets the
+whole machine.
+
+Memory is not compressible. A process denied memory does not run slowly, it
+dies. So rather than capping CI, the configuration _reserves_ memory for the
+interactive side and sets CI a soft limit that reclaims under pressure instead
+of killing.
+
+There is deliberately no hard memory cap on the CI slice. A hard cap does not
+slow a build down — it gets the process killed, and a build that dies at 90%
+because a limit was five per cent too tight is worse than a build that swaps
+for thirty seconds.
+
+## Closed to the internet
+
+The box has zero inbound firewall rules. Access is over a mesh VPN, which
+needs no inbound rule at all because it dials out.
+
+An explicit zero-rule firewall is attached rather than simply leaving the
+firewall off, because on this provider an unattached firewall means no
+filtering whatsoever. "No rules" and "no firewall" read the same in a
+dashboard and are opposites in effect.
+
+## Sessions that outlive the connection
+
+Three layers, because there are three different failures:
+
+- **A multiplexer** so a session survives the SSH connection dropping.
+- **A roaming shell** so the connection itself survives a network change.
+- **Session persistence** so the layout survives a reboot.
+
+The payoff is that the client stops mattering. Nothing is "my machine" any
+more, which is the point.
+
+## What it cost
+
+**It is a single point of failure.** One box, one region. Backups are
+configured in code and — at time of writing — have not been applied. A backup
+that has never been restored is a hypothesis, and I am not going to describe it
+as anything else.
+
+**It is a hard dependency on connectivity.** SSH does not exist without a
+link. The mitigations are real but partial, and on a bad connection the
+whole setup is worse than a laptop.
+
+**No nested virtualisation.** This provider's cloud instances expose no KVM,
+so Android emulators cannot run on the box. That is not a tuning problem, it
+needs different hardware, and pretending otherwise wasted an afternoon.
+
+The upside is that the machine in my bag stops being load-bearing — which, for
+someone who moves around, turned out to matter more than any laptop
+specification.

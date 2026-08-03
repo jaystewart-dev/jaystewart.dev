@@ -1,0 +1,193 @@
+---
+title: Live positions for an unmapped bus network
+summary: Inferring where buses are from anonymous rider signals, on a network with no vehicle tracking, no published timetable and no operator data feed.
+description: An engineering case study on inferring live vehicle positions from anonymous rider pings — the detection pipeline, the tuning harness built to make it honest, and monitoring designed after a health check stayed green through a total outage.
+status: Running, pre-launch
+period: 2026 — present
+role: Technical co-founder — architecture, implementation, infrastructure
+order: 2
+anonymised: true
+stack:
+  - React Native
+  - Next.js
+  - Postgres
+  - Fly.io
+  - Geospatial
+  - GitHub Actions
+metrics:
+  - label: Commits
+    from: transit.commits
+  - label: Test files
+    from: transit.testFiles
+  - label: Decision records
+    from: transit.decisionRecords
+  - label: Routes mapped
+    from: transit.routes
+---
+
+In a lot of cities, the bus network is real, heavily used, and completely
+undocumented. There is no published timetable, no route map, no vehicle
+tracking, and no data feed to consume. The network exists in the heads of the
+people who ride it and the drivers who drive it.
+
+You cannot consume an API that does not exist. The only signal available is the
+riders themselves — and using riders as sensors raises the problem the whole
+system is organised around: the moment you track people to find buses, you have
+built surveillance infrastructure for a public service.
+
+So the constraint came first, before any architecture. No accounts. No
+personal data. Nothing that identifies a rider, and nothing retained that
+could reconstruct one.
+
+## What honest means here
+
+The second constraint is subtler and mattered more.
+
+A system inferring positions from sparse signals will sometimes have no idea
+where a bus is. The commercially obvious move is to show a plausible position
+anyway — interpolate from the last known point, assume it kept going, draw the
+icon. Riders would rather see a bus than a blank map.
+
+That would make the product worthless. A rider standing in the rain deciding
+whether to keep waiting is making a decision on that icon. A confidently wrong
+position is worse than no position, because it converts "I do not know" into
+"I was told, and it was false" — and a transit app that lies once does not get
+opened again.
+
+So the rule is that the system never invents a position. When a route has no
+current detection, the app says so plainly. Every design decision downstream —
+how long a detection survives, when a cluster is trusted, what the map shows at
+zoom — resolves back to that rule.
+
+## Architecture
+
+<Diagram
+  caption="Riders emit anonymous signals; a detector clusters them into inferred vehicle positions and writes them back. Route geometry follows a separate path entirely — it is reviewed and merged, not written at runtime."
+  summary="A mobile app sends anonymous pings to a Postgres database with realtime subscriptions. A detector worker on Fly.io reads pings, clusters them into inferred bus positions, and writes those back for the app to subscribe to. An operations console publishes route geometry by opening a pull request, which a human merges before it reaches riders."
+>
+  <Row>
+    <Node title="Rider app" meta="React Native" detail="No account, no PII" tone="accent" />
+  </Row>
+  <Arrow label="anonymous pings" direction="both" />
+  <Node title="Postgres + realtime" meta="Row-level security" />
+  <Arrow label="reads pings · writes positions" direction="both" />
+  <Node title="Detector worker" meta="Containerised · Fly.io" detail="Clustering + decay" tone="accent" />
+
+  <Arrow label="separate path" />
+  <Row>
+    <Node title="Ops console" meta="Next.js" detail="Curates routes" tone="ghost" />
+    <Node title="Route geometry" meta="Versioned JSON" detail="Merged, not written" tone="ghost" />
+  </Row>
+</Diagram>
+
+The detector is a separate deployable service rather than a job inside the web
+app. It is the only component doing continuous work, it has a completely
+different resource profile from request handling, and when it needs a restart
+that should not involve the console.
+
+## Route data as reviewed code, not database rows
+
+The route catalogue could have been rows in a table edited through an admin
+form. It is versioned geometry files instead, and the operations console does
+not write them — it opens a pull request.
+
+An operator curating a route produces a proposed change; a human reviews the
+diff; merging it triggers the pipeline that regenerates the data bundled into
+the app. Nothing an operator does reaches a rider without passing review.
+
+This sounds like ceremony for a small team, and it earns its keep in three
+ways. Route geometry has a full history, so a bad edit is a revert rather than
+an archaeology exercise. Changes are reviewable as diffs, which is the only
+format in which "this route now takes a different street" is legible. And the
+review step is a real gate against the failure mode that matters — a wrong
+route confidently displayed.
+
+The trade-off is latency: a correction takes a merge, not a save. For data
+that changes a few times a month and is wrong in ways riders would trust, that
+is the right side of the trade.
+
+## Making the detector honest
+
+The core algorithm turns a scatter of anonymous pings into "there is probably a
+bus here". It has to decide when a cluster of signals represents a vehicle
+rather than a crowd at a stop, how long a detection survives without
+reinforcement, and when to give up and report nothing.
+
+Those thresholds cannot be reasoned out from first principles. They also
+cannot be tuned in production, because production is where riders are making
+decisions on the output.
+
+So the detector was built around a replay harness before it was tuned:
+
+- **Ground truth**, recorded from known journeys, so there is a correct answer to compare against.
+- **Replay**, running the detector against recorded signals deterministically — same input, same output, every time.
+- **Parameter sweeps**, running the whole recorded corpus across ranges of thresholds and scoring the results.
+- **Outcome analysis**, separating the two failure modes that matter: missing a bus that was there, and reporting one that was not.
+
+Those two failures are not symmetric, which is the point. Under the honesty
+rule, a ghost bus is far more costly than a missed one — a missed bus is a
+blank map, and a ghost is a lie. The sweep optimises against that asymmetry
+explicitly rather than maximising an aggregate accuracy score that would
+happily trade ghosts for coverage.
+
+This is the part of the project I would point at first. Not because the
+clustering is clever, but because without a way to measure it, the honesty rule
+would have been an aspiration in a README instead of a property that can be
+checked.
+
+## The incident that rewrote the monitoring
+
+A regression shipped that hid every bus from the app. Not a crash — the app
+loaded fine, the map rendered fine, and there were simply no vehicles on it.
+
+The uptime check stayed green throughout.
+
+It stayed green because the detector's health endpoint answered as soon as its
+port was open. The process was alive. It was running, serving, responding
+correctly to the only question anyone was asking it — and doing no useful work
+whatsoever. A liveness probe cannot tell the difference between a service that
+is working and a service that is merely running, because it never asks.
+
+The monitoring was rebuilt to alarm on meaning rather than liveness:
+
+- The detector emits a **heartbeat carrying what it did** — signals seen, clusters formed, positions written — not merely that it is up.
+- A **dead-man's switch** fires when that heartbeat stops or reports zero work over a window in which zero work is implausible.
+- Checks are **tiered by what they imply**, so "no detections on one route" and "no detections anywhere" are different alerts with different urgency, rather than one threshold that is either too noisy or too quiet.
+
+The general lesson is the one I have carried into everything since: a health
+check should answer the question you actually care about. "Is the port open" is
+almost never that question, and it is the default because it is easy.
+
+## Trade-offs I would flag in review
+
+**Rider signals are sparse, and sparsity is not uniform.** Busy routes at busy
+hours detect well. A quiet route at 6am may have no riders running the app at
+all, and no amount of tuning conjures signal from an empty bus. The product
+answer is to say so; there is no engineering answer.
+
+**Bootstrapping is genuinely hard.** The system needs riders to produce data
+and produces little value until it has them. Route geometry is useful without
+any live detection, which is part of why the catalogue got the careful
+treatment described above — it is the half of the product that works on day
+one.
+
+**The detector is a single deployment.** One service, one region, running
+continuously. That is right for the current scale and is the first thing that
+needs to change if the network grows.
+
+**Decision records are load-bearing.** Roughly a hundred numbered decisions
+record what was tried, what was reversed, and why. They are treated as current
+policy rather than history — the constraint being that reversing one means
+reading it first. That is a real cost on every change, and it is the reason
+the honesty rule survived contact with a dozen features that would have been
+easier without it.
+
+## Where it stands
+
+Built, deployed and running: the detector operates continuously, the route
+catalogue is curated through the review pipeline, and the app renders live
+positions where detection supports them and admits the gap where it does not.
+
+It has not publicly launched. The remaining work is bootstrapping — the
+engineering problem is largely solved and the adoption problem is entirely
+ahead.

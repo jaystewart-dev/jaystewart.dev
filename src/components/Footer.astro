@@ -1,0 +1,51 @@
+---
+import { site } from '../data/site.ts';
+import metrics from '../data/metrics.json';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-line bg-band">
+  <div class="mx-auto max-w-wide px-5 py-12 sm:px-8">
+    <div class="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+      <div class="max-w-sm">
+        <p class="font-display text-lg font-semibold">{site.name}</p>
+        <p class="mt-1 text-sm text-muted">{site.tagline}</p>
+        <p class="mt-4 text-sm text-muted">
+          Open to backend, platform and founding engineering roles.
+        </p>
+      </div>
+
+      <nav aria-label="Footer" class="grid grid-cols-2 gap-x-10 gap-y-2 text-sm">
+        <a href="/work/" class="text-muted transition-colors hover:text-accent">Work</a>
+        <a href="/notes/" class="text-muted transition-colors hover:text-accent">Notes</a>
+        <a href="/about/" class="text-muted transition-colors hover:text-accent">About</a>
+        <a href="/philosophy/" class="text-muted transition-colors hover:text-accent">
+          Philosophy
+        </a>
+        <a href="/contact/" class="text-muted transition-colors hover:text-accent">Contact</a>
+        <a
+          href={site.github}
+          rel="me noopener"
+          class="text-muted transition-colors hover:text-accent"
+        >
+          GitHub
+        </a>
+      </nav>
+    </div>
+
+    <div
+      class="mt-10 flex flex-col gap-2 border-t border-line pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© {year} {site.name}</p>
+      {
+        /* Stated in the footer rather than buried: every figure on this site is
+          counted from source on a known date, and this is that date. */
+      }
+      <p class="font-mono">
+        Figures counted from source on
+        <time datetime={metrics.countedAt}>{metrics.countedAt}</time>
+      </p>
+    </div>
+  </div>
+</footer>
