@@ -13,6 +13,6 @@ accessibility, Lighthouse — must pass before merge. No approval is required
 — single maintainer — so the flow is: branch, open the pull request, merge
 it yourself once CI is green. Never push to `main` directly.
 
-The reason is that a merge to `main` *is* a deploy: `deploy.yml` publishes
+The reason is that a merge to `main` _is_ a deploy: `deploy.yml` publishes
 to GitHub Pages on every push to `main`. Without the gate, a careless commit
 is a live site change with nothing in front of it.
