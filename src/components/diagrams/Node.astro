@@ -1,0 +1,30 @@
+---
+interface Props {
+  title: string;
+  /** Second line: the technology, or what the box actually is. */
+  meta?: string;
+  /** Third line: a detail worth stating, kept short. */
+  detail?: string;
+  /** `accent` marks the subject of the diagram; `ghost` marks external systems. */
+  tone?: 'default' | 'accent' | 'ghost';
+}
+
+const { title, meta, detail, tone = 'default' } = Astro.props;
+
+const tones = {
+  default: 'border-line-strong bg-paper',
+  accent: 'border-accent bg-paper',
+  ghost: 'border-line bg-paper border-dashed',
+} as const;
+---
+
+<div
+  class:list={[
+    'min-w-[9.5rem] max-w-[15rem] rounded-md border px-4 py-3 text-center',
+    tones[tone],
+  ]}
+>
+  <p class="font-mono text-[0.8125rem] leading-snug font-medium">{title}</p>
+  {meta && <p class="mt-1 text-xs leading-snug text-muted">{meta}</p>}
+  {detail && <p class="mt-0.5 text-[0.6875rem] leading-snug text-muted">{detail}</p>}
+</div>

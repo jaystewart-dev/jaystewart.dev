@@ -1,0 +1,29 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# test artefacts
+test-results/
+playwright-report/
+coverage/
+
+# local metric sources — absolute paths and directory names for private
+# repositories, which are not public information. See .metrics-sources.example.json
+.metrics-sources.json
+
+# environment
+.env
+.env.*
+!.env.example
+
+# editor / OS
+.DS_Store
+*.log
+.vscode/
+.idea/
+
+# lighthouse ci
+.lighthouseci/

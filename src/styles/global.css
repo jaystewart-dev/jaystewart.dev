@@ -1,0 +1,450 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Fonts
+
+   Self-hosted, latin-only, variable-weight subsets vendored into public/fonts
+   from @fontsource-variable at install time. Three files, 128 KB total, all
+   preloaded from the base layout.
+
+   Variable fonts rather than static weights because this design uses five
+   weights across three families; as static files that would be fifteen
+   requests, and as variable files it is three.
+--------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/fraunces-latin-wght.woff2') format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/inter-latin-wght.woff2') format('woff2-variations');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin-wght.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+2074, U+20AC, U+2122;
+}
+
+/* ---------------------------------------------------------------------------
+   Palette
+
+   Two themes built from one set of semantic names. Components never reference
+   a raw colour or a `dark:` variant — they use `bg-paper`, `text-muted`,
+   `border-line` and so on, and the values underneath swap. That keeps theme
+   support out of markup entirely and makes it impossible for a component to
+   support one theme and not the other.
+
+   Every pairing the design relies on is asserted in src/lib/contrast.test.ts
+   against the values below, so a palette edit that breaks WCAG AA fails the
+   test suite rather than shipping.
+
+   Light is carried over from the previous site, whose contrast reasoning was
+   sound. Dark is new. Ratios (light / dark):
+     ink on paper           16.29 / 15.27   AAA
+     muted on paper          7.52 /  7.88   AAA
+     accent on paper         5.92 /  9.44   AA  (AAA in dark)
+     line-strong on surface  3.63 /  3.26   AA non-text
+--------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  --c-paper: #f7f5ef; /* page background — warm off-white, not clinical */
+  --c-surface: #ffffff; /* raised cards */
+  --c-band: #efebe0; /* alternating section bands, a real tonal step */
+  --c-ink: #16181d; /* primary text */
+  --c-muted: #4c4f56; /* secondary text — darkened until it cleared 4.5:1 */
+  --c-line: #e6e2d8; /* hairlines and dividers, decorative only */
+  --c-line-strong: #8a867e; /* borders that carry meaning — clears 3:1 */
+  --c-accent: #0c6b57; /* deep green, used sparingly */
+  --c-accent-contrast: #ffffff; /* text on an accent fill */
+  --c-shadow: 22 24 29;
+}
+
+/* System preference, unless the reader has explicitly chosen light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --c-paper: #0e1013;
+    --c-surface: #16181d;
+    --c-band: #1b1e25;
+    --c-ink: #e8e6e0;
+    --c-muted: #a2a7b0;
+    --c-line: #262a32;
+    --c-line-strong: #626a78;
+    --c-accent: #4ecba5;
+    --c-accent-contrast: #0e1013;
+    --c-shadow: 0 0 0;
+  }
+}
+
+/* Explicit choice always wins over system preference, in both directions. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --c-paper: #0e1013;
+  --c-surface: #16181d;
+  --c-band: #1b1e25;
+  --c-ink: #e8e6e0;
+  --c-muted: #a2a7b0;
+  --c-line: #262a32;
+  --c-line-strong: #626a78;
+  --c-accent: #4ecba5;
+  --c-accent-contrast: #0e1013;
+  --c-shadow: 0 0 0;
+}
+
+/* `inline` matters: it makes the generated utilities emit `var(--c-paper)`
+   rather than resolving the value at build time, which is what lets a single
+   `bg-paper` class follow the theme. */
+@theme inline {
+  --color-paper: var(--c-paper);
+  --color-surface: var(--c-surface);
+  --color-band: var(--c-band);
+  --color-ink: var(--c-ink);
+  --color-muted: var(--c-muted);
+  --color-line: var(--c-line);
+  --color-line-strong: var(--c-line-strong);
+  --color-accent: var(--c-accent);
+  --color-accent-contrast: var(--c-accent-contrast);
+
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Two measures: prose that wants ~70 characters, and full-width layout. */
+  --container-content: 45rem;
+  --container-wide: 68rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* Anchored headings clear the sticky header instead of hiding under it. */
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--c-paper);
+    color: var(--c-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    font-feature-settings:
+      'kern' 1,
+      'liga' 1,
+      'calt' 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  /* Focus is visible on every interactive element, and offset far enough to
+     stay legible against a filled button as well as body text. */
+  :focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--c-accent) 22%, transparent);
+  }
+
+  img,
+  svg,
+  video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Honour the OS setting rather than animating anyway and hoping. Kept as a
+     blanket rule because a per-component opt-out is a rule someone forgets. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Components
+--------------------------------------------------------------------------- */
+
+@layer components {
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background-color: var(--c-accent);
+    color: var(--c-accent-contrast);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .skip-link:focus {
+    left: 0.5rem;
+    top: 0.5rem;
+  }
+
+  /* Small uppercase monospace label. The one piece of "instrument readout"
+     styling in the design, used for section eyebrows and metric keys. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+  }
+
+  .link-underline {
+    text-decoration: underline;
+    text-decoration-color: var(--c-line-strong);
+    text-underline-offset: 0.25em;
+    text-decoration-thickness: 1px;
+    transition: text-decoration-color 200ms ease;
+  }
+
+  .link-underline:hover {
+    text-decoration-color: var(--c-accent);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.125rem;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition:
+      background-color 200ms ease,
+      border-color 200ms ease,
+      color 200ms ease;
+  }
+
+  .btn-primary {
+    background-color: var(--c-accent);
+    color: var(--c-accent-contrast);
+  }
+
+  .btn-primary:hover {
+    background-color: color-mix(in srgb, var(--c-accent) 85%, var(--c-ink));
+  }
+
+  .btn-secondary {
+    border-color: var(--c-line-strong);
+    color: var(--c-ink);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--c-accent);
+    color: var(--c-accent);
+  }
+
+  .card {
+    background-color: var(--c-surface);
+    border: 1px solid var(--c-line);
+    border-radius: 0.5rem;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    border: 1px solid var(--c-line);
+    border-radius: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--c-muted);
+    white-space: nowrap;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Prose
+
+   Long-form case-study body copy. Scoped to `.prose` so MDX content gets
+   typography without every element needing a class, and so the rest of the
+   site is unaffected.
+--------------------------------------------------------------------------- */
+
+@layer components {
+  .prose {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--c-ink);
+  }
+
+  .prose > * + * {
+    margin-top: 1.5em;
+  }
+
+  .prose h2 {
+    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 1.875rem);
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--c-line);
+  }
+
+  .prose h3 {
+    font-size: 1.25rem;
+    margin-top: 2.5rem;
+  }
+
+  .prose h2 + *,
+  .prose h3 + * {
+    margin-top: 1rem;
+  }
+
+  .prose a {
+    color: var(--c-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+
+  .prose strong {
+    font-weight: 650;
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-left: 1.5rem;
+  }
+
+  .prose li + li {
+    margin-top: 0.5rem;
+  }
+
+  .prose li::marker {
+    color: var(--c-line-strong);
+  }
+
+  .prose blockquote {
+    margin-left: 0;
+    padding-left: 1.25rem;
+    border-left: 2px solid var(--c-accent);
+    color: var(--c-muted);
+    font-style: italic;
+  }
+
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    padding: 0.125em 0.375em;
+    background-color: var(--c-band);
+    border: 1px solid var(--c-line);
+    border-radius: 0.25rem;
+  }
+
+  .prose pre {
+    padding: 1rem 1.25rem;
+    background-color: var(--c-surface);
+    border: 1px solid var(--c-line);
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .prose pre code {
+    padding: 0;
+    background: none;
+    border: none;
+    font-size: inherit;
+  }
+
+  .prose hr {
+    border: 0;
+    border-top: 1px solid var(--c-line);
+  }
+
+  /* Tables scroll inside their own container rather than widening the page. */
+  .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+
+  .prose th,
+  .prose td {
+    padding: 0.625rem 0.875rem;
+    border-bottom: 1px solid var(--c-line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .prose th {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--c-muted);
+  }
+}

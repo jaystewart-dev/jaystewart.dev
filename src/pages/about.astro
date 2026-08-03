@@ -1,0 +1,129 @@
+---
+import Base from '../layouts/Base.astro';
+import { roles, yearsOfExperience } from '../data/experience.ts';
+import { site } from '../data/site.ts';
+
+const years = yearsOfExperience();
+---
+
+<Base
+  title="About"
+  description={`Jay Stewart — ${years} years of backend engineering, from Magento e-commerce for Dyson to production SaaS handling payments, video and infrastructure. Based in Bristol, UK.`}
+>
+  <section class="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-20">
+    <p class="eyebrow">About</p>
+    <h1 class="mt-3 text-4xl sm:text-5xl">
+      I built a booking and payments system in 2016. I am still working on the same problem.
+    </h1>
+
+    <div class="prose mt-10">
+      <p>
+        In 2016 a chiropractic clinic in Bristol needed a way to take appointments and payments.
+        I built it — scheduling logic, card processing, the reports the practice actually ran on
+        — and then kept it alive for four years while the practice grew into it.
+      </p>
+      <p>
+        A decade later I am building the same thing again: booking, payments, payouts that cross
+        a border, and live video on top. The difference is two orders of magnitude in every
+        direction — the failure modes, the money at risk, the number of ways a schedule can be
+        wrong. That is roughly the shape of my career: the same class of problem, at increasing
+        stakes.
+      </p>
+
+      <h2>The decade before</h2>
+      <p>
+        Most of it was agency backend work on e-commerce, which is an unglamorous place to learn
+        the things that matter. High-traffic stores processing real transactions and real
+        customer data, including work on Dyson’s platform. The systems were not novel. They were
+        <em>consequential</em> — an outage was lost orders, a bad migration was a support queue, and
+        a mishandled payment was somebody’s actual money.
+      </p>
+      <p>
+        That is where I picked up the instincts I still work from: that reliability is a
+        feature, that data about people deserves care beyond what compliance requires, and that
+        most production incidents are failures of imagination rather than of skill.
+      </p>
+
+      <h2>Now</h2>
+      <p>
+        I am technical co-founder of an early-stage transit company, and I build a small family
+        of independent products alongside it. In practice that means I do all of it: schema
+        design, API, mobile, infrastructure as code, CI, monitoring, and the on-call rotation of
+        one.
+      </p>
+      <p>
+        Working alone taught me things a team would have hidden — mostly that every shortcut is
+        a loan against your own future attention. But it is not a preference. The decade before
+        this was collaborative, and the thing I miss most is code review by someone who
+        disagrees with me.
+      </p>
+
+      <h2>Where I am</h2>
+      <p>
+        Bristol, UK. Open to remote work across UK and European time zones, and to relocating
+        for the right team.
+      </p>
+    </div>
+  </section>
+
+  <section aria-labelledby="experience-heading" class="border-y border-line bg-band">
+    <div class="mx-auto max-w-content px-5 py-16 sm:px-8">
+      <h2 id="experience-heading" class="text-3xl">Experience</h2>
+
+      <ol class="mt-10 space-y-10">
+        {
+          roles.map((role) => (
+            <li class="relative border-l border-line-strong pl-6">
+              <span
+                class="absolute top-2 -left-[4.5px] h-2 w-2 rounded-full bg-accent"
+                aria-hidden="true"
+              />
+              <p class="font-mono text-xs text-muted">{role.period}</p>
+              <h3 class="mt-1.5 text-xl">
+                {role.title}
+                <span class="text-muted"> · {role.company}</span>
+              </h3>
+              <p class="mt-2 text-muted">{role.summary}</p>
+
+              {role.detail && (
+                <ul class="mt-3 space-y-1.5 text-sm text-muted">
+                  {role.detail.map((line) => (
+                    <li class="flex gap-2.5">
+                      <span class="text-line-strong" aria-hidden="true">
+                        —
+                      </span>
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {role.stack && (
+                <ul class="mt-4 flex flex-wrap gap-2" aria-label="Technologies">
+                  {role.stack.map((item) => (
+                    <li class="tag">{item}</li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-content px-5 py-16 sm:px-8">
+    <h2 class="text-2xl">Elsewhere</h2>
+    <ul class="mt-5 space-y-2.5">
+      <li>
+        <a href={`mailto:${site.email}`} class="link-underline">{site.email}</a>
+      </li>
+      <li>
+        <a href={site.github} rel="me noopener" class="link-underline">GitHub ↗</a>
+      </li>
+      <li>
+        <a href={site.linkedin} rel="me noopener" class="link-underline">LinkedIn ↗</a>
+      </li>
+    </ul>
+  </section>
+</Base>

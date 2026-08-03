@@ -1,0 +1,40 @@
+---
+interface Props {
+  /** Text on the edge — what flows along it. */
+  label?: string;
+  /** `both` renders a double-headed arrow for bidirectional links. */
+  direction?: 'down' | 'both';
+}
+
+const { label, direction = 'down' } = Astro.props;
+---
+
+{
+  /* aria-hidden because the arrow itself carries no information a screen reader
+    can use — the relationship is stated in the diagram's summary prop. */
+}
+<div class="flex flex-col items-center py-2" aria-hidden="true">
+  {
+    direction === 'both' && (
+      <svg width="9" height="6" viewBox="0 0 9 6" class="text-line-strong">
+        <path d="M4.5 0L9 6H0z" fill="currentColor" />
+      </svg>
+    )
+  }
+
+  <div class="h-5 w-px bg-line-strong"></div>
+
+  {
+    label && (
+      <span class="my-1 rounded border border-line bg-paper px-2 py-0.5 font-mono text-[0.6875rem] text-muted">
+        {label}
+      </span>
+    )
+  }
+
+  <div class="h-5 w-px bg-line-strong"></div>
+
+  <svg width="9" height="6" viewBox="0 0 9 6" class="text-line-strong">
+    <path d="M4.5 6L0 0h9z" fill="currentColor"></path>
+  </svg>
+</div>

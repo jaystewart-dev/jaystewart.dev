@@ -1,0 +1,25 @@
+---
+import { getCollection, render } from 'astro:content';
+import CaseStudy from '../../layouts/CaseStudy.astro';
+import Diagram from '../../components/diagrams/Diagram.astro';
+import Node from '../../components/diagrams/Node.astro';
+import Row from '../../components/diagrams/Row.astro';
+import Arrow from '../../components/diagrams/Arrow.astro';
+import Figure from '../../components/Figure.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('caseStudies', ({ data }) => !data.draft);
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+
+// Passed to MDX rather than imported per-file so a case study can reach for a
+// diagram without a header block of imports.
+const components = { Diagram, Node, Row, Arrow, Figure };
+---
+
+<CaseStudy entry={entry} headings={headings}>
+  <Content components={components} />
+</CaseStudy>

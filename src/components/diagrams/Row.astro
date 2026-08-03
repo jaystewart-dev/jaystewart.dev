@@ -1,0 +1,19 @@
+---
+interface Props {
+  /** Rows wrap on narrow screens by default; set false to force one line. */
+  wrap?: boolean;
+  class?: string;
+}
+
+const { wrap = true, class: className = '' } = Astro.props;
+---
+
+<div
+  class:list={[
+    'flex items-stretch justify-center gap-3 sm:gap-4',
+    wrap ? 'flex-wrap' : 'flex-nowrap',
+    className,
+  ]}
+>
+  <slot />
+</div>

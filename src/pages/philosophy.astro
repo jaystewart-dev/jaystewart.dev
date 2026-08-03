@@ -1,0 +1,95 @@
+---
+import Base from '../layouts/Base.astro';
+
+/**
+ * Every principle here is followed by where it actually shows up. A philosophy
+ * page that only states beliefs is a personality test; the evidence is the
+ * point.
+ */
+const principles = [
+  {
+    title: 'Alarm on meaning, not liveness',
+    body: `A health check that returns "ok" when the port is open tells you the process is running. It does not tell you the process is doing anything. I learned this from an outage where every bus vanished from a map and the uptime check stayed green for the duration — the service was alive, serving, and doing no work at all.`,
+    evidence: 'Detector heartbeats report work done, not that they are up.',
+  },
+  {
+    title: 'Ratchets beat rewrites',
+    body: `Most codebases carry debt that cannot be paid down in one pass. A quality gate set at the current level, which forbids getting worse while tolerating what exists, changes the trajectory without a big-bang migration. Coverage on changed lines, a lint rule that fails on new violations only, a baseline that can go down and never up.`,
+    evidence:
+      'Internationalisation, coverage and test-behaviour drift are all enforced as ratchets rather than thresholds.',
+  },
+  {
+    title: 'Say what you do not know',
+    body: `Systems that infer things will sometimes be uncertain, and the honest response is to say so rather than emit a confident guess. This is usually a product decision disguised as an engineering one: interpolating a position is easy, and it converts "I do not know" into "I told you, and it was false".`,
+    evidence:
+      'A transit system that shows no vehicle rather than a plausible one, enforced through the detection pipeline.',
+  },
+  {
+    title: 'Make expensive mistakes loud',
+    body: `The dangerous failures are not the ones that crash. They are the ones where the system stays correct and quietly costs money, leaks data or does nothing — the class where the first signal is an invoice or a customer. Any setting whose wrong value is expensive and invisible deserves an assertion at startup.`,
+    evidence:
+      'A generated-audio service that refuses to boot in production with an ephemeral cache driver configured.',
+  },
+  {
+    title: 'Write the decision, not the outcome',
+    body: `A decision log that only records what was built is a highlight reel. The valuable entries are the reversals — what was tried, why it failed, what constraint was discovered. I treat those records as current policy rather than history: reversing one means reading it first.`,
+    evidence: 'Over two hundred numbered decision records across two production systems.',
+  },
+  {
+    title: 'Cost is an architectural input',
+    body: `"What does one unit of this cost to serve" belongs in the design conversation, not the finance one. Asked early it changes the architecture; asked late it produces a caching layer bolted onto something that assumed the operation was free.`,
+    evidence:
+      'Content-addressed caching designed around a per-session generation cost that made the obvious architecture unprofitable.',
+  },
+  {
+    title: 'Boring where it counts',
+    body: `Postgres, integers for money, server-rendered HTML, database-backed sessions. Novelty is a budget and it should be spent on the part of the system that is genuinely novel — which is rarely the persistence layer or the session store.`,
+    evidence:
+      'One product spends its novelty budget on a self-hosted media server and captions pipeline, and nowhere else.',
+  },
+];
+---
+
+<Base
+  title="Engineering philosophy"
+  description="Seven principles that show up in the code — alarm on meaning rather than liveness, ratchets over rewrites, making expensive mistakes loud, and treating cost as an architectural input."
+>
+  <section class="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-20">
+    <p class="eyebrow">Philosophy</p>
+    <h1 class="mt-3 text-4xl sm:text-5xl">How I think about building things.</h1>
+    <p class="mt-5 text-lg text-muted">
+      Each of these came from something going wrong. Where a principle shows up in real work, I
+      have said where.
+    </p>
+
+    <ol class="mt-14 space-y-12">
+      {
+        principles.map((principle, index) => (
+          <li>
+            <p class="font-mono text-xs text-muted tabular-nums">
+              {String(index + 1).padStart(2, '0')}
+            </p>
+            <h2 class="mt-2 text-2xl">{principle.title}</h2>
+            <p class="mt-3 text-muted">{principle.body}</p>
+            <p class="mt-4 border-l-2 border-accent pl-4 text-sm text-muted">
+              <span class="eyebrow">In practice</span>
+              <span class="mt-1 block">{principle.evidence}</span>
+            </p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="border-t border-line bg-band">
+    <div class="mx-auto max-w-content px-5 py-14 sm:px-8">
+      <h2 class="text-2xl">There is one more, and it needs its own page</h2>
+      <p class="mt-3 text-muted">
+        A large share of my recent commits were written with coding agents. That changes what
+        discipline has to look like, and it is the part of my workflow most worth explaining
+        rather than glossing over.
+      </p>
+      <a href="/working-with-agents/" class="btn btn-primary mt-6"> How I work with agents </a>
+    </div>
+  </section>
+</Base>
