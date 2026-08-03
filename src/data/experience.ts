@@ -54,7 +54,6 @@ export const roles: Role[] = [
       'Designing and running small products end to end — architecture, code, infrastructure and the on-call pager. AgendaProfe is the largest and the one carrying real money.',
     detail: [
       'AgendaProfe — scheduling, payments and live video teaching for independent teachers. In production.',
-      'PressPlay — an audio-only AI workout coach, where the cost of generated speech drove the architecture.',
       'groundtruth — a small open-source CLI that checks agent-context files against the repository they describe.',
     ],
     stack: ['TypeScript', 'Next.js', 'Postgres', 'Stripe', 'Terraform', 'React Native'],

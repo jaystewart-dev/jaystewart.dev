@@ -164,16 +164,6 @@ const counters = {
     };
   },
 
-  pressplay(repo) {
-    return {
-      apiRoutes: countFiles(repo, (n) => n === 'route.ts'),
-      testFiles: countFiles(repo, isTest),
-      workflows: countFiles(join(repo, '.github/workflows'), isWorkflow),
-      commits: gitCount(repo),
-      since: gitFirstCommitYear(repo),
-    };
-  },
-
   anvil(repo) {
     return {
       terraformLines: walk(repo, (n) => n.endsWith('.tf')).reduce(
