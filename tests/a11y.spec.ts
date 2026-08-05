@@ -22,7 +22,6 @@ const routes = [
   '/work/realtime-transit/',
   '/notes/',
   '/notes/development-environment-is-a-server/',
-  '/notes/when-cost-is-the-architecture/',
   '/notes/a-compiler-for-agent-context/',
   '/about/',
   '/philosophy/',
@@ -39,7 +38,14 @@ for (const theme of themes) {
 
     for (const route of routes) {
       test(`${route} has no detectable violations`, async ({ page }) => {
-        await page.goto(route);
+        const response = await page.goto(route);
+
+        // A route that stops existing is served the 404 page, which is itself
+        // well-formed and axe-clean — so without this, a deleted page passes
+        // its accessibility test forever. The 404 route is the one exception.
+        if (route !== '/404.html') {
+          expect(response?.status(), `${route} should exist`).toBe(200);
+        }
 
         const results = await new AxeBuilder({ page })
           .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
