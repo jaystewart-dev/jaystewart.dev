@@ -79,6 +79,12 @@ const pages = [
     title: 'An agent-operated production codebase',
     note: 'The practice, the gates, and where the context layer rotted',
   },
+  {
+    slug: 'audit',
+    eyebrow: 'Agent-readiness audit',
+    title: 'Your agents obey instructions nobody has checked',
+    note: 'Every claim verified against the repository · a CI gate left behind',
+  },
   { slug: 'about', eyebrow: 'About', title: 'Twelve years of backend engineering' },
   { slug: 'philosophy', eyebrow: 'Philosophy', title: 'How I think about building things' },
   {
