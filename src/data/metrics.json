@@ -13,6 +13,7 @@
       "mobileFlows": 39,
       "linesOfCode": 377887,
       "commits": 1937,
+      "agentCommits": 1649,
       "since": 2026
     },
     "transit": {
@@ -22,6 +23,7 @@
       "routes": 35,
       "linesOfCode": 81740,
       "commits": 1404,
+      "agentCommits": 1045,
       "since": 2026
     },
     "groundtruth": {

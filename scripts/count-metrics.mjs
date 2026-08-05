@@ -117,6 +117,26 @@ function gitCount(repo) {
   }
 }
 
+/**
+ * Commits written or co-written by a coding agent: the author name or a
+ * Co-authored-by trailer names one. Renders alongside `commits`, because the
+ * share is the honest figure — the total alone would hide it.
+ */
+function gitAgentCount(repo) {
+  try {
+    assertNotShallow(repo);
+    const records = execFileSync(
+      'git',
+      ['-C', repo, 'log', '--format=%x1e%an%x1f%(trailers:key=Co-authored-by,valueonly)'],
+      { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 },
+    ).split('\x1e');
+    return records.filter((r) => /claude/i.test(r)).length;
+  } catch (error) {
+    console.error(String(error.message ?? error));
+    process.exit(1);
+  }
+}
+
 function gitFirstCommitYear(repo) {
   try {
     const out = execFileSync(
@@ -168,6 +188,7 @@ const counters = {
       mobileFlows: countFiles(join(repo, 'apps/mobile/.maestro'), (n) => /\.ya?ml$/.test(n)),
       linesOfCode: countLines(repo),
       commits: gitCount(repo),
+      agentCommits: gitAgentCount(repo),
       since: gitFirstCommitYear(repo),
     };
   },
@@ -182,6 +203,7 @@ const counters = {
       routes: countFiles(join(repo, 'docs/routes/json'), (n) => n.endsWith('.json')),
       linesOfCode: countLines(repo),
       commits: gitCount(repo),
+      agentCommits: gitAgentCount(repo),
       since: gitFirstCommitYear(repo),
     };
   },
