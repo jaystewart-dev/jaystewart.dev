@@ -21,7 +21,7 @@ export const site = {
 
   /** Used as the default meta description and the OG description on the home page. */
   description:
-    'Backend and platform engineer with twelve years building systems that handle payments, transactions and personal data. Case studies on the architecture, trade-offs and operations behind production software.',
+    'Backend and platform engineer with twelve years building systems that handle payments, transactions and personal data — now designed and operated with coding agents behind verification gates. Case studies on the architecture, trade-offs and operations behind production software.',
 
   /** Short form, used in the footer and structured data. */
   tagline: 'Backend and platform engineer, Bristol',
@@ -30,6 +30,7 @@ export const site = {
 export const nav = [
   { href: '/work/', label: 'Work' },
   { href: '/notes/', label: 'Notes' },
+  { href: '/working-with-agents/', label: 'Agents' },
   { href: '/about/', label: 'About' },
   { href: '/philosophy/', label: 'Philosophy' },
 ] as const;

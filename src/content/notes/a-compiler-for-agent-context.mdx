@@ -54,8 +54,15 @@ validating is a fact you can watch rather than a blind spot.
 
 ## Honest about its stage
 
-It is an early MVP: a small working core with a narrow set of assertion types,
-not published to a package registry yet, and its own limitations documented as
-limitations rather than omitted. It is also the only piece of this work that is
-public, which is the other reason it is here — everything else on this site is
-described, and this one can be read.
+It is an early tool, deliberately narrow: six assertion kinds, hand-authored
+rather than extracted by a model, and its own limitations documented as
+limitations rather than omitted. Since this note was first written it has
+shipped — to npm as [`@groundtruth-sh/cli`](https://www.npmjs.com/package/@groundtruth-sh/cli),
+and as a GitHub Action on the Marketplace, with documentation at
+[groundtruth.sh](https://groundtruth.sh). It also now gates this site's own
+pull requests: the repository behind these pages carries a `.groundtruth.jsonc`
+and fails CI when a claim in its agent-context file drifts.
+
+It is also the only piece of this work that is public, which is the other
+reason it is here — everything else on this site is described, and this one
+can be read.

@@ -1,17 +1,18 @@
 {
-  "countedAt": "2026-08-03",
+  "countedAt": "2026-08-05",
   "projects": {
     "agendaprofe": {
       "databaseModels": 74,
       "migrations": 25,
       "apiRoutes": 269,
       "appPages": 105,
-      "testFiles": 842,
+      "testFiles": 855,
       "workflows": 18,
-      "decisionRecords": 108,
+      "decisionRecords": 109,
       "backgroundJobs": 29,
       "mobileFlows": 39,
-      "commits": 1915,
+      "linesOfCode": 377887,
+      "commits": 1937,
       "since": 2026
     },
     "transit": {
@@ -19,18 +20,20 @@
       "workflows": 12,
       "decisionRecords": 95,
       "routes": 35,
+      "linesOfCode": 81740,
       "commits": 1404,
       "since": 2026
     },
     "groundtruth": {
       "testFiles": 3,
       "workflows": 2,
-      "commits": 11,
+      "linesOfCode": 1365,
+      "commits": 14,
       "since": 2026
     },
     "anvil": {
-      "terraformLines": 303,
-      "commits": 20,
+      "terraformLines": 559,
+      "commits": 12,
       "since": 2026
     }
   }
