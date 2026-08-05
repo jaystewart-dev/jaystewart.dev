@@ -1,0 +1,192 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site.ts';
+
+const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readiness audit')}`;
+---
+
+<Base
+  title="Agent-readiness audit"
+  description="A fixed-price audit of your agent-context layer: every claim in your CLAUDE.md, rules and memory files verified against the repository, and a CI gate left behind so the lies cannot come back. £2,000–£5,000, ten working days."
+>
+  <section class="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-20">
+    <p class="eyebrow">Agent-readiness audit</p>
+    <h1 class="mt-3 text-4xl sm:text-5xl">Your agents obey instructions nobody has checked.</h1>
+
+    <div class="prose mt-10">
+      <p>
+        I find every sentence in your agent instructions that is no longer true, prove each one
+        against your actual repository, and leave behind a CI gate so the lies cannot come back.
+        You are not buying a report. You are buying a permanent check — the report is its first
+        run.
+      </p>
+
+      <h2>The problem</h2>
+      <p>
+        Code that lies gets caught by a compiler. Agent context that lies gets
+        <em>executed</em>. Every team that has adopted coding agents has accumulated a layer of
+        standing instructions — <code>CLAUDE.md</code>, <code>AGENTS.md</code>, Cursor rules,
+        memory files — that agents obey literally, at scale, every session, and that nothing on
+        earth verifies. Each sentence was true when it was written. Drift is a property of time,
+        not of discipline.
+      </p>
+      <p>
+        I know because I audited my own. The most disciplined repository I operate — a
+        production system carrying real payments, run the way
+        <a href="/work/agent-operated-codebase/">the flagship case study</a> describes — had four
+        live instances. Your context layer has never been checked, and mine had four.
+      </p>
+
+      <h2>What a finding looks like</h2>
+      <p>
+        This is the drift report format, populated with the real findings from that audit. Every
+        claim is cited to file and line in the delivered version, verified against the code
+        before it is reported, and carries a fix rather than a complaint. A suspected finding
+        that turns out to be false is labelled as such with its reasoning — never silently
+        dropped.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Claim in the context layer</th>
+            <th scope="col">Verified against the repo</th>
+            <th scope="col">Severity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Environment variables declared as required for two services</td>
+            <td>Both services decommissioned months earlier</td>
+            <td>High — agents provision for infrastructure that does not exist</td>
+          </tr>
+          <tr>
+            <td>Server configuration referenced as current</td>
+            <td>Points at a database that was torn down</td>
+            <td>High — a confident agent would try to use it</td>
+          </tr>
+          <tr>
+            <td>Memory file describing the change workflow</td>
+            <td>Directly contradicts the project’s stated pull-request policy</td>
+            <td>Medium — agents follow whichever version they read first</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>What you get</h2>
+      <p>Seven deliverables, named, so that done is not a matter of opinion.</p>
+      <ol>
+        <li>
+          <strong>The drift report.</strong> Every claim in the context layer that is currently false,
+          cited to file and line, severity-rated, each with a concrete fix.
+        </li>
+        <li>
+          <strong>The assertion suite.</strong> A <code>.groundtruth.jsonc</code> committed into your
+          repository — your own sentences turned into executable checks. This is the deliverable that
+          outlives the engagement.
+        </li>
+        <li>
+          <strong>The gate.</strong>
+          <a href="https://groundtruth.sh">groundtruth</a> running on every pull request, failing
+          the build when a context claim goes false. Two lines of YAML.
+        </li>
+        <li>
+          <strong>The contradiction pass.</strong> Every context file read against the others for
+          direct contradictions, not just individually false statements. The tool cannot do this yet;
+          a person does — which is why this is an audit and not a download.
+        </li>
+        <li>
+          <strong>The context-economics read.</strong> Which standing rules are load-bearing, which
+          are never cited, and what to prune.
+        </li>
+        <li>
+          <strong>The read-out.</strong> One recorded hour walking the findings, ending in a sequenced
+          remediation plan your team can execute without me.
+        </li>
+        <li>
+          <strong>The thirty-day re-check.</strong> The gate re-run a month after delivery, with a
+          short note on what came back and why.
+        </li>
+      </ol>
+
+      <h2>Scope, and fit</h2>
+      <p>
+        In scope: the agent-context layer of one repository, or up to three inside one
+        organization — every instruction file, rules file, memory file and decision log an agent
+        reads, plus the CI configuration that is supposed to enforce them. Out of scope: general
+        code, security and performance review, and writing your documentation for you. Saying
+        that plainly is what keeps a fixed price fixed.
+      </p>
+      <p>
+        It fits teams of roughly ten to five hundred developers where agents are genuinely in
+        the daily loop, at least one context file is older than about three months, more than
+        one person edits it, and the team controls its own CI. It is honestly the wrong purchase
+        for a two-person startup with a week-old context file — there is no drift yet — or for a
+        team without CI, which cannot receive half the deliverable.
+      </p>
+
+      <h2>Timeline and price</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Package</th>
+            <th scope="col">Price</th>
+            <th scope="col">What it is</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Audit</td>
+            <td>£3,000 fixed</td>
+            <td>Everything above, kickoff to read-out in ten working days</td>
+          </tr>
+          <tr>
+            <td>Audit + remediation week</td>
+            <td>£5,000 fixed</td>
+            <td>Guardrails and the highest-severity fixes land as reviewed pull requests</td>
+          </tr>
+          <tr>
+            <td>Small single repository</td>
+            <td>From £2,000</td>
+            <td>The same audit, scoped down honestly</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Terms: half on signature, half on delivery of the read-out. Ten working days is
+        deliberately generous — a fixed date I always hit is worth more than a fast one I might
+        miss. What I need from you: read access to the repository (or a working session inside
+        your environment if access is the blocker), a named counterpart for kickoff and
+        read-out, and permission for the two pull requests that carry the assertion suite and
+        the gate.
+      </p>
+      <p>
+        <strong>Founding-client terms, through October:</strong> if the read-out does not name at
+        least three things worth fixing, the second half is waived and you keep the assertion suite
+        and the gate. Given what the best-kept repository in my own portfolio contained, I consider
+        that a safe promise — but you should not have to take my word for it.
+      </p>
+
+      <h2>Why the evidence is public</h2>
+      <p>
+        The tool is <a href="https://groundtruth.sh">open source and installable in a minute</a
+        >, the method is written up as <a href="/work/agent-operated-codebase/"
+          >a case study with counted figures</a
+        >, and the receipts come from a production system with real users and real money moving
+        through it. The audit costs less than one day of a ten-person engineering team, and far
+        less than a single incident caused by an agent confidently acting on an instruction that
+        stopped being true.
+      </p>
+    </div>
+
+    <div class="mt-14 rounded-lg border border-line bg-band p-6 sm:p-8">
+      <h2 class="text-xl">Start with an email</h2>
+      <p class="mt-3 text-muted">
+        Two or three sentences about your team, your repositories and how agents are used is
+        enough. I will reply with whether the audit fits — and say so plainly if it does not.
+      </p>
+      <p class="mt-5">
+        <a href={mailto} class="link-underline text-lg">{site.email}</a>
+      </p>
+    </div>
+  </section>
+</Base>
