@@ -89,15 +89,31 @@ function countMatches(file, pattern) {
   return (readFileSync(file, 'utf8').match(pattern) ?? []).length;
 }
 
+/**
+ * A shallow clone reports a truncated `rev-list --count`, which would be
+ * committed as if it were the real figure. Wrong numbers are worse than no
+ * numbers, so a shallow checkout aborts the run rather than degrading it.
+ */
+function assertNotShallow(repo) {
+  const shallow = execFileSync('git', ['-C', repo, 'rev-parse', '--is-shallow-repository'], {
+    encoding: 'utf8',
+  }).trim();
+  if (shallow === 'true') {
+    throw new Error(`${repo} is a shallow clone — run \`git fetch --unshallow\` first.`);
+  }
+}
+
 function gitCount(repo) {
   try {
+    assertNotShallow(repo);
     return Number(
       execFileSync('git', ['-C', repo, 'rev-list', '--count', 'HEAD'], {
         encoding: 'utf8',
       }).trim(),
     );
-  } catch {
-    return 0;
+  } catch (error) {
+    console.error(String(error.message ?? error));
+    process.exit(1);
   }
 }
 
@@ -116,6 +132,19 @@ function gitFirstCommitYear(repo) {
 
 const isTest = (name) => /\.(test|spec)\.[cm]?[jt]sx?$/.test(name);
 const isWorkflow = (name) => /\.ya?ml$/.test(name);
+
+/**
+ * What counts as a line of code: hand-written source, not prose, data or
+ * lockfiles. Markdown, JSON and YAML are excluded on purpose — a docs-heavy
+ * repository should not look bigger than a code-heavy one.
+ */
+const isSource = (name) => /\.(ts|tsx|js|jsx|mjs|cjs|css|prisma|sql|sh)$/.test(name);
+
+const countLines = (repo) =>
+  walk(repo, isSource).reduce(
+    (total, f) => total + readFileSync(f, 'utf8').split('\n').length,
+    0,
+  );
 
 /* -------------------------------------------------------------------------- */
 /* Per-project counters                                                        */
@@ -137,6 +166,7 @@ const counters = {
         (n) => /\.ts$/.test(n) && n !== 'index.ts',
       ),
       mobileFlows: countFiles(join(repo, 'apps/mobile/.maestro'), (n) => /\.ya?ml$/.test(n)),
+      linesOfCode: countLines(repo),
       commits: gitCount(repo),
       since: gitFirstCommitYear(repo),
     };
@@ -150,6 +180,7 @@ const counters = {
         /^D-\d+\.md$/.test(n),
       ),
       routes: countFiles(join(repo, 'docs/routes/json'), (n) => n.endsWith('.json')),
+      linesOfCode: countLines(repo),
       commits: gitCount(repo),
       since: gitFirstCommitYear(repo),
     };
@@ -159,6 +190,7 @@ const counters = {
     return {
       testFiles: countFiles(repo, isTest),
       workflows: countFiles(join(repo, '.github/workflows'), isWorkflow),
+      linesOfCode: countLines(repo),
       commits: gitCount(repo),
       since: gitFirstCommitYear(repo),
     };
