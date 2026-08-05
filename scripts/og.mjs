@@ -60,7 +60,7 @@ const pages = [
   {
     slug: 'work',
     eyebrow: 'Case studies',
-    title: 'Two systems, written up properly',
+    title: 'Two systems and a practice, written up properly',
   },
   {
     slug: 'work-agendaprofe',
@@ -72,6 +72,12 @@ const pages = [
     slug: 'work-realtime-transit',
     eyebrow: 'Case study · Running, pre-launch',
     title: 'Live positions for an unmapped bus network',
+  },
+  {
+    slug: 'work-agent-operated-codebase',
+    eyebrow: 'Case study · In production',
+    title: 'An agent-operated production codebase',
+    note: 'The practice, the gates, and where the context layer rotted',
   },
   { slug: 'about', eyebrow: 'About', title: 'Twelve years of backend engineering' },
   { slug: 'philosophy', eyebrow: 'Philosophy', title: 'How I think about building things' },

@@ -1,0 +1,235 @@
+---
+title: An agent-operated production codebase
+summary: How a production SaaS carrying real bookings and real money is built and operated with coding agents — and the verification system that makes that trustworthy.
+description: An engineering case study on operating a production codebase with coding agents — parallel sessions, ratchets and drift guards, decision records as policy, where the context layer rotted anyway, and the tool built in response.
+status: In production
+period: 2026 — present
+role: Operator — direction, review, and the gates between
+order: 3
+anonymised: false
+stack:
+  - Claude Code
+  - Git worktrees
+  - GitHub Actions
+  - TypeScript
+  - Playwright
+metrics:
+  - label: Agent-attributed commits
+    from: agendaprofe.agentCommits
+  - label: Total commits
+    from: agendaprofe.commits
+  - label: Lines of code
+    from: agendaprofe.linesOfCode
+  - label: Decision records
+    from: agendaprofe.decisionRecords
+---
+
+More than eight in ten commits on [AgendaProfe](/work/agendaprofe/) — the
+production system in the previous case study, the one carrying real bookings
+and real money — were written or co-written by a coding agent. The figures in
+the header are counted from the repository's history, not estimated: a commit
+counts as agent-attributed when the author or a co-author trailer names one.
+
+That sentence tends to produce one of two wrong reactions. The first is that
+the codebase must be a mess. The second is that the engineering must be mostly
+automatic now. This case study is about why both are wrong, and about the part
+that turned out to be genuinely hard — which was not the generation.
+
+## What agent-operated actually means
+
+It does not mean unattended. Every change is directed at something specific,
+reviewed, and gated before it reaches anyone real. What it means is that the
+typing is no longer the job. The job is deciding what to build, giving an
+agent the context it cannot infer, and verifying what comes back — and the
+last of those is where nearly all of the engineering effort now lives.
+
+Concretely: development runs on a remote server, with between three and ten
+agent sessions working in parallel, each in its own git worktree on its own
+branch. Direction is short written instructions — sometimes dictated from a
+phone. A session ends in a pull request like anyone else's, and the pull
+request meets the same gates a human's would.
+
+The economics of this are lopsided in a way that took a while to internalise.
+Generation is effectively unbounded — ten sessions produce diff faster than
+any one person can meaningfully read. Review attention is the fixed resource.
+So every structural decision in the practice is really the same decision: how
+to spend less attention per change without trusting any single change more.
+
+## The failure mode is plausible code
+
+Bad code is not the risk. Bad code is caught by the same compilers, tests and
+reviews that always caught it.
+
+The risk is _plausible_ code: a change that reads correctly, passes a cursory
+review, and encodes a misunderstanding that surfaces weeks later as a
+production incident. Volume makes this strictly worse, because plausibility is
+exactly the property agent output optimises for, and volume is exactly what
+agents provide.
+
+One real example. A mobile test flow tapped a submit button after typing a
+code — reasonable, explicit, correct when written. Then the screen gained
+auto-submit. The flow's tap no longer failed; the framework computed the tap's
+coordinates from a stale snapshot and dispatched it after the app had already
+navigated away, landing it on whatever now occupied those pixels on the next
+screen. Every artefact involved was individually plausible. The system lied
+only in combination.
+
+That class of failure — individually plausible parts, wrong whole — is what
+the rest of this write-up is organised against.
+
+## Gates that do not rely on attention
+
+The principle: a tired human reviewer is the least reliable component in the
+loop, so nothing important is allowed to depend on one.
+
+<Diagram
+  caption="The path a change takes. No stage trusts the previous one; production advances only by fast-forward after the full gate passes against the exact candidate."
+  summary="Parallel agent sessions produce pull requests. Per-PR checks run types, lint, unit tests with a coverage ratchet, and context verification. Merging deploys a preview environment. A separate manual promote gate runs integration tests, end-to-end tests and a mobile native-code guard before fast-forwarding the production branch, which deploys."
+>
+  <Row>
+    <Node
+      title="Agent sessions"
+      meta="3–10 in parallel"
+      detail="Worktree per branch"
+      tone="accent"
+    />
+  </Row>
+  <Arrow label="pull request" />
+  <Node
+    title="Per-PR checks"
+    meta="Types · lint · unit · ratchets"
+    detail="+ context verification"
+  />
+  <Arrow label="merge" />
+  <Node title="Preview" meta="Disposable DB branch" tone="ghost" />
+  <Arrow label="promote — a decision, not a push" />
+  <Node
+    title="Full gate"
+    meta="Integration · E2E · native guard"
+    detail="Against the exact candidate"
+    tone="accent"
+  />
+  <Arrow label="fast-forward" />
+  <Node title="Production" meta="Auto-deploys on advance" />
+</Diagram>
+
+The individual mechanisms matter more than the shape:
+
+**Ratchets rather than thresholds.** Coverage is enforced on changed lines,
+not as a global number; a lint rule fails only on _new_ violations of a
+convention mid-migration. A ratchet scales with the diff rather than with my
+patience, which is the only way a gate survives agent-scale volume. It also
+means the codebase can only get better, without anyone scheduling a big-bang
+cleanup.
+
+**Guards for invisible breakage.** A mobile over-the-air update that assumes
+native code the installed binary lacks crashes on launch, unrecoverably, on
+real devices only. So CI diffs the release candidate against what is actually
+deployed — not against the previous commit — and refuses the build on a
+native change without a runtime version bump. The check exists because no
+review would catch it: the diff looks harmless every time.
+
+**Probes for the things reviews cannot see at all.** Production is probed on
+a schedule: public pages, the health check, video-server reachability, and a
+forged-signature request against the payment webhook to confirm it still
+rejects one. That last probe is the only thing in the entire system that
+would notice a signature-verification regression — precisely the kind of
+change that reads as a refactor.
+
+**A release gate, not a release script.** The expensive suites — real-database
+integration, full end-to-end against a production build — run at promote
+time, where they gate something, rather than on every commit, where they
+would train everyone to skip them. No individual commit is trusted on its own
+merits, however green.
+
+## Decision records as the context layer
+
+Gates catch what is wrong. They do nothing about work that is correct but
+_off-policy_ — the agent that helpfully reintroduces the ORM that was
+deliberately removed, or resurrects a rejected architecture because it looks
+like an improvement.
+
+For that, both production systems carry numbered decision records — over two
+hundred between them. They are not history; they are current policy.
+Reversing one requires reading it first, and an agent handed the relevant
+record argues from the same constraints I would. Most bad agent output traces
+to missing context rather than missing capability, and a decision log is
+context in the one form that survives being handed to something that was not
+there at the time.
+
+This is the single highest-leverage practice in this whole write-up, and it
+is also where the story turns.
+
+## Where it rotted anyway
+
+The context layer — the instruction files, rules and memory that agents read
+before touching the code — is prose. Nothing compiles it. Nothing tests it.
+And unlike a stale comment, which a human reads sceptically, an agent
+_executes_ it.
+
+An audit of this codebase — the most disciplined repository I operate, the
+one everything above is true of — found four live instances of context
+drift in its instruction layer:
+
+- Environment variables for two services that had been decommissioned months
+  earlier, still declared as current in the build tooling.
+- A leftover server configuration pointing at a database that no longer
+  existed.
+- A memory file directly contradicting the project's own stated pull-request
+  policy.
+
+Every one of those statements was true when it was written. That is what
+makes it drift rather than carelessness — and drift is a property of time,
+not of discipline. The uncomfortable conclusion: the context layer was the
+single most load-bearing artefact in the practice, and the only one nothing
+verified. Code has a compiler, a test suite and a release gate. The
+instructions agents obey literally, at scale, every session, had nothing.
+
+## The tool that fell out of it
+
+So the fix was to treat context as code:
+[groundtruth](https://groundtruth.sh) parses an agent-context file, turns the
+claims it can verify into executable assertions — this path exists, this
+script is defined, this environment variable is genuinely gone — and fails
+CI when one goes false. Claims it cannot check are reported as unverifiable
+rather than silently skipped, because a green check that quietly ignores half
+the file is worse than no check at all. The design is
+[written up separately](/notes/a-compiler-for-agent-context/), and the tool
+is open source.
+
+It now runs as a gate on this site's own repository: the pull request behind
+the page you are reading was checked against the agent-context file that
+directed it.
+
+## What it costs, honestly
+
+**Verification is most of the work.** The commit share in the header
+overstates how automatic this is. Direction, review, and the design of the
+gates are the job now, and they are slower to build than the features they
+protect. The gates above were each built in response to something — a class
+of bug, a near miss — not installed from a checklist on day one.
+
+**The human is the bottleneck, permanently.** Parallel sessions collapse
+build time, but decisions, product judgment and anything requiring a
+conversation stay serial. The practice makes one person dramatically wider,
+not redundant — and it makes the quality of that person's written context
+the limiting factor on everything downstream.
+
+**Stale context is worse than absent context.** The audit finding is general.
+A team adopting agents accumulates standing instructions that nothing on
+earth verifies, and agents follow them with confidence, at scale, every
+session. My best-kept repository had four false claims in the layer agents
+trust most. I no longer believe any repository with real history has zero.
+
+## Where it stands
+
+The practice runs everything I ship: the payments platform, the
+[transit system](/work/realtime-transit/) from the other case study, the
+infrastructure, and this site — same loop, same gates, same context
+discipline, now with the context layer itself under verification.
+
+It has also become transferable. Auditing an agent-context layer against its
+repository — every claim proven or failed, a gate left behind so the lies
+cannot return — is a repeatable piece of work, and one I now
+[offer to teams](/contact/) whose agents have been reading instructions
+nobody has checked in months.
