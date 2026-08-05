@@ -1,0 +1,16 @@
+name: groundtruth
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Agent-context check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jaystewart-dev/groundtruth@v0.2.1
