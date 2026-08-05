@@ -10,7 +10,7 @@
       "claim": "The public portfolio site: Astro, static, deployed to GitHub Pages.",
       "kind": "path_exists",
       "args": { "path": "astro.config.mjs" },
-      "source": "CLAUDE.md#L3"
+      "source": "CLAUDE.md#L3",
     },
     {
       "claim": "`main` is protected and the four CI jobs must pass before merge.",
@@ -19,31 +19,31 @@
       // runs on pull requests into main.
       "kind": "workflow_trigger",
       "args": { "workflow": "ci.yml", "trigger": "pull_request", "target": "main" },
-      "source": "CLAUDE.md#L10-12"
+      "source": "CLAUDE.md#L10-12",
     },
     {
       "claim": "A merge to `main` _is_ a deploy: `deploy.yml` publishes to GitHub Pages on every push to `main`.",
       "kind": "workflow_trigger",
       "args": { "workflow": "deploy.yml", "trigger": "push", "target": "main" },
-      "source": "CLAUDE.md#L16-17"
+      "source": "CLAUDE.md#L16-17",
     },
     {
       "claim": "`scripts/check-stealth.mjs` scans file contents and fails the build on names that must not be published.",
       "kind": "path_exists",
       "args": { "path": "scripts/check-stealth.mjs" },
-      "source": "README.md#L66"
+      "source": "README.md#L66",
     },
     {
       "claim": "pnpm verify — typecheck, lint, unit tests, stealth check, build, links",
       "kind": "script_exists",
       "args": { "name": "verify" },
-      "source": "README.md#L85"
+      "source": "README.md#L85",
     },
     {
       "claim": "pnpm test:lh — Lighthouse budgets",
       "kind": "script_exists",
       "args": { "name": "test:lh" },
-      "source": "README.md#L87"
-    }
-  ]
+      "source": "README.md#L87",
+    },
+  ],
 }
