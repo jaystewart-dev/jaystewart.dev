@@ -19,22 +19,38 @@ export const site = {
   githubHandle: 'jaystewart-dev',
   linkedin: 'https://www.linkedin.com/in/jaystewart-dev',
 
-  /** Used as the default meta description and the OG description on the home page. */
+  /**
+   * Used as the default meta description and the OG description on the home
+   * page, and as the JSON-LD description of the site. It leads with the audit
+   * because this string is what a search result and a shared link show, and
+   * the audit is what the site is currently selling.
+   */
   description:
-    'Backend and platform engineer with twelve years building systems that handle payments, transactions and personal data — now designed and operated with coding agents behind verification gates. Case studies on the architecture, trade-offs and operations behind production software.',
+    'Fixed-price agent-readiness audits: every claim in your CLAUDE.md, rules and memory files verified against the repository, with a CI gate left behind so the lies cannot come back. Run by a backend and platform engineer with twelve years on systems that handle payments, transactions and personal data.',
 
   /** Short form, used in the footer and structured data. */
   tagline: 'Backend and platform engineer · agent-operated production systems',
 } as const;
 
-export const nav = [
+export type NavItem = {
+  readonly href: string;
+  readonly label: string;
+  /**
+   * Marks the one item that is the site's primary call to action, so it reads
+   * as an offer rather than as the second of six equal-weight links. Exactly
+   * one item should carry it — the point is contrast.
+   */
+  readonly emphasis?: boolean;
+};
+
+export const nav: readonly NavItem[] = [
+  { href: '/audit/', label: 'Audit', emphasis: true },
   { href: '/work/', label: 'Work' },
-  { href: '/audit/', label: 'Audit' },
   { href: '/notes/', label: 'Notes' },
   { href: '/work/agent-operated-codebase/', label: 'Agents' },
   { href: '/about/', label: 'About' },
   { href: '/philosophy/', label: 'Philosophy' },
-] as const;
+];
 
 /** Absolute URL for a site-relative path. */
 export function absolute(path: string): string {
