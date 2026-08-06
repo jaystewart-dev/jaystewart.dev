@@ -1,7 +1,7 @@
 ---
 title: An agent-operated production codebase
-summary: How a production SaaS carrying real bookings and real money is built and operated with coding agents — and the verification system that makes that trustworthy.
-description: An engineering case study on operating a production codebase with coding agents — parallel sessions, ratchets and drift guards, decision records as policy, where the context layer rotted anyway, and the tool built in response.
+summary: 'The practice both systems here are built with: parallel agent sessions, gates that do not depend on reviewer attention, and the context layer that turned out to be lying.'
+description: An engineering case study on operating two production codebases with coding agents — parallel sessions, ratchets and drift guards, decision records as policy, where the context layer rotted anyway, and the tool built in response.
 status: In production
 period: 2026 — present
 role: Operator — direction, review, and the gates between
@@ -15,20 +15,19 @@ stack:
   - Playwright
 metrics:
   - label: Agent-attributed commits
-    from: agendaprofe.agentCommits
-  - label: Total commits
-    from: agendaprofe.commits
-  - label: Lines of code
-    from: agendaprofe.linesOfCode
+    from: practice.agentCommits
+  - label: Commits, both systems
+    from: practice.commits
   - label: Decision records
-    from: agendaprofe.decisionRecords
+    from: practice.decisionRecords
 ---
 
-More than eight in ten commits on [AgendaProfe](/work/agendaprofe/) — a
-production system carrying real bookings and real money, written up in its
-own case study — were written or co-written by a coding agent. The figures in
-the header are counted from the repository's history, not estimated: a commit
-counts as agent-attributed when the author or a co-author trailer names one.
+More than eight in ten commits across the two systems written up here —
+[AgendaProfe](/work/agendaprofe/), carrying real bookings and real money, and
+a [live transit system](/work/realtime-transit/) in pre-launch — were written
+or co-written by a coding agent. The figures in the header are counted from
+those repositories' histories, not estimated: a commit counts as
+agent-attributed when the author or a co-author trailer names one.
 
 That sentence tends to produce one of two wrong reactions. The first is that
 the codebase must be a mess. The second is that the engineering must be mostly
@@ -113,34 +112,36 @@ loop, so nothing important is allowed to depend on one.
   <Node title="Production" meta="Auto-deploys on advance" />
 </Diagram>
 
-The individual mechanisms matter more than the shape:
+The individual mechanisms matter more than the shape. All four are
+AgendaProfe's, and its [own case study](/work/agendaprofe/) describes how each
+is built; what belongs here is why an agent-operated codebase needs them in
+particular.
 
-**Ratchets rather than thresholds.** Coverage is enforced on changed lines,
-not as a global number; a lint rule fails only on _new_ violations of a
-convention mid-migration. A ratchet scales with the diff rather than with my
-patience, which is the only way a gate survives agent-scale volume. It also
-means the codebase can only get better, without anyone scheduling a big-bang
-cleanup.
+**Ratchets rather than thresholds.** Anything that could have been a global
+number is enforced against the diff instead — coverage on changed lines, lint
+rules that fail only on _new_ violations. The reason is volume. A threshold is
+a number someone has to defend every time it moves; a ratchet scales with the
+diff rather than with my patience, which is the only property that survives
+ten sessions merging in a day.
 
-**Guards for invisible breakage.** A mobile over-the-air update that assumes
-native code the installed binary lacks crashes on launch, unrecoverably, on
-real devices only. So CI diffs the release candidate against what is actually
-deployed — not against the previous commit — and refuses the build on a
-native change without a runtime version bump. The check exists because no
-review would catch it: the diff looks harmless every time.
+**Guards for breakage no review can see.** The mobile release check is the
+clearest case: a build is refused when native code changed without a matching
+runtime version bump, because the crash it prevents happens only on real
+devices, after release. Agents did not invent that failure mode. They raise
+the rate at which harmless-looking diffs arrive at it, and reading more
+carefully cannot catch something the diff does not contain.
 
-**Probes for the things reviews cannot see at all.** Production is probed on
-a schedule: public pages, the health check, video-server reachability, and a
-forged-signature request against the payment webhook to confirm it still
-rejects one. That last probe is the only thing in the entire system that
-would notice a signature-verification regression — precisely the kind of
-change that reads as a refactor.
+**Probes, because a missing signal is not a signal.** Production is probed on
+a schedule, including a forged-signature request against the payment webhook
+to confirm it still rejects one. Signature verification is exactly the sort of
+code an agent will tidy while doing something else, and neither review nor CI
+reports a check that quietly stopped happening. Something has to keep asking.
 
-**A release gate, not a release script.** The expensive suites — real-database
-integration, full end-to-end against a production build — run at promote
-time, where they gate something, rather than on every commit, where they
-would train everyone to skip them. No individual commit is trusted on its own
-merits, however green.
+**A release gate, not a release script.** The expensive suites run at promote
+time, against the exact candidate, rather than on every commit. The
+agent-specific part is what "the candidate" is: not a change I watched being
+written, but the accumulated output of several sessions, no one of which is
+trusted on its own merits however green it went in.
 
 ## Decision records as the context layer
 
@@ -149,8 +150,8 @@ _off-policy_ — the agent that helpfully reintroduces the ORM that was
 deliberately removed, or resurrects a rejected architecture because it looks
 like an improvement.
 
-For that, both production systems carry numbered decision records — over two
-hundred between them. They are not history; they are current policy.
+For that, both systems carry numbered decision records, counted in the header.
+They are not history; they are current policy.
 Reversing one requires reading it first, and an agent handed the relevant
 record argues from the same constraints I would. Most bad agent output traces
 to missing context rather than missing capability, and a decision log is
@@ -167,8 +168,8 @@ before touching the code — is prose. Nothing compiles it. Nothing tests it.
 And unlike a stale comment, which a human reads sceptically, an agent
 _executes_ it.
 
-An audit of this codebase — the most disciplined repository I operate, the
-one everything above is true of — found four live instances of context
+An audit of the AgendaProfe repository — the most disciplined one I operate,
+the one everything above is true of — found four live instances of context
 drift in its instruction layer:
 
 - Environment variables for two services that had been decommissioned months
