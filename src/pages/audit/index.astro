@@ -1,6 +1,6 @@
 ---
-import Base from '../layouts/Base.astro';
-import { site } from '../data/site.ts';
+import Base from '../../layouts/Base.astro';
+import { site } from '../../data/site.ts';
 
 const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readiness audit')}`;
 ---
@@ -40,10 +40,9 @@ const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readine
       <h2>What a finding looks like</h2>
       <p>
         This is the drift report format, populated with the real findings from that audit. Every
-        claim is cited to file and line in the delivered version, verified against the code
-        before it is reported, and carries a fix rather than a complaint. A suspected finding
-        that turns out to be false is labelled as such with its reasoning — never silently
-        dropped.
+        claim is cited to file and line, verified against the code before it is reported, and
+        carries a fix rather than a complaint. A suspected finding that turns out to be false is
+        labelled as such with its reasoning — never silently dropped.
       </p>
       <div class="table-scroll" role="region" aria-label="Example drift report" tabindex="0">
         <table>
@@ -73,6 +72,14 @@ const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readine
           </tbody>
         </table>
       </div>
+      <p>
+        Summarised, those rows are a format. <a href="/audit/sample/">Read the excerpt itself</a
+        >{' '}
+        — four findings at full depth, with the claims quoted from the file, the evidence cited to
+        line, the assertions left behind, and the tool's real output on the repository. Including
+        the finding no assertion can express, and the one whose check passes while the sentence is
+        still wrong.
+      </p>
 
       <h2>What you get</h2>
       <p>Seven deliverables, named, so that done is not a matter of opinion.</p>
