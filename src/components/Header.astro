@@ -49,7 +49,11 @@ const isCurrent = (href: string) => href === current;
                 aria-current={isCurrent(item.href) ? 'page' : undefined}
                 class:list={[
                   'whitespace-nowrap transition-colors hover:text-accent',
-                  isCurrent(item.href) ? 'text-ink font-medium' : 'text-muted',
+                  isCurrent(item.href)
+                    ? 'text-ink font-medium'
+                    : item.emphasis
+                      ? 'text-accent font-medium'
+                      : 'text-muted',
                 ]}
               >
                 {item.label}
