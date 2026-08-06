@@ -16,6 +16,12 @@ export default defineConfig({
   // format that gives clean URLs on a static host with no rewrite layer.
   trailingSlash: 'always',
   build: { format: 'directory' },
+  // /working-with-agents/ was a short-form version of the agent-operated case
+  // study — the same argument, told twice, competing with itself. The case
+  // study is the version that keeps its figures counted, so it is the one that
+  // survived. The old URL redirects rather than 404s because it has been linked
+  // from outside the site.
+  redirects: { '/working-with-agents/': '/work/agent-operated-codebase/' },
   integrations: [mdx(), sitemap()],
   vite: { plugins: [tailwindcss()] },
   // No prefetch: every route on this site is a handful of kilobytes of HTML,
