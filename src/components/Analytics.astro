@@ -1,0 +1,200 @@
+---
+/**
+ * Cookieless analytics beacon.
+ *
+ * A hand-rolled `sendBeacon` against PostHog's capture API rather than
+ * `posthog-js`, because the Lighthouse gate in `lighthouserc.json` asserts zero
+ * unused JavaScript and a 400KB page budget, and a ~200KB analytics bundle that
+ * runs a fraction of itself fails both.
+ *
+ * The reasoning lives up here rather than in the script below because
+ * everything in this frontmatter block runs at build time and is stripped from
+ * the output, while every character inside the `<script>` is downloaded by
+ * every visitor on every page. An earlier draft of this file shipped its own
+ * explanation five times over.
+ *
+ * **No cookies, and no identifier that outlives the visit.** Identity lives in
+ * `sessionStorage`: scoped to one tab, cleared when it closes, never sent
+ * anywhere on its own. That is a deliberate step short of what an analytics
+ * library does — there is nothing here that recognises a reader who comes back
+ * tomorrow, and nothing that could. "Returning visitor" is therefore
+ * permanently unavailable, and in exchange the site owes nobody a consent
+ * banner.
+ *
+ * It is also a deliberate step *past* where this beacon started. The first
+ * version minted a fresh UUID per pageview, which made every event its own
+ * anonymous person — and so made funnels, sessions, bounce rate and path
+ * analysis not merely absent but impossible, since PostHog joins all four on
+ * `distinct_id`. Counting pageviews was the only thing it could ever do, which
+ * is not what it claimed to do.
+ *
+ * **What is sent.** `$pageview` on load, carrying the referrer, viewport,
+ * screen and any campaign parameters; `$pageleave` when the page is hidden,
+ * which is what makes time-on-page and PostHog's bounce rate computable at all;
+ * and two conversion events, because starting an email and handing off to
+ * groundtruth.sh both leave the page without ever loading a route, so no amount
+ * of pageview analysis can see them.
+ *
+ * **Choices inside the script that are not obvious.** `$direct` is the sentinel
+ * PostHog's channel breakdown expects for "no referrer" — an empty string lands
+ * as a distinct and meaningless value beside the real domains. The session
+ * windows come from `analytics.ts` and match PostHog's own, so this site's idea
+ * of a session cannot disagree with the views reading it. `visibilitychange`
+ * rather than `beforeunload`, because `beforeunload` does not fire reliably on
+ * backgrounded mobile browsers and registering it disqualifies the page from
+ * the back/forward cache — a real performance cost paid to measure performance.
+ * Every storage access is wrapped, because Safari's private mode throws rather
+ * than returning null, and a beacon is not worth an uncaught exception in
+ * somebody's browser.
+ */
+import { analytics, campaignParams } from '../lib/analytics.ts';
+
+const { key, endpoint, host, sessionIdleMs, sessionMaxMs } = analytics;
+---
+
+<script
+  is:inline
+  define:vars={{ key, endpoint, host, sessionIdleMs, sessionMaxMs, campaignParams }}
+>
+  (() => {
+    // Local builds, previews and forks are silent.
+    if (location.hostname !== host) return;
+
+    const read = (name) => {
+      try {
+        return sessionStorage.getItem(name);
+      } catch {
+        return null;
+      }
+    };
+
+    const write = (name, value) => {
+      try {
+        sessionStorage.setItem(name, value);
+      } catch {
+        /* Identity then lasts one page load. Degrades, does not break. */
+      }
+    };
+
+    const uuid = () =>
+      crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now().toString(16)}-${Math.random().toString(16).slice(2)}`;
+
+    const now = Date.now();
+
+    let distinctId = read('ph_did');
+    if (!distinctId) {
+      distinctId = uuid();
+      write('ph_did', distinctId);
+    }
+
+    let session = null;
+    try {
+      session = JSON.parse(read('ph_ses'));
+    } catch {
+      /* Absent or malformed; a fresh session is right either way. */
+    }
+
+    if (
+      !session ||
+      !session.id ||
+      now - session.last > sessionIdleMs ||
+      now - session.start > sessionMaxMs
+    ) {
+      session = { id: uuid(), start: now, last: now };
+    }
+
+    const touch = () => write('ph_ses', JSON.stringify({ ...session, last: Date.now() }));
+    touch();
+
+    const referrer = document.referrer;
+    let referringDomain = '$direct';
+    if (referrer) {
+      try {
+        referringDomain = new URL(referrer).hostname;
+      } catch {
+        referringDomain = '$direct';
+      }
+    }
+
+    const params = new URLSearchParams(location.search);
+    const campaign = {};
+    for (const name of campaignParams) {
+      const value = params.get(name);
+      if (value) campaign[name] = value;
+    }
+
+    const send = (event, properties) =>
+      navigator.sendBeacon(
+        endpoint,
+        JSON.stringify({
+          api_key: key,
+          event,
+          properties: {
+            distinct_id: distinctId,
+            $session_id: session.id,
+            $current_url: location.href,
+            $pathname: location.pathname,
+            $host: location.hostname,
+            $lib: 'beacon',
+            $lib_version: '2',
+            ...properties,
+          },
+        }),
+      );
+
+    send('$pageview', {
+      title: document.title,
+      $referrer: referrer || '$direct',
+      $referring_domain: referringDomain,
+      $screen_width: screen.width,
+      $screen_height: screen.height,
+      $viewport_width: innerWidth,
+      $viewport_height: innerHeight,
+      ...campaign,
+    });
+
+    let left = false;
+    addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'hidden' || left) return;
+      left = true;
+      touch();
+      send('$pageleave', {});
+    });
+
+    // One delegated listener, so a link added to any page later is covered
+    // with no wiring.
+    addEventListener(
+      'click',
+      (event) => {
+        const link = event.target instanceof Element ? event.target.closest('a') : null;
+        if (!link) return;
+
+        const label = (link.textContent || '').trim().slice(0, 80);
+        const href = link.getAttribute('href') || '';
+
+        if (href.startsWith('mailto:')) {
+          send('contact_email_clicked', { link_text: label });
+          return;
+        }
+
+        let url;
+        try {
+          url = new URL(href, location.href);
+        } catch {
+          return;
+        }
+
+        if (url.protocol.startsWith('http') && url.hostname !== location.hostname) {
+          send('outbound_link_clicked', {
+            url: url.href,
+            domain: url.hostname,
+            link_text: label,
+          });
+        }
+      },
+      { capture: true },
+    );
+  })();
+</script>
