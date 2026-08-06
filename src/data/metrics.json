@@ -37,6 +37,12 @@
       "terraformLines": 559,
       "commits": 12,
       "since": 2026
+    },
+    "practice": {
+      "systems": 2,
+      "commits": 3341,
+      "agentCommits": 2694,
+      "decisionRecords": 204
     }
   }
 }

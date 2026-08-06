@@ -269,6 +269,37 @@ for (const [key, repoPath] of Object.entries(sources)) {
   }
 }
 
+/**
+ * Totals across the systems the practice actually runs.
+ *
+ * The agent-operated case study is about the practice rather than about either
+ * product, so its header figures span both systems. Quoting one product's
+ * counts under a second title made the two write-ups read as the same page
+ * with different headings.
+ */
+const practiceSystems = ['agendaprofe', 'transit'];
+const counted = practiceSystems.filter((key) => metrics.projects[key]);
+
+if (counted.length === practiceSystems.length) {
+  const total = (metric) =>
+    counted.reduce((sum, key) => sum + metrics.projects[key][metric], 0);
+
+  metrics.projects.practice = {
+    systems: counted.length,
+    commits: total('commits'),
+    agentCommits: total('agentCommits'),
+    decisionRecords: total('decisionRecords'),
+  };
+
+  console.log('derive practice');
+  for (const [name, value] of Object.entries(metrics.projects.practice)) {
+    console.log(`        ${String(value).padStart(6)}  ${name}`);
+  }
+} else if (counted.length > 0) {
+  console.warn('skip  practice — every production system has to be counted for a total');
+  missing += 1;
+}
+
 writeFileSync(outputFile, `${JSON.stringify(metrics, null, 2)}\n`);
 console.log(`\nwrote ${outputFile} (countedAt ${metrics.countedAt})`);
 
