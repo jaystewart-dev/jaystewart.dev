@@ -59,6 +59,15 @@ export default [
       // Astro components read `Astro.props` into typed locals; the non-null
       // assertion after an explicit guard is the idiomatic form there.
       '@typescript-eslint/no-non-null-assertion': 'off',
+      // A scrolling box must be a tab stop, or a keyboard user cannot reach
+      // the content it hides — WCAG 2.1.1, and what axe's
+      // `scrollable-region-focusable` rule checks for. The rule's default
+      // allowance is `tabpanel` only, so the one role this site uses that way
+      // is added rather than the rule switched off.
+      'astro/jsx-a11y/no-noninteractive-tabindex': [
+        'error',
+        { tags: [], roles: ['tabpanel', 'region'], allowExpressionValues: true },
+      ],
       eqeqeq: ['error', 'always'],
       'no-console': 'off',
     },
