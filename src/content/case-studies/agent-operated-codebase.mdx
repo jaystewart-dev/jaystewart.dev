@@ -143,6 +143,21 @@ agent-specific part is what "the candidate" is: not a change I watched being
 written, but the accumulated output of several sessions, no one of which is
 trusted on its own merits however green it went in.
 
+## Where the agent is kept out
+
+Not every part of the codebase gets the same treatment. Money arithmetic,
+authentication boundaries and database migrations are written and reviewed the
+slow way — not because an agent cannot produce them, but because reviewing
+something I did not write is not the same as knowing it, and those three are
+where I need the whole failure surface in my head rather than on a screen.
+
+There is one hard block, too, and it is enforced by tooling rather than by
+instruction: agents in the main product repository cannot run the test suite
+locally. It exhausted the development machine's memory often enough that
+asking politely stopped counting as a control. Every check runs server-side
+instead — the same principle as everything above, applied to the machine
+rather than to the reviewer.
+
 ## Decision records as the context layer
 
 Gates catch what is wrong. They do nothing about work that is correct but
@@ -167,6 +182,12 @@ The context layer — the instruction files, rules and memory that agents read
 before touching the code — is prose. Nothing compiles it. Nothing tests it.
 And unlike a stale comment, which a human reads sceptically, an agent
 _executes_ it.
+
+Some documentation is already guarded against exactly this: a generated
+document describing what the test suite covers fails CI when it stops matching
+the suite, because documentation that cannot silently diverge is documentation
+still worth reading in six months. But a drift guard only reaches documents
+something can generate, and the instruction files are not among them.
 
 An audit of the AgendaProfe repository — the most disciplined one I operate,
 the one everything above is true of — found four live instances of context
