@@ -23,7 +23,7 @@ const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readine
 
       <h2>The problem</h2>
       <p>
-        Code that lies gets caught by a compiler. Agent context that lies gets
+        Code that lies gets caught by a compiler. Agent context that lies gets{' '}
         <em>executed</em>. Every team that has adopted coding agents has accumulated a layer of
         standing instructions — <code>CLAUDE.md</code>, <code>AGENTS.md</code>, Cursor rules,
         memory files — that agents obey literally, at scale, every session, and that nothing on
@@ -32,7 +32,7 @@ const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readine
       </p>
       <p>
         I know because I audited my own. The most disciplined repository I operate — a
-        production system carrying real payments, run the way
+        production system carrying real payments, run the way{' '}
         <a href="/work/agent-operated-codebase/">the flagship case study</a> describes — had four
         live instances. Your context layer has never been checked, and mine had four.
       </p>
@@ -87,7 +87,7 @@ const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readine
           outlives the engagement.
         </li>
         <li>
-          <strong>The gate.</strong>
+          <strong>The gate.</strong>{' '}
           <a href="https://groundtruth.sh">groundtruth</a> running on every pull request, failing
           the build when a context claim goes false. Two lines of YAML.
         </li>
