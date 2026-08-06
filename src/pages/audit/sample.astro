@@ -1,0 +1,649 @@
+---
+import Base from '../../layouts/Base.astro';
+import { site } from '../../data/site.ts';
+
+const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readiness audit')}`;
+
+/* The assertion snippets and the run output are held as strings rather than
+   written into the markup, because both contain braces and Astro reads a brace
+   in a template as the start of an expression. As strings they render as plain
+   text, escaped, with no per-character fighting. They are also verbatim: each
+   one is copied out of the file that was actually committed, and the run output
+   is the real terminal output of the command above it. Editing either by hand
+   to look tidier would make this page the exact thing it is selling against. */
+
+const assertionEnvVar = `{
+  "claim": "Do NOT reintroduce a Supabase/Vercel code path or env var.",
+  "kind": "env_var_absent",
+  "args": { "name": "SUPABASE_URL", "files": ["turbo.json"] },
+  "source": "CLAUDE.md#L382"
+}`;
+
+const assertionSymbol = `{
+  "claim": "One entitlements resolver: \`entitlementsFor()\` in
+            \`src/lib/subscriptions/entitlements.ts\`.",
+  "kind": "symbol_at_path",
+  "args": {
+    "symbol": "entitlementsFor",
+    "path": "apps/web/src/lib/subscriptions/entitlements.ts"
+  },
+  "source": "CLAUDE.md#L56-58"
+}`;
+
+const runOutput = `$ groundtruth check
+
+Context layer: CLAUDE.md
+10 assertion(s) — 4 passing, 6 failing, 0 unverifiable
+
+✗ CLAUDE.md#L382  "Do NOT reintroduce a Supabase/Vercel code path or env var."
+  SUPABASE_URL found in turbo.json
+✗ CLAUDE.md#L382  "Do NOT reintroduce a Supabase/Vercel code path or env var."
+  SUPABASE_SERVICE_ROLE_KEY found in turbo.json
+✗ CLAUDE.md#L382  "Do NOT reintroduce a Supabase/Vercel code path or env var."
+  SUPABASE_ANON_KEY found in turbo.json
+✗ CLAUDE.md#L382  "Do NOT reintroduce a Supabase/Vercel code path or env var."
+  VERCEL_ENV found in turbo.json
+✗ CLAUDE.md#L377  "no \`VERCEL_ENV\` branches (prod-vs-preview is decided by \`APP_URL\`)"
+  VERCEL_GIT_COMMIT_REF found in turbo.json
+✗ CLAUDE.md#L56-58  "One entitlements resolver: \`entitlementsFor()\` in
+                     \`src/lib/subscriptions/entitlements.ts\`."
+  entitlementsFor is not exported from apps/web/src/lib/subscriptions/entitlements.ts
+✓ CLAUDE.md#L300-303  "\`checks.yml\` via \`main-checks.yml\` runs automatically on
+                       every PR into \`main\`."
+  main-checks.yml triggers on 'pull_request' (branch 'main')
+✓ CLAUDE.md#L170  "\`pnpm verify:push\` — typecheck + unit only (no DB needed)."
+  scripts.verify:push = "pnpm typecheck && pnpm lint && pnpm test"
+✓ CLAUDE.md#L22-24  "\`apps/web/src/middleware.ts\` is the only location Next.js
+                     will load middleware from."
+  apps/web/src/middleware.ts exists
+✓ CLAUDE.md#L24-27  "A copy at \`apps/web/middleware.ts\` compiles but is silently
+                     never invoked. Never move it."
+  apps/web/middleware.ts does not exist
+
+exit 1`;
+---
+
+<Base
+  title="Sample deliverable — a page from a real drift report"
+  description="Four findings from a real agent-readiness audit, in the format they are delivered: the claim, the evidence, the severity, and the CI assertion left behind. Run against a production repository, with the tool's real output."
+  schema={[
+    {
+      '@type': 'WebPage',
+      '@id': `${site.origin}/audit/sample/#webpage`,
+      url: `${site.origin}/audit/sample/`,
+      name: 'Sample deliverable — a page from a real drift report',
+      isPartOf: { '@id': `${site.origin}/#website` },
+      about: { '@id': `${site.origin}/#person` },
+    },
+  ]}
+>
+  <section class="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-20">
+    <p class="eyebrow">Sample deliverable</p>
+    <h1 class="mt-3 text-4xl sm:text-5xl">A page from a real drift report.</h1>
+
+    <div class="prose mt-10">
+      <p>
+        The <a href="/audit/">agent-readiness audit</a> produces a drift report, an assertion suite
+        and a CI gate. This is one page of the first — four findings in the format they are delivered,
+        each one traced from the sentence that made the claim to the check that now holds it.
+      </p>
+      <p>
+        The repository is my own. AgendaProfe is the production system behind{' '}
+        <a href="/work/agent-operated-codebase/">the flagship case study</a> — real users, real payments,
+        and the most disciplined context layer I operate. A client's report is redacted: file paths
+        become <code>apps/&lt;service&gt;/…</code>, claim text is paraphrased where it names
+        anything internal, and the assertion suite ships in the repository rather than on a web
+        page. Nothing here is redacted, because there is no client to protect and the findings
+        are worth more intact.
+      </p>
+      <p>
+        Every line below is copied out of the delivered artifact. The command output near the
+        bottom is the tool's real output, exit code included.
+      </p>
+    </div>
+
+    <div class="report mt-12">
+      <div class="report-head">
+        <h2 class="text-xl">Drift report — excerpt</h2>
+        <dl class="meta">
+          <div>
+            <dt>Repository</dt><dd>AgendaProfe — pnpm monorepo, Next.js web + Expo mobile</dd>
+          </div>
+          <div>
+            <dt>Context layer in scope</dt><dd>
+              <code>CLAUDE.md</code> (repo) · <code>CLAUDE.md</code> (hub repo)
+            </dd>
+          </div>
+          <div><dt>Run against</dt><dd><code>main</code>, 6 August 2026</dd></div>
+          <div>
+            <dt>Assertion suite</dt><dd>
+              10 assertions — 4 passing, 6 failing, 0 unverifiable
+            </dd>
+          </div>
+          <div><dt>This excerpt</dt><dd>4 findings of the full report</dd></div>
+        </dl>
+      </div>
+
+      <article class="finding" aria-labelledby="f-01">
+        <div class="finding-head">
+          <p class="eyebrow">Finding F-01</p>
+          <p class="tag" data-severity="high">Severity: High</p>
+        </div>
+        <h3 id="f-01">
+          Two decommissioned vendors' environment variables are still declared in the build
+          tooling
+        </h3>
+
+        <dl class="detail">
+          <dt>Claim</dt>
+          <dd>
+            <blockquote>Do NOT reintroduce a Supabase/Vercel code path or env var.</blockquote>
+            <p class="cite"><code>CLAUDE.md#L382-383</code></p>
+          </dd>
+
+          <dt>Evidence</dt>
+          <dd>
+            <p>
+              Five of them are declared right now, in the <code>build</code> task's{' '}
+              <code>env</code>{' '}
+              array: <code>VERCEL_ENV</code>, <code>VERCEL_GIT_COMMIT_REF</code>,{' '}
+              <code>SUPABASE_URL</code>, <code>SUPABASE_ANON_KEY</code> and{' '}
+              <code>SUPABASE_SERVICE_ROLE_KEY</code>.
+            </p>
+            <p class="cite"><code>turbo.json#L10-16</code></p>
+            <p>
+              Both vendors were fully decommissioned — the projects torn down, the code coupling
+              removed — and the decision record says so in the same words the context file uses.
+              The instruction not to reintroduce them was written while the build tooling
+              already declared them.
+            </p>
+          </dd>
+
+          <dt>Why it matters</dt>
+          <dd>
+            An agent reading the declaration list treats those variables as part of the current
+            contract. The failure is not a broken build — it is an agent provisioning,
+            documenting or branching on infrastructure that no longer exists, confidently,
+            because the repository told it to.
+          </dd>
+
+          <dt>Fix</dt>
+          <dd>
+            Delete the five entries. They are cache keys for a build that never reads them, so
+            removal changes nothing at runtime and narrows the hash.
+          </dd>
+
+          <dt>Assertion left behind</dt>
+          <dd>
+            <pre><code>{assertionEnvVar}</code></pre>
+            <p class="cite">
+              One assertion per variable — five in total. A rule naming five things becomes five
+              checks, so a partial cleanup reports as partial rather than green.
+            </p>
+          </dd>
+        </dl>
+      </article>
+
+      <article class="finding" aria-labelledby="f-02">
+        <div class="finding-head">
+          <p class="eyebrow">Finding F-02</p>
+          <p class="tag" data-severity="high">Severity: High</p>
+        </div>
+        <h3 id="f-02">The one-resolver rule names a file that no longer holds the resolver</h3>
+
+        <dl class="detail">
+          <dt>Claim</dt>
+          <dd>
+            <blockquote>
+              One entitlements resolver: <code>entitlementsFor()</code> in{' '}
+              <code>src/lib/subscriptions/entitlements.ts</code> is the single place Free/Pro/Founding/comped
+              tier logic is decided — don't branch on plan/tier ad hoc elsewhere.
+            </blockquote>
+            <p class="cite"><code>CLAUDE.md#L56-58</code>, repeated at <code>#L637</code></p>
+          </dd>
+
+          <dt>Evidence</dt>
+          <dd>
+            <p>
+              The named file is now a re-export shim. The resolver moved to the shared package
+              so web and mobile compute entitlements identically, and the shim's own header
+              comment says{' '}
+              <em
+                >edit the resolver in <code
+                  >packages/shared/src/subscriptions-entitlements.ts</code
+                ></em
+              >{' '}
+              — which is where the function is defined, at line 146.
+            </p>
+            <p class="cite">
+              <code>apps/web/src/lib/subscriptions/entitlements.ts#L1-12</code> ·{' '}
+              <code>packages/shared/src/subscriptions-entitlements.ts#L146</code>
+            </p>
+            <p>
+              The rule itself is still correct and still load-bearing: there is exactly one
+              resolver. Only the address is wrong — and it is wrong in the file an agent reads
+              before touching billing.
+            </p>
+          </dd>
+
+          <dt>Why it matters</dt>
+          <dd>
+            An agent told to change tier logic opens the shim, finds no logic, and does the
+            reasonable thing: writes the branch it needs where it already is. That is precisely
+            the ad-hoc branching the rule exists to prevent, caused by the rule.
+          </dd>
+
+          <dt>Fix</dt>
+          <dd>
+            Repoint both mentions at the shared package, and say the web path is a re-export
+            kept for import compatibility.
+          </dd>
+
+          <dt>Assertion left behind</dt>
+          <dd>
+            <pre><code>{assertionSymbol}</code></pre>
+            <p class="cite">
+              Reported as a suspected finding and confirmed by hand before it went in the
+              report.{' '}
+              <code>symbol_at_path</code> is regex-based and{' '}
+              <a
+                href="https://github.com/jaystewart-dev/groundtruth/blob/main/docs/adr/0003-regex-based-symbol-matching-for-mvp.md"
+                >documented as unable to see through a re-export</a
+              >, so a failure here could have been the tool's limitation rather than real drift.
+              It was real drift: the resolver has genuinely moved. A finding that had turned out
+              to be the tool's blind spot would appear in the report labelled as such, with this
+              same reasoning — never silently dropped, and never quietly counted.
+            </p>
+          </dd>
+        </dl>
+      </article>
+
+      <article class="finding" aria-labelledby="f-03">
+        <div class="finding-head">
+          <p class="eyebrow">Finding F-03</p>
+          <p class="tag" data-severity="medium">Severity: Medium</p>
+        </div>
+        <h3 id="f-03">Two context files give different rules for how a change lands</h3>
+
+        <dl class="detail">
+          <dt>Claim</dt>
+          <dd>
+            <blockquote>
+              Exception (as of 2026-07-12): docs-only and Tier 1 trivial changes may push
+              straight to <code>main</code>.
+            </blockquote>
+            <p class="cite"><code>CLAUDE.md#L392-393</code> — the repository's own file</p>
+            <blockquote>
+              Every change in every repo lands through a pull request — decided 2026-08-04,
+              replacing the 2026-07-31 rule that reserved pull requests for repos where a merge
+              does something irreversible or public.
+            </blockquote>
+            <p class="cite">
+              <code>CLAUDE.md#L88</code> — the hub repository, which also lists this repository as{
+                ' '
+              }
+              <em>pull request: required</em> at <code>#L100</code>
+            </p>
+          </dd>
+
+          <dt>Evidence</dt>
+          <dd>
+            <p>
+              Neither sentence is false on its own. Both files are current, both are read by
+              agents, and the later rule — 2026-08-04 — supersedes the earlier one, which no
+              agent reading only the repository's file will ever discover. The repository file
+              still presents the withdrawn exception as live policy, and branch protection does
+              not settle it either: it is a private repository, where the enforcement switch is
+              a paid feature.
+            </p>
+          </dd>
+
+          <dt>Why it matters</dt>
+          <dd>
+            Agents follow whichever version they read first, and a session scoped to one
+            repository only ever reads one of them. The observable outcome is inconsistent:
+            identical changes land through a pull request or straight on <code>main</code> depending
+            on which file was in context.
+          </dd>
+
+          <dt>Fix</dt>
+          <dd>
+            Withdraw the exception in the repository's file and link to the hub rule, so the
+            supersession is visible from the file that is actually loaded.
+          </dd>
+
+          <dt>Assertion left behind</dt>
+          <dd>
+            <p class="none">None. No assertion can express this.</p>
+            <p class="cite">
+              Every mechanical check verifies one file against the repository. This finding is
+              two files disagreeing with each other, and both pass. It comes out of the
+              contradiction pass, which is a person reading each context file against the others
+              — and it is the reason this is an audit rather than a tool you install. The report
+              says plainly that nothing guards this one; a green suite that implied otherwise
+              would be worse than no suite.
+            </p>
+          </dd>
+        </dl>
+      </article>
+
+      <article class="finding" aria-labelledby="f-04">
+        <div class="finding-head">
+          <p class="eyebrow">Finding F-04</p>
+          <p class="tag" data-severity="low">Severity: Low</p>
+        </div>
+        <h3 id="f-04">A command's description drifted from what the command runs</h3>
+
+        <dl class="detail">
+          <dt>Claim</dt>
+          <dd>
+            <blockquote>
+              <code>pnpm verify:push</code> — typecheck + unit only (no DB needed).
+            </blockquote>
+            <p class="cite"><code>CLAUDE.md#L170</code>, repeated at <code>#L440</code></p>
+          </dd>
+
+          <dt>Evidence</dt>
+          <dd>
+            <p>
+              The script is <code>pnpm typecheck &amp;&amp; pnpm lint &amp;&amp; pnpm test</code
+              >. It also runs lint. The description has been two-thirds right for long enough
+              that the missing third is invisible.
+            </p>
+            <p class="cite"><code>package.json#L38</code></p>
+          </dd>
+
+          <dt>Why it matters</dt>
+          <dd>
+            Barely, on its own — this is what a Low is. It earns its place because of how it was
+            found: the assertion covering this claim <strong>passes</strong>. The script exists,
+            so the check is green, and the sentence is still wrong.
+          </dd>
+
+          <dt>Fix</dt>
+          <dd>Three words. Say typecheck, lint and unit.</dd>
+
+          <dt>Assertion left behind</dt>
+          <dd>
+            <p class="none">
+              The existing <code>script_exists</code> assertion, unchanged — and it will keep passing.
+            </p>
+            <p class="cite">
+              The honest limit of the gate, stated in the deliverable rather than discovered
+              later. Six assertion kinds check whether the thing a sentence names exists; none
+              reads the adjective attached to it. What the suite guarantees is that no claim
+              silently becomes false about a file, a script, a symbol, a workflow trigger or an
+              environment variable. Prose accuracy beyond that is what the read-out and the
+              re-check are for.
+            </p>
+          </dd>
+        </dl>
+      </article>
+    </div>
+
+    <div class="prose mt-14">
+      <h2>The first run</h2>
+      <p>
+        The report is not the product. The assertion suite is, and the report is its first run —
+        this output, on the commit the audit was performed against. It ships as{' '}
+        <code>.groundtruth.jsonc</code> in the repository root and runs on every pull request in two
+        lines of YAML.
+      </p>
+    </div>
+
+    <div class="terminal mt-6" role="region" aria-label="Assertion suite output" tabindex="0">
+      <pre><code>{runOutput}</code></pre>
+    </div>
+
+    <div class="prose mt-10">
+      <p>
+        Six failures is what the exit code is for. Every one of them was true when it was
+        written, and the four passing assertions matter just as much — they are the rules that
+        are still load-bearing, now held in place rather than trusted.
+      </p>
+      <p>
+        Delivered alongside this page: the rest of the findings, the full assertion suite, the
+        gate wired into CI, the context-economics read on which standing rules are never cited,
+        a recorded hour walking the findings, and the same suite re-run thirty days later with a
+        note on what came back. Those are described on{' '}
+        <a href="/audit/">the audit page</a>, with the scope and the price.
+      </p>
+    </div>
+
+    <div class="mt-14 rounded-lg border border-line bg-band p-6 sm:p-8">
+      <h2 class="text-xl">Your context layer has never been checked</h2>
+      <p class="mt-3 text-muted">
+        Mine had four false claims, and this run found six more. Two or three sentences about
+        your team, your repositories and how agents are used is enough to tell whether the audit
+        fits — I will say so plainly if it does not.
+      </p>
+      <p class="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <a href={mailto} class="btn btn-primary">Start with an email</a>
+        <a href="/audit/" class="link-underline">Scope, deliverables and price</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* The report reads as a document embedded in the page rather than as page
+     copy: one surface, hairline-separated findings, and a measure that stays
+     with the prose above it. Nothing here is a new colour — severity is carried
+     by the word "High", not by a red, so it survives a greyscale print, a
+     colour-blind reader and the dark theme without a second palette to keep in
+     contrast. */
+
+  .report {
+    border: 1px solid var(--c-line);
+    border-radius: 0.5rem;
+    background-color: var(--c-surface);
+  }
+
+  .report-head {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--c-line-strong);
+  }
+
+  .report-head .meta {
+    margin: 1rem 0 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .report-head .meta > div {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+  }
+
+  /* Same reasoning as `.detail > *` below. */
+  .report-head .meta > div > * {
+    min-width: 0;
+  }
+
+  @media (max-width: 33rem) {
+    .report-head .meta > div {
+      grid-template-columns: 1fr;
+      gap: 0.125rem;
+    }
+  }
+
+  .report-head dt {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+  }
+
+  .report-head dd {
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+
+  .finding {
+    padding: 1.75rem 1.5rem;
+    border-top: 1px solid var(--c-line);
+  }
+
+  .finding:first-of-type {
+    border-top: 0;
+  }
+
+  .finding-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-bottom: 0.625rem;
+  }
+
+  .finding-head p {
+    margin: 0;
+  }
+
+  /* Redundant with the word in the tag — a severity that reads only as a
+     border weight would not survive being read aloud. */
+  .tag[data-severity='high'] {
+    border-color: var(--c-line-strong);
+    color: var(--c-ink);
+  }
+
+  .finding h3 {
+    font-size: 1.25rem;
+    line-height: 1.25;
+  }
+
+  .detail {
+    margin: 1.25rem 0 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  /* A grid item's default `min-width: auto` refuses to shrink below its
+     longest unbreakable run, and this page is full of them — file paths with a
+     line anchor, in mono, inside a bordered inline box. Left alone, one
+     `packages/shared/src/subscriptions-entitlements.ts#L146` widens the whole
+     document on a phone. The pair below is the fix: let the item shrink, and
+     give the path somewhere to break. */
+  .detail > * {
+    min-width: 0;
+  }
+
+  .detail dt {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+    margin-top: 1.125rem;
+  }
+
+  .detail dd {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
+  .detail dd > * + * {
+    margin-top: 0.625rem;
+  }
+
+  .detail p {
+    margin: 0;
+  }
+
+  .detail code,
+  .report-head code {
+    font-family: var(--font-mono);
+    font-size: 0.8125em;
+    padding: 0.125em 0.375em;
+    background-color: var(--c-band);
+    border: 1px solid var(--c-line);
+    border-radius: 0.25rem;
+    /* `anywhere` rather than `break-word`: a path has no spaces to break at,
+       so `break-word` would still overflow. This also lets the browser count
+       the broken word when sizing, which is what stops the shrink-to-fit
+       parent from reserving the full unbroken width. */
+    overflow-wrap: anywhere;
+  }
+
+  .detail a {
+    color: var(--c-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  /* The claim is quoted verbatim from the context file, so it is marked up as a
+     quotation rather than styled to look like one. */
+  .detail blockquote {
+    margin: 0;
+    padding-left: 0.875rem;
+    border-left: 2px solid var(--c-line-strong);
+    font-size: 1rem;
+  }
+
+  .detail blockquote + .cite {
+    margin-top: 0.5rem;
+  }
+
+  .cite {
+    font-size: 0.8125rem;
+    color: var(--c-muted);
+  }
+
+  .cite code {
+    font-size: 0.9em;
+  }
+
+  .none {
+    font-weight: 500;
+  }
+
+  .detail pre {
+    margin: 0;
+    padding: 0.875rem 1rem;
+    background-color: var(--c-band);
+    border: 1px solid var(--c-line);
+    border-radius: 0.375rem;
+    overflow-x: auto;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .detail pre code {
+    padding: 0;
+    background: none;
+    border: none;
+    font-size: inherit;
+  }
+
+  /* The run output is wide and must not push the page sideways. Same reasoning
+     as the prose tables: the scroll is confined to the box, and the box is
+     focusable so it can be scrolled from the keyboard — a block of plain text
+     contains nothing tabbable of its own. */
+  .terminal {
+    overflow-x: auto;
+    background-color: var(--c-surface);
+    border: 1px solid var(--c-line);
+    border-radius: 0.5rem;
+  }
+
+  .terminal pre {
+    margin: 0;
+    padding: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.65;
+    white-space: pre;
+  }
+
+  @media (min-width: 40rem) {
+    .terminal pre {
+      font-size: 0.8125rem;
+    }
+  }
+</style>

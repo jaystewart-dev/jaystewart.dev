@@ -12,6 +12,7 @@ export const routes = [
   '/work/realtime-transit/',
   '/work/agent-operated-codebase/',
   '/audit/',
+  '/audit/sample/',
   '/notes/',
   '/notes/development-environment-is-a-server/',
   '/notes/a-compiler-for-agent-context/',
