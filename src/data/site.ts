@@ -24,7 +24,7 @@ export const site = {
     'Backend and platform engineer with twelve years building systems that handle payments, transactions and personal data — now designed and operated with coding agents behind verification gates. Case studies on the architecture, trade-offs and operations behind production software.',
 
   /** Short form, used in the footer and structured data. */
-  tagline: 'Backend and platform engineer — remote, from Bristol',
+  tagline: 'Backend and platform engineer · agent-operated production systems',
 } as const;
 
 export const nav = [
