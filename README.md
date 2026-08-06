@@ -4,9 +4,10 @@ Source for [jaystewart.dev](https://jaystewart.dev) — engineering case studies
 and notes.
 
 The site is deliberately small: static HTML, no client-side framework, and
-about a kilobyte of inline JavaScript for the theme toggle. Everything below
-explains why it is built the way it is, because the repository is public and is
-therefore part of the portfolio.
+about five kilobytes of inline JavaScript in total — a theme toggle and an
+analytics beacon, both hand-rolled. Everything below explains why it is built
+the way it is, because the repository is public and is therefore part of the
+portfolio.
 
 ## Stack
 
@@ -18,7 +19,7 @@ therefore part of the portfolio.
 | Type-safety | TypeScript strict         | Including `.astro` frontmatter.                                                                                            |
 | Hosting     | GitHub Pages              | Static output, deployed by GitHub Actions.                                                                                 |
 
-No UI library, no icon package, no analytics, no client router.
+No UI library, no icon package, no analytics library, no client router.
 
 ## Architecture
 
@@ -27,9 +28,10 @@ src/
   content/          case studies and notes as MDX, schema-validated
   data/             site identity, experience, generated metrics
   components/       presentational Astro components, no client JS
+    Analytics.astro the one exception — the inline PostHog beacon
     diagrams/       CSS architecture diagrams — real text, not images
   layouts/          Base (meta, JSON-LD), CaseStudy
-  lib/              contrast maths, palette, metric resolution
+  lib/              contrast maths, palette, metric resolution, analytics config
   pages/            routes; [...slug] for collections
   styles/global.css design system: palette, base, components, prose
 scripts/
@@ -39,6 +41,8 @@ scripts/
   check-links.mjs   fail the build on broken internal references
 tests/
   a11y.spec.ts      axe + keyboard tests, every route, both themes
+  layout.spec.ts    no sideways scroll at 320px and 390px
+  analytics.spec.ts the beacon stays silent anywhere but production
 ```
 
 ### Four decisions worth explaining
@@ -68,17 +72,44 @@ paths, tokenising camelCase and punctuation, and matches truncated SHA-256
 digests rather than storing the words in plaintext in a public repository. It
 runs in CI against both the source tree and `dist/`.
 
-**Analytics is a hand-rolled beacon, not a library.** A small inline
-`sendBeacon` in `Base.astro` posts one `$pageview` to PostHog's capture API
-per page load — no cookies, no storage, no consent banner, every pageview an
-anonymous new person (the same posture as the groundtruth docs site, taken
-one step further). posthog-js was ruled out by the Lighthouse gate: the CI
-asserts zero unused JavaScript and a 400KB page budget, and a ~200KB
-analytics bundle fails both. The beacon reports into the shared groundtruth
-PostHog project — deliberate, so the groundtruth.sh → site → `/audit/`
-funnel is queryable in one place; events separate by `$host`. The embedded
-key is publishable by design; the `location.hostname` guard keeps local
-builds, previews and forks silent.
+**Analytics is a hand-rolled beacon, not a library.** `Analytics.astro` is
+about 4KB of inline JavaScript reporting to PostHog's capture API directly.
+posthog-js was ruled out by the Lighthouse gate: the CI asserts zero unused
+JavaScript and a 400KB page budget, and a ~200KB analytics bundle that runs
+a fraction of itself fails both.
+
+No cookies, and no identifier that outlives the visit — `distinct_id` and
+`$session_id` live in `sessionStorage`, scoped to one tab and cleared when
+it closes. Nothing here recognises a reader who returns tomorrow, and
+nothing could, so "returning visitor" is permanently unavailable and the
+site owes nobody a consent banner. Sessions use PostHog's own windows, 30
+minutes idle and 24 hours maximum, so this site's idea of a session cannot
+disagree with the views reading it.
+
+That is a deliberate step past where the beacon started. The first version
+minted a fresh UUID per pageview, which made every event its own anonymous
+person — and so made funnels, sessions, bounce rate and path analysis not
+merely absent but impossible, since PostHog joins all four on `distinct_id`.
+It claimed in this file to make a `groundtruth.sh → site → /audit/` funnel
+queryable; it never could. Counting pageviews was the only thing it could
+ever do.
+
+It now sends `$pageview` with referrer, viewport and any campaign
+parameters — PostHog parses UTM tags in its client library, not on ingest,
+so a beacon that omits them has no attribution at all — plus `$pageleave`,
+which is what makes time-on-page and bounce rate computable, and two
+conversion events for the mailto links and the outbound hand-off to
+groundtruth.sh, neither of which loads a route where a pageview could see
+it.
+
+Reporting goes to the site's own PostHog project (`538067`) rather than the
+shared groundtruth one. The cost of that split is real: PostHog has no
+cross-project funnels, so the groundtruth.sh → site journey is now read as
+referrer and channel data on this side rather than as a single funnel. The
+embedded key is publishable by design — it can write events and never read
+one — and the `location.hostname` guard keeps local builds, previews and
+forks silent. `src/lib/analytics.test.ts` pins the key, because a valid key
+for the wrong project is a failure nothing else in CI would notice.
 
 ## Local development
 
