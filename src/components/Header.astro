@@ -4,8 +4,19 @@ import { nav, site } from '../data/site.ts';
 
 const path = Astro.url.pathname;
 
-/** A nav item is current when the page is it, or lives under it. */
-const isCurrent = (href: string) => path === href || (href !== '/' && path.startsWith(href));
+/**
+ * A nav item is current when the page is it, or lives under it — and when two
+ * items both match, only the more specific one is. The agents entry points at
+ * a page under `/work/`, and a nav with two current items tells a screen-reader
+ * user the wrong thing about where they are.
+ */
+const matches = (href: string) => path === href || (href !== '/' && path.startsWith(href));
+const current = nav
+  .map((item) => item.href)
+  .filter(matches)
+  .sort((a, b) => b.length - a.length)[0];
+
+const isCurrent = (href: string) => href === current;
 ---
 
 <header
