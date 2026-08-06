@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Analytics from '../components/Analytics.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { absolute, site } from '../data/site.ts';
@@ -161,36 +162,6 @@ const jsonLd = {
     </main>
     <Footer />
 
-    {
-      /* Cookieless pageview beacon, following the groundtruth docs site's
-        posture: no cookies, no storage, no consent banner — every pageview is
-        an anonymous new person, which is the accepted trade. A hand-rolled
-        sendBeacon against PostHog's capture API instead of posthog-js because
-        Lighthouse CI asserts zero unused JavaScript and a 400KB page budget,
-        which the library cannot pass. Reports into the shared groundtruth
-        PostHog project (the key is publishable by design) so the
-        groundtruth.sh → site → /audit/ funnel lives in one place; events
-        separate by hostname. The hostname guard keeps local builds, previews
-        and forks silent. */
-    }
-    <script is:inline>
-      if (location.hostname === 'jaystewart.dev') {
-        navigator.sendBeacon(
-          'https://us.i.posthog.com/i/v0/e/',
-          JSON.stringify({
-            api_key: 'phc_sCiyDUsQo6Yayh8GcKmHRseHGVD6rySsXyfhgcpVFSgj',
-            event: '$pageview',
-            properties: {
-              distinct_id: crypto.randomUUID(),
-              $current_url: location.href,
-              $pathname: location.pathname,
-              $referrer: document.referrer,
-              $host: location.hostname,
-              $lib: 'beacon',
-            },
-          }),
-        );
-      }
-    </script>
+    <Analytics />
   </body>
 </html>
