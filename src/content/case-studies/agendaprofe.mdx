@@ -335,9 +335,10 @@ migration consumed weeks, and it happened because the original choice was made
 before the workload was understood.
 
 **Some of the documentation rotted.** An audit found dozens of source comments
-still reasoning from decommissioned infrastructure — instructions that were
-true when written and actively misleading afterwards. Stale context is worse
-than absent context, because it is followed with confidence.
+still reasoning from the decommissioned infrastructure, and four false claims
+in the instruction files the coding agents read before every change. What that
+cost, and what got built in response, is
+[its own case study](/work/agent-operated-codebase/).
 
 **The test suite is uneven.** Coverage is enforced by a ratchet on changed
 lines rather than a global threshold, which is a pragmatic choice that also
