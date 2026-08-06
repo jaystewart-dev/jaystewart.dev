@@ -1,6 +1,8 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
+import { routes } from './routes.ts';
+
 /**
  * Accessibility checks across every route, in both themes.
  *
@@ -14,23 +16,6 @@ import { expect, test } from '@playwright/test';
  * the other, and only ever showing up for readers on dark mode is precisely the
  * kind of bug that survives for months.
  */
-
-const routes = [
-  '/',
-  '/work/',
-  '/work/agendaprofe/',
-  '/work/realtime-transit/',
-  '/work/agent-operated-codebase/',
-  '/audit/',
-  '/notes/',
-  '/notes/development-environment-is-a-server/',
-  '/notes/a-compiler-for-agent-context/',
-  '/about/',
-  '/philosophy/',
-  '/working-with-agents/',
-  '/contact/',
-  '/404.html',
-];
 
 const themes = ['light', 'dark'] as const;
 

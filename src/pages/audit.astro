@@ -45,32 +45,34 @@ const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readine
         that turns out to be false is labelled as such with its reasoning — never silently
         dropped.
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Claim in the context layer</th>
-            <th scope="col">Verified against the repo</th>
-            <th scope="col">Severity</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Environment variables declared as required for two services</td>
-            <td>Both services decommissioned months earlier</td>
-            <td>High — agents provision for infrastructure that does not exist</td>
-          </tr>
-          <tr>
-            <td>Server configuration referenced as current</td>
-            <td>Points at a database that was torn down</td>
-            <td>High — a confident agent would try to use it</td>
-          </tr>
-          <tr>
-            <td>Memory file describing the change workflow</td>
-            <td>Directly contradicts the project’s stated pull-request policy</td>
-            <td>Medium — agents follow whichever version they read first</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-scroll" role="region" aria-label="Example drift report" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Claim in the context layer</th>
+              <th scope="col">Verified against the repo</th>
+              <th scope="col">Severity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Environment variables declared as required for two services</td>
+              <td>Both services decommissioned months earlier</td>
+              <td>High — agents provision for infrastructure that does not exist</td>
+            </tr>
+            <tr>
+              <td>Server configuration referenced as current</td>
+              <td>Points at a database that was torn down</td>
+              <td>High — a confident agent would try to use it</td>
+            </tr>
+            <tr>
+              <td>Memory file describing the change workflow</td>
+              <td>Directly contradicts the project’s stated pull-request policy</td>
+              <td>Medium — agents follow whichever version they read first</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <h2>What you get</h2>
       <p>Seven deliverables, named, so that done is not a matter of opinion.</p>
@@ -125,32 +127,34 @@ const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readine
       </p>
 
       <h2>Timeline and price</h2>
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Package</th>
-            <th scope="col">Price</th>
-            <th scope="col">What it is</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Audit</td>
-            <td>£3,000 fixed</td>
-            <td>Everything above, kickoff to read-out in ten working days</td>
-          </tr>
-          <tr>
-            <td>Audit + remediation week</td>
-            <td>£5,000 fixed</td>
-            <td>Guardrails and the highest-severity fixes land as reviewed pull requests</td>
-          </tr>
-          <tr>
-            <td>Small single repository</td>
-            <td>From £2,000</td>
-            <td>The same audit, scoped down honestly</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-scroll" role="region" aria-label="Packages and prices" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Package</th>
+              <th scope="col">Price</th>
+              <th scope="col">What it is</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Audit</td>
+              <td>£3,000 fixed</td>
+              <td>Everything above, kickoff to read-out in ten working days</td>
+            </tr>
+            <tr>
+              <td>Audit + remediation week</td>
+              <td>£5,000 fixed</td>
+              <td>Guardrails and the highest-severity fixes land as reviewed pull requests</td>
+            </tr>
+            <tr>
+              <td>Small single repository</td>
+              <td>From £2,000</td>
+              <td>The same audit, scoped down honestly</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <p>
         Terms: half on signature, half on delivery of the read-out. Ten working days is
         deliberately generous — a fixed date I always hit is worth more than a fast one I might

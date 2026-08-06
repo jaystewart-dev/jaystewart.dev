@@ -424,11 +424,51 @@
     border-top: 1px solid var(--c-line);
   }
 
-  /* Tables scroll inside their own container rather than widening the page. */
+  /* Tables scroll inside their own container rather than widening the page.
+
+     A table does not clip when it runs out of room, it pushes: three columns
+     of prose have a minimum width no phone can honour, so without a container
+     the whole document scrolls sideways and the content slides out from under
+     the sticky header. The container confines that scroll to the table, and
+     the min-width keeps the columns readable rather than letting them
+     compress to one word per line.
+
+     The container carries `tabindex="0"` and a labelled region role in the
+     markup. That is not decoration: a scrolling box with nothing focusable
+     inside it — and a table of plain text has nothing — cannot be scrolled
+     from the keyboard at all without it. */
+  .prose .table-scroll {
+    overflow-x: auto;
+    /* Two layers per edge. The paper-coloured pair are attached `local`, so
+       they travel with the content and sit over the hint at whichever end is
+       already reached; the hint therefore only appears on a side that still
+       has table behind it. It is a grey wash rather than a drop shadow
+       because a shadow is invisible against the dark theme's background. */
+    background:
+      linear-gradient(to right, var(--c-paper), transparent) left / 2rem 100% no-repeat local,
+      linear-gradient(to left, var(--c-paper), transparent) right / 2rem 100% no-repeat local,
+      linear-gradient(
+          to right,
+          color-mix(in srgb, var(--c-line-strong) 55%, transparent),
+          transparent
+        )
+        left / 0.75rem 100% no-repeat scroll,
+      linear-gradient(
+          to left,
+          color-mix(in srgb, var(--c-line-strong) 55%, transparent),
+          transparent
+        )
+        right / 0.75rem 100% no-repeat scroll;
+  }
+
   .prose table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9375rem;
+  }
+
+  .prose .table-scroll table {
+    min-width: 34rem;
   }
 
   .prose th,
