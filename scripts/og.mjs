@@ -85,6 +85,12 @@ const pages = [
     title: 'Your agents obey instructions nobody has checked',
     note: 'Every claim verified against the repository · a CI gate left behind',
   },
+  {
+    slug: 'audit-sample',
+    eyebrow: 'Sample deliverable',
+    title: 'A page from a real drift report',
+    note: 'Claim · evidence · severity · the CI assertion left behind',
+  },
   { slug: 'about', eyebrow: 'About', title: 'Twelve years of backend engineering' },
   { slug: 'philosophy', eyebrow: 'Philosophy', title: 'How I think about building things' },
   {
