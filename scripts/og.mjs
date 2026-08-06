@@ -93,11 +93,6 @@ const pages = [
   },
   { slug: 'about', eyebrow: 'About', title: 'Twelve years of backend engineering' },
   { slug: 'philosophy', eyebrow: 'Philosophy', title: 'How I think about building things' },
-  {
-    slug: 'working-with-agents',
-    eyebrow: 'Working with agents',
-    title: 'The generation is the easy half',
-  },
   { slug: 'notes', eyebrow: 'Notes', title: 'Shorter pieces' },
   {
     slug: 'notes-development-environment-is-a-server',
