@@ -1,7 +1,7 @@
 # CLAUDE.md — jaystewart.dev
 
 The public portfolio site: Astro, static, deployed to GitHub Pages. The
-stack, the architecture, the three decisions worth explaining, and how to
+stack, the architecture, the four decisions worth explaining, and how to
 update content all live in [`README.md`](README.md) — read it rather than
 restating it here.
 

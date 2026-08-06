@@ -41,7 +41,7 @@ tests/
   a11y.spec.ts      axe + keyboard tests, every route, both themes
 ```
 
-### Three decisions worth explaining
+### Four decisions worth explaining
 
 **Figures are generated, not typed.** The previous site quoted "261 API
 endpoints" and "794 tests". Both were true when written and both had drifted by
@@ -67,6 +67,18 @@ effectively as body copy. `scripts/check-stealth.mjs` scans file contents and
 paths, tokenising camelCase and punctuation, and matches truncated SHA-256
 digests rather than storing the words in plaintext in a public repository. It
 runs in CI against both the source tree and `dist/`.
+
+**Analytics is a hand-rolled beacon, not a library.** A small inline
+`sendBeacon` in `Base.astro` posts one `$pageview` to PostHog's capture API
+per page load — no cookies, no storage, no consent banner, every pageview an
+anonymous new person (the same posture as the groundtruth docs site, taken
+one step further). posthog-js was ruled out by the Lighthouse gate: the CI
+asserts zero unused JavaScript and a 400KB page budget, and a ~200KB
+analytics bundle fails both. The beacon reports into the shared groundtruth
+PostHog project — deliberate, so the groundtruth.sh → site → `/audit/`
+funnel is queryable in one place; events separate by `$host`. The embedded
+key is publishable by design; the `location.hostname` guard keeps local
+builds, previews and forks silent.
 
 ## Local development
 
