@@ -98,7 +98,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
 
-      - name: axe and keyboard tests, both themes
+      - name: axe, keyboard and mobile-layout tests, both themes
         run: pnpm test:a11y
 
       - uses: actions/upload-artifact@v4
