@@ -21,6 +21,7 @@ const routes = [
   '/work/agendaprofe/',
   '/work/realtime-transit/',
   '/work/agent-operated-codebase/',
+  '/audit/',
   '/notes/',
   '/notes/development-environment-is-a-server/',
   '/notes/a-compiler-for-agent-context/',
