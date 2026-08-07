@@ -43,6 +43,19 @@ test('the mailto and outbound handlers stay silent off-production too', async ({
     if (POSTHOG.test(request.url())) captured.push(request.url());
   });
 
+  // A synthetic click still runs the anchor's activation behaviour, so the
+  // outbound dispatch below genuinely navigates — to the live LinkedIn profile,
+  // whose settling time then decided whether the `networkidle` wait returned
+  // inside the timeout. That is what made this test flaky rather than failing:
+  // the assertion depended on a third-party site nobody here controls.
+  //
+  // Aborting everything that leaves the origin makes the navigation fail
+  // immediately instead. It does not weaken the check: the delegated listener
+  // runs synchronously before any request is issued, and `page.on('request')`
+  // fires before route handling, so a beacon is still observed on its way to
+  // being aborted. Verified both ways before this line was written.
+  await page.route(/^https?:\/\/(?!(?:localhost|127\.0\.0\.1)[:/])/, (route) => route.abort());
+
   await page.goto('/contact/');
 
   // Clicking a mailto would hand the page to the mail client, so drive the
