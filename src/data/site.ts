@@ -27,11 +27,14 @@ export const site = {
    * because this string is what a search result and a shared link show, and
    * the audit is what the site is currently selling.
    *
-   * The years figure is interpolated rather than written out: it was hardcoded
-   * as "twelve" while `yearsOfExperience()` two files away already returned
-   * fourteen — a claim on the selling surface that had quietly stopped being
-   * true, which is the exact failure the audit this string advertises exists
-   * to catch. A number that changes on its own cannot rot.
+   * The years figure is interpolated rather than written out, and it has now
+   * been wrong twice: hardcoded as "twelve" while `yearsOfExperience()` two
+   * files away returned fourteen, and then correctly interpolating a fourteen
+   * that itself counted a six-year career break as experience. Both were
+   * claims about the author on the string that advertises an audit of claims
+   * nobody checks. It now derives from the same `roles` array the About-page
+   * timeline renders, with breaks excluded, so the number cannot contradict
+   * the history shown directly beneath it.
    */
   description: `Fixed-price agent-readiness audits: every claim in your CLAUDE.md, rules and memory files verified against the repository, with a CI gate left behind so the lies cannot come back. Run by a backend and platform engineer with ${yearsOfExperience()} years on systems that handle payments, transactions and personal data.`,
 
