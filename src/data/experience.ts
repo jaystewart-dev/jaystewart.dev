@@ -1,13 +1,20 @@
 /**
  * Employment history.
  *
- * Two editorial decisions are encoded here rather than left to the template:
+ * Three editorial decisions are encoded here rather than left to the template:
  *
  * 1. Thrive ran alongside the G&V role. Listed as a contract engagement so the
  *    overlapping dates read as what they were, rather than as two simultaneous
  *    full-time jobs.
  * 2. The current transit role is deliberately unnamed. See src/data/stealth.ts
  *    for what that constraint covers and why.
+ * 3. The 2020–2026 career break is a first-class entry rather than a gap
+ *    between two dates. The independent role used to start in March 2020,
+ *    which quietly covered six years of not working at all; every project on
+ *    this site was in fact built after March 2026. Stating the break is both
+ *    the honest version and the stronger one — it is what makes the output
+ *    since the restart legible as compression rather than as an ordinary
+ *    career spread thin.
  */
 
 export interface Role {
@@ -18,7 +25,7 @@ export interface Role {
   /** Rendered as-is; `null` end renders as "Present". */
   period: string;
   location: string;
-  kind: 'permanent' | 'contract' | 'founder';
+  kind: 'permanent' | 'contract' | 'founder' | 'break';
   summary: string;
   detail?: string[];
   stack?: string[];
@@ -45,18 +52,29 @@ export const roles: Role[] = [
   {
     company: 'Independent',
     title: 'Founder and engineer',
-    start: '2020-03',
+    start: '2026-03',
     end: null,
-    period: '2020 — present',
+    period: 'Mar 2026 — present',
     location: 'Remote',
     kind: 'founder',
     summary:
-      'Designing and running small products end to end — architecture, code, infrastructure and the on-call pager. AgendaProfe is the largest and the one carrying real money.',
+      'Designing and running small products end to end — architecture, code, infrastructure and the on-call pager. AgendaProfe is the largest and the one carrying real money. All of it built since coming back to engineering in March 2026.',
     detail: [
       'AgendaProfe — scheduling, payments and live video teaching for independent teachers. In production.',
       'groundtruth — a small open-source CLI that checks agent-context files against the repository they describe.',
     ],
     stack: ['TypeScript', 'Next.js', 'Postgres', 'Stripe', 'Terraform', 'React Native'],
+  },
+  {
+    company: 'Travelling',
+    title: 'Career break',
+    start: '2020-03',
+    end: '2026-03',
+    period: 'Mar 2020 — Mar 2026',
+    location: '—',
+    kind: 'break',
+    summary:
+      'Six years away from engineering entirely: travelling, living simply, and not working. Deliberate, and not a period I want to write a lesson about. I came back to it in March 2026 after starting to build with coding agents.',
   },
   {
     company: 'G&V Venture Brands',
@@ -126,9 +144,39 @@ export const roles: Role[] = [
   },
 ];
 
-/** Years of professional backend work, computed so it never needs updating. */
+/**
+ * Years actually spent working, as the union of every non-break role interval.
+ *
+ * Deliberately not the span from the first start date. That version counted
+ * the six-year career break above as experience and overstated the figure by
+ * roughly six years — a claim on the selling surface that nothing checked,
+ * which is the exact failure this site sells an audit of. Deriving it from
+ * `roles` means the number and the timeline rendered from the same array
+ * cannot disagree, and neither can go stale.
+ *
+ * Union rather than sum because the roles overlap: Thrive ran alongside G&V,
+ * and the transit role alongside the independent one. Summing durations would
+ * double-count both.
+ */
 export function yearsOfExperience(now: Date = new Date()): number {
-  const startedAt = new Date('2012-07-01');
-  const years = (now.getTime() - startedAt.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
-  return Math.floor(years);
+  const worked = roles
+    .filter((role) => role.kind !== 'break')
+    .map((role) => ({
+      from: new Date(`${role.start}-01`).getTime(),
+      to: role.end ? new Date(`${role.end}-01`).getTime() : now.getTime(),
+    }))
+    .sort((a, b) => a.from - b.from);
+
+  let total = 0;
+  let mergedTo = -Infinity;
+
+  for (const { from, to } of worked) {
+    const start = Math.max(from, mergedTo);
+    if (to > start) {
+      total += to - start;
+      mergedTo = to;
+    }
+  }
+
+  return Math.floor(total / (365.25 * 24 * 60 * 60 * 1000));
 }
