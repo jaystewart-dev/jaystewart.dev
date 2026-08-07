@@ -31,7 +31,7 @@ export const nav = [
   { href: '/work/', label: 'Work' },
   { href: '/audit/', label: 'Audit' },
   { href: '/notes/', label: 'Notes' },
-  { href: '/working-with-agents/', label: 'Agents' },
+  { href: '/work/agent-operated-codebase/', label: 'Agents' },
   { href: '/about/', label: 'About' },
   { href: '/philosophy/', label: 'Philosophy' },
 ] as const;
