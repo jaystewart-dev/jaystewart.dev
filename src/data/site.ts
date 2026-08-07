@@ -6,6 +6,8 @@
  * change it and no chance of two pages disagreeing.
  */
 
+import { yearsOfExperience } from './experience.ts';
+
 export const site = {
   name: 'Jay Stewart',
   origin: 'https://jaystewart.dev',
@@ -24,9 +26,14 @@ export const site = {
    * page, and as the JSON-LD description of the site. It leads with the audit
    * because this string is what a search result and a shared link show, and
    * the audit is what the site is currently selling.
+   *
+   * The years figure is interpolated rather than written out: it was hardcoded
+   * as "twelve" while `yearsOfExperience()` two files away already returned
+   * fourteen — a claim on the selling surface that had quietly stopped being
+   * true, which is the exact failure the audit this string advertises exists
+   * to catch. A number that changes on its own cannot rot.
    */
-  description:
-    'Fixed-price agent-readiness audits: every claim in your CLAUDE.md, rules and memory files verified against the repository, with a CI gate left behind so the lies cannot come back. Run by a backend and platform engineer with twelve years on systems that handle payments, transactions and personal data.',
+  description: `Fixed-price agent-readiness audits: every claim in your CLAUDE.md, rules and memory files verified against the repository, with a CI gate left behind so the lies cannot come back. Run by a backend and platform engineer with ${yearsOfExperience()} years on systems that handle payments, transactions and personal data.`,
 
   /** Short form, used in the footer and structured data. */
   tagline: 'Backend and platform engineer · agent-operated production systems',
