@@ -117,6 +117,45 @@ const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readine
         </li>
       </ol>
 
+      <h2>Should you just do this yourself?</h2>
+      <p>
+        Partly, and you should try before you buy. The tool is MIT-licensed and installs in a
+        minute — <code>pnpm add -D @groundtruth-sh/cli</code> — and nothing on this page is gated
+        behind paying me for it. If you run it against your own repository and what comes back is
+        enough, you have spent nothing, and I would rather you found that out than took my word for
+        any of this.
+      </p>
+      <p>
+        What the tool does is <em>check</em> assertions. What it does not do is write them, and writing
+        them is the work. An agent pointed at your context layer and asked to produce a suite will
+        write checks for the claims it has just read and found true — a green suite that asserts nothing,
+        and a gate that stays green through the next two years of drift. That is worse than no gate,
+        because it is a gate you have started trusting.
+      </p>
+      <p>
+        Underneath that is the harder problem: there is no oracle. Asking an agent whether your
+        instructions are still true asks the thing that trusts them to check them. What comes
+        back is a plausible list in which some findings are real, some are not, and nothing
+        separates the two short of proving each one against the code — which is the job, not the
+        preamble to it. An unverified drift report is this whole failure one level up: confident
+        prose about the repository that nobody checked.
+      </p>
+      <p>
+        Then there are the two passes no tool performs at all. The contradiction pass needs
+        every context file held against every other, which is a thing almost nobody inside a
+        team has ever done in one sitting — and “this document contradicts that one” is a
+        political finding from the inside and merely a factual one from the outside. The
+        context-economics read is a judgment call about which standing rules are load-bearing.
+        Both are done by hand, which is why this is an audit and not a download.
+      </p>
+      <p>
+        So the honest form of the question is not whether your team could do this. It is who
+        owns it and by when. The context layer is usually the one artifact in a repository with
+        no owner, no reviewer and no failing build — which is exactly why it drifted, and
+        exactly why the internal version of this work stays on the list. What a fixed price and
+        a fixed date buy is that it happens.
+      </p>
+
       <h2>Scope, and fit</h2>
       <p>
         In scope: the agent-context layer of one repository, or up to three inside one
