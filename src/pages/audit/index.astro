@@ -1,8 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { site } from '../../data/site.ts';
-
-const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readiness audit')}`;
+import { site, auditMailto } from '../../data/site.ts';
 ---
 
 <Base
@@ -196,7 +194,7 @@ const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readine
         enough. I will reply with whether the audit fits — and say so plainly if it does not.
       </p>
       <p class="mt-5">
-        <a href={mailto} class="link-underline text-lg">{site.email}</a>
+        <a href={auditMailto} class="link-underline text-lg">{site.email}</a>
       </p>
     </div>
   </section>

@@ -1,8 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { site } from '../../data/site.ts';
-
-const mailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readiness audit')}`;
+import { site, auditMailto } from '../../data/site.ts';
 
 /* The assertion snippets and the run output are held as strings rather than
    written into the markup, because both contain braces and Astro reads a brace
@@ -418,7 +416,7 @@ exit 1`;
         fits — I will say so plainly if it does not.
       </p>
       <p class="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3">
-        <a href={mailto} class="btn btn-primary">Start with an email</a>
+        <a href={auditMailto} class="btn btn-primary">Start with an email</a>
         <a href="/audit/" class="link-underline">Scope, deliverables and price</a>
       </p>
     </div>
