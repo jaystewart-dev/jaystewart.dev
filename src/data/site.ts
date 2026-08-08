@@ -32,6 +32,17 @@ export const site = {
   tagline: 'Backend and platform engineer · agent-operated production systems',
 } as const;
 
+/**
+ * Prefilled mailto for an audit enquiry, used by the home page, the offer page
+ * and the sample deliverable.
+ *
+ * It lives here rather than in each page for the reason this file exists: all
+ * three entry points must carry the same subject line, so that replies thread
+ * as one conversation rather than three. It also means the offer's name — still
+ * provisional — is one edit here rather than three that can be half-done.
+ */
+export const auditMailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readiness audit')}`;
+
 export type NavItem = {
   readonly href: string;
   readonly label: string;

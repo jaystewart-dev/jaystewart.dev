@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import CaseStudyCard from '../components/CaseStudyCard.astro';
-import { site } from '../data/site.ts';
+import { site, auditMailto } from '../data/site.ts';
 import { yearsOfExperience } from '../data/experience.ts';
 
 const studies = (await getCollection('caseStudies', ({ data }) => !data.draft)).sort(
@@ -14,9 +14,6 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
 );
 
 const years = yearsOfExperience();
-
-/** Same subject line as the offer page, so replies thread on one topic. */
-const auditMailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readiness audit')}`;
 ---
 
 <Base title={`${site.name} — ${site.role}`} description={site.description} bareTitle>
