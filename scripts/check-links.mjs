@@ -9,8 +9,9 @@
  * class of mistake worth spending twenty lines to make impossible.
  *
  * Checks internal links, images, stylesheets, scripts and the canonical/OG
- * URLs. External links are not fetched: a build that fails because someone
- * else's server is down is a build nobody trusts.
+ * URLs; that every social image in the build is still claimed by a page; and
+ * that the RSS feed's links resolve. External links are not fetched: a build
+ * that fails because someone else's server is down is a build nobody trusts.
  *
  *   node scripts/check-links.mjs [dist]
  */
@@ -52,6 +53,7 @@ function resolves(path) {
 
 const problems = [];
 const anchors = new Map();
+const referencedOg = new Set();
 let linksChecked = 0;
 
 const pages = [...htmlFiles(dist)];
@@ -96,9 +98,45 @@ for (const file of pages) {
       continue;
     }
 
+    if (ref.startsWith('/og/')) {
+      referencedOg.add(decodeURIComponent(ref.split(/[?#]/)[0]));
+    }
+
     linksChecked += 1;
     if (!resolves(ref)) {
       problems.push(`${label}  →  ${ref}  (does not resolve)`);
+    }
+  }
+}
+
+// The reverse direction for social images. The forward direction — a page
+// whose image is missing — is covered above, because every page's og:image
+// meta is checked as a reference. But the image list in scripts/og.mjs and
+// the committed files in public/og/ are hand-maintained, so an image can
+// outlive its page: an entry for a note that was never published shipped for
+// months this way, invisible to every other check.
+const ogDir = join(dist, 'og');
+if (existsSync(ogDir)) {
+  for (const image of readdirSync(ogDir)) {
+    if (!referencedOg.has(`/og/${image}`)) {
+      problems.push(
+        `og/${image}  →  referenced by no page (stale entry in scripts/og.mjs or public/og/)`,
+      );
+    }
+  }
+}
+
+// The feed repeats page URLs as absolute links, outside any <a href>, so the
+// HTML pass above never sees them. A note that moves breaks the feed exactly
+// as quietly as it would have broken a page.
+const feed = join(dist, 'rss.xml');
+if (existsSync(feed)) {
+  const xml = readFileSync(feed, 'utf8');
+  for (const match of xml.matchAll(/https:\/\/jaystewart\.dev[^<"\s]*/g)) {
+    const ref = match[0].slice(ORIGIN.length) || '/';
+    linksChecked += 1;
+    if (!resolves(ref)) {
+      problems.push(`rss.xml  →  ${ref}  (does not resolve)`);
     }
   }
 }

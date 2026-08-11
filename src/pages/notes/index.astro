@@ -7,9 +7,15 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
 );
 ---
 
+{
+  /* The description deliberately names no individual note. An earlier version
+    listed three, one of which was never published — a claim on the page that
+    nothing checked. The intro line below is the same promise the page itself
+    makes, so the two cannot disagree. */
+}
 <Base
   title="Notes"
-  description="Short engineering write-ups: running a development environment as a server, designing around per-request cost, and checking agent-context files against the repository they describe."
+  description="Short engineering write-ups by Jay Stewart: individual problems worth writing down, usually because the obvious solution was wrong or the failure mode was invisible."
 >
   <section class="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-20">
     <p class="eyebrow">Notes</p>
