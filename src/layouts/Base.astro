@@ -107,6 +107,12 @@ const jsonLd = {
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${site.name} — Notes`}
+      href="/rss.xml"
+    />
 
     {/* Both values so the browser chrome matches whichever theme renders. */}
     <meta name="theme-color" content="#f7f5ef" media="(prefers-color-scheme: light)" />

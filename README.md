@@ -32,7 +32,7 @@ src/
     diagrams/       CSS architecture diagrams — real text, not images
   layouts/          Base (meta, JSON-LD), CaseStudy
   lib/              contrast maths, palette, metric resolution, analytics config
-  pages/            routes; [...slug] for collections
+  pages/            routes; [...slug] for collections, rss.xml.ts for the feed
   styles/global.css design system: palette, base, components, prose
 scripts/
   count-metrics.mjs recount figures from the source repositories
