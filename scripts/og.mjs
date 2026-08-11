@@ -25,6 +25,13 @@ import { fileURLToPath } from 'node:url';
 import { Resvg } from '@resvg/resvg-js';
 import satori from 'satori';
 
+// A .ts import from a build script works because Node strips types natively
+// from 22.18 (this repo needs Node 22+, and CI resolves `node-version: '22'`
+// to current). Worth it: the About image used to hardcode "Twelve years" while
+// the About page it previews computed the real figure two files away — the
+// same claim, maintained twice, wrong once.
+import { yearsOfExperience } from '../src/data/experience.ts';
+
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = join(root, 'public/og');
 
@@ -91,18 +98,18 @@ const pages = [
     title: 'A page from a real drift report',
     note: 'Claim · evidence · severity · the CI assertion left behind',
   },
-  { slug: 'about', eyebrow: 'About', title: 'Twelve years of backend engineering' },
+  {
+    slug: 'about',
+    eyebrow: 'About',
+    title: `${yearsOfExperience()} years of backend engineering`,
+    note: 'From e-commerce for Dyson to production SaaS, either side of a six-year break',
+  },
   { slug: 'philosophy', eyebrow: 'Philosophy', title: 'How I think about building things' },
   { slug: 'notes', eyebrow: 'Notes', title: 'Shorter pieces' },
   {
     slug: 'notes-development-environment-is-a-server',
     eyebrow: 'Note · Infrastructure',
     title: 'My development environment is a server',
-  },
-  {
-    slug: 'notes-when-cost-is-the-architecture',
-    eyebrow: 'Note · Cost engineering',
-    title: 'When cost is the architecture',
   },
   {
     slug: 'notes-a-compiler-for-agent-context',
