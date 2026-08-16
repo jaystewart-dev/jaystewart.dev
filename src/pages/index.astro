@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import CaseStudyCard from '../components/CaseStudyCard.astro';
-import { site, auditMailto } from '../data/site.ts';
+import { site, conversationMailto } from '../data/site.ts';
 import { yearsOfExperience } from '../data/experience.ts';
 
 const studies = (await getCollection('caseStudies', ({ data }) => !data.draft)).sort(
@@ -18,10 +18,10 @@ const years = yearsOfExperience();
 
 <Base title={`${site.name} — ${site.role}`} description={site.description} bareTitle>
   <section class="mx-auto max-w-wide px-5 pt-20 pb-16 sm:px-8 sm:pt-28 sm:pb-20">
-    <p class="eyebrow">Agent-readiness audits · {site.role} · Remote</p>
+    <p class="eyebrow">{site.role} · Systems that hold money and time · Remote</p>
 
     <h1 class="mt-5 max-w-3xl text-4xl leading-[1.1] sm:text-5xl lg:text-6xl">
-      I build the systems that hold other people’s money and other people’s time.
+      I build production systems where AI agents write most of the code.
     </h1>
 
     <div class="mt-8 max-w-2xl space-y-5 text-lg text-muted">
@@ -37,74 +37,76 @@ const years = yearsOfExperience();
         and mistakes that actually made them.
       </p>
       <p>
-        A large share of the recent commits were written with coding agents, inside verification
-        gates built so the output can be trusted.{' '}
+        More than 8 in 10 commits across those systems are agent-written — counted from git
+        history, not estimated — inside verification gates built so the output can be trusted
+        without depending on my attention.{' '}
         <a href="/work/agent-operated-codebase/" class="link-underline text-accent">
           How that works
         </a> is stated plainly rather than left to be inferred.
       </p>
       <p>
-        Building that way turned up a problem worth selling the fix for. Code that lies gets
-        caught by a compiler; agent context that lies gets <em>executed</em>. I audited the most
-        disciplined repository I operate and found 4 standing instructions that agents were
-        still obeying after they had stopped being true. I now run that audit for other teams,
-        at a fixed price.
+        Building that way moved the interesting questions. Not whether agents can write code —
+        they write most of mine — but what that actually does to delivery, quality and cost,
+        what should stay human, and how you would prove any of it to a skeptic. I am measuring
+        my own systems to find out, publishing the numbers as they land, and talking to teams
+        doing the same.
       </p>
     </div>
 
     <div class="mt-10 flex flex-wrap gap-3">
-      <a href="/audit/" class="btn btn-primary">Book an agent-readiness audit</a>
-      <a href="/work/" class="btn btn-secondary">Read the case studies</a>
+      <a href="/work/agent-operated-codebase/" class="btn btn-primary">Read the case study</a>
+      <a href="/contact/" class="btn btn-secondary">Talk to me about agents in your team</a>
     </div>
   </section>
 
-  <section aria-labelledby="audit-heading" class="border-y border-line bg-band py-16 sm:py-20">
+  <section
+    aria-labelledby="evidence-heading"
+    class="border-y border-line bg-band py-16 sm:py-20"
+  >
     <div class="mx-auto max-w-wide px-5 sm:px-8">
-      <p class="eyebrow">Agent-readiness audit</p>
-      <h2 id="audit-heading" class="mt-3 max-w-2xl text-3xl">
-        Your agents obey instructions nobody has checked.
+      <p class="eyebrow">The evidence</p>
+      <h2 id="evidence-heading" class="mt-3 max-w-2xl text-3xl">
+        Claims about AI-native engineering are cheap. These are counted.
       </h2>
       <p class="mt-4 max-w-2xl text-muted">
-        Every team that has adopted coding agents has accumulated a layer of standing
-        instructions — <code class="font-mono text-ink">CLAUDE.md</code>,{' '}
-        <code class="font-mono text-ink">AGENTS.md</code>, Cursor rules, memory files — that
-        agents obey literally, every session, and that nothing on earth verifies. Each sentence
-        was true when it was written. Drift is a property of time, not of discipline.
+        Everything this site argues rests on artifacts you can inspect: figures counted from git
+        history by script, a practice written up with its failures included, and a tool you can
+        run yourself. Where a number is an estimate, it says so.
       </p>
 
       <dl class="mt-10 grid gap-x-10 gap-y-6 sm:grid-cols-3">
         <div>
-          <dt class="eyebrow">The drift report</dt>
+          <dt class="eyebrow">The practice</dt>
           <dd class="mt-1.5 text-muted">
-            Every claim that is currently false, cited to file and line, severity-rated, each
-            carrying a fix rather than a complaint.
+            Two production systems, more than 8 in 10 commits agent-written, run solo inside
+            verification gates —{' '}
+            <a href="/work/agent-operated-codebase/" class="link-underline">the case study</a>,
+            including where it rotted.
           </dd>
         </div>
         <div>
-          <dt class="eyebrow">The assertion suite</dt>
+          <dt class="eyebrow">The tool</dt>
           <dd class="mt-1.5 text-muted">
-            Your own sentences committed to your repository as executable checks — the
-            deliverable that outlives the engagement.
+            groundtruth — an open-source CLI and GitHub Action that fails CI when an agent
+            instruction goes false. Born from{' '}
+            <a href="/audit/" class="link-underline">auditing my own context layer</a>; it gates
+            this site’s own pull requests.
           </dd>
         </div>
         <div>
-          <dt class="eyebrow">The gate</dt>
+          <dt class="eyebrow">The measurements</dt>
           <dd class="mt-1.5 text-muted">
-            groundtruth running on every pull request, failing the build when a context claim
-            goes false. Two lines of YAML.
+            Delivery metrics from 5 months of agent-operated production history — authorship,
+            rework, cycle time, cost — publishing to{' '}
+            <a href="/notes/" class="link-underline">the notes</a> as they land.
           </dd>
         </div>
       </dl>
 
       <p class="mt-10 max-w-2xl text-muted">
-        £2,000–£5,000 fixed, kickoff to read-out in 10 working days. You are not buying a report
-        — you are buying a permanent check, of which the report is the first run.
+        One operator’s systems are a starting point, not an answer. The point of measuring mine
+        honestly is to have something worth comparing with yours.
       </p>
-
-      <div class="mt-8 flex flex-wrap gap-3">
-        <a href="/audit/" class="btn btn-primary">What the audit covers</a>
-        <a href={auditMailto} class="btn btn-secondary">Ask whether it fits</a>
-      </div>
     </div>
   </section>
 
@@ -159,18 +161,18 @@ const years = yearsOfExperience();
     class="mx-auto max-w-wide px-5 py-16 sm:px-8 sm:py-20"
   >
     <h2 id="contact-heading" class="max-w-2xl text-3xl">
-      Your context layer has never been checked, and mine had 4.
+      If your team builds with agents, I want to hear how it is really going.
     </h2>
     <p class="mt-4 max-w-2xl text-muted">
-      Two or three sentences about your team, your repositories and how agents are used is
-      enough. I will reply with whether the audit fits — and say so plainly if it does not.
-      Through October, if the read-out does not name at least 3 things worth fixing, the second
-      half is waived and you keep the assertion suite and the gate.
+      I am researching how software engineering changes inside real teams as agents write more
+      of the code — the parts that work and the parts that do not. Twenty minutes, nothing sold,
+      notes compared both ways. Two or three sentences about your team and how agents are used
+      is enough to start.
     </p>
 
     <div class="mt-8 flex flex-wrap gap-3">
-      <a href="/audit/" class="btn btn-primary">The agent-readiness audit</a>
-      <a href={auditMailto} class="btn btn-secondary">{site.email}</a>
+      <a href={conversationMailto} class="btn btn-primary">{site.email}</a>
+      <a href="/contact/" class="btn btn-secondary">Other ways to reach me</a>
     </div>
 
     <p class="mt-10 max-w-2xl text-sm text-muted">

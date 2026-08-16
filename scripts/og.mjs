@@ -63,7 +63,7 @@ const colour = {
 
 /** Every page that needs an image, and the text on it. */
 const pages = [
-  { slug: 'default', eyebrow: 'Backend and platform engineer', title: 'Jay Stewart' },
+  { slug: 'default', eyebrow: 'AI-native software engineer', title: 'Jay Stewart' },
   {
     slug: 'work',
     eyebrow: 'Case studies',
@@ -88,7 +88,7 @@ const pages = [
   },
   {
     slug: 'audit',
-    eyebrow: 'Agent-readiness audit',
+    eyebrow: 'The method · Agent-readiness audit',
     title: 'Your agents obey instructions nobody has checked',
     note: 'Every claim verified against the repository · a CI gate left behind',
   },
