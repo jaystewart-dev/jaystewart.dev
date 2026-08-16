@@ -1,7 +1,9 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import { roles, yearsOfExperience } from '../data/experience.ts';
 import { site } from '../data/site.ts';
+import portrait from '../assets/media/jay-stewart.jpg';
 
 const years = yearsOfExperience();
 ---
@@ -11,6 +13,16 @@ const years = yearsOfExperience();
   description={`Jay Stewart — ${years} years of backend engineering, from Magento e-commerce for Dyson to production SaaS handling payments, video and infrastructure, either side of a six-year break. Remote-first, based in Bristol, UK.`}
 >
   <section class="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-20">
+    <Image
+      src={portrait}
+      alt="Jay Stewart"
+      width={160}
+      densities={[1, 2]}
+      loading="eager"
+      decoding="async"
+      class="mb-9 w-32 rounded-lg border border-line bg-surface sm:w-40"
+    />
+
     <p class="eyebrow">About</p>
     <h1 class="mt-3 text-4xl sm:text-5xl">
       I built a booking and payments system in 2016. I am still working on the same problem.

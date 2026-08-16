@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import { site, conversationMailto } from '../../data/site.ts';
+import portrait from '../../assets/media/jay-stewart.jpg';
 ---
 
 <Base
@@ -155,17 +157,31 @@ import { site, conversationMailto } from '../../data/site.ts';
       </p>
     </div>
 
-    <div class="mt-14 rounded-lg border border-line bg-band p-6 sm:p-8">
-      <h2 class="text-xl">Run it, or talk about it</h2>
-      <p class="mt-3 text-muted">
-        The tool and the format above are enough to run this on your own repositories today —
-        that is a genuinely good outcome and it costs nothing. And if agents write a meaningful
-        share of your team’s code, I would like to compare notes either way: what drifted, what
-        the gate caught, what no assertion could express.
-      </p>
-      <p class="mt-5">
-        <a href={conversationMailto} class="link-underline text-lg">{site.email}</a>
-      </p>
+    <div
+      class="mt-14 flex flex-col gap-5 rounded-lg border border-line bg-band p-6 sm:flex-row sm:gap-7 sm:p-8"
+    >
+      <Image
+        src={portrait}
+        alt="Jay Stewart"
+        width={96}
+        densities={[1, 2]}
+        loading="lazy"
+        decoding="async"
+        class="w-20 shrink-0 self-start rounded-lg border border-line bg-surface sm:w-24"
+      />
+
+      <div>
+        <h2 class="text-xl">Run it, or talk about it</h2>
+        <p class="mt-3 text-muted">
+          The tool and the format above are enough to run this on your own repositories today —
+          that is a genuinely good outcome and it costs nothing. And if agents write a
+          meaningful share of your team’s code, I would like to compare notes either way: what
+          drifted, what the gate caught, what no assertion could express.
+        </p>
+        <p class="mt-5">
+          <a href={conversationMailto} class="link-underline text-lg">{site.email}</a>
+        </p>
+      </div>
     </div>
   </section>
 </Base>
