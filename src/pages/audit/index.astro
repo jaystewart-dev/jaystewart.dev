@@ -1,22 +1,24 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { site, auditMailto } from '../../data/site.ts';
+import { site, conversationMailto } from '../../data/site.ts';
 ---
 
 <Base
   title="Agent-readiness audit"
-  description="A fixed-price audit of your agent-context layer: every claim in your CLAUDE.md, rules and memory files verified against the repository, and a CI gate left behind so the lies cannot come back. £2,000–£5,000, ten working days."
+  description="The agent-readiness audit, written up as a method: every claim in a CLAUDE.md, rules or memory file verified against the repository, and a CI gate left behind so the lies cannot come back. Run first on my own production repo — findings published."
 >
   <section class="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-20">
-    <p class="eyebrow">Agent-readiness audit</p>
+    <p class="eyebrow">The method · Agent-readiness audit</p>
     <h1 class="mt-3 text-4xl sm:text-5xl">Your agents obey instructions nobody has checked.</h1>
 
     <div class="prose mt-10">
       <p>
-        I find every sentence in your agent instructions that is no longer true, prove each one
-        against your actual repository, and leave behind a CI gate so the lies cannot come back.
-        You are not buying a report. You are buying a permanent check — the report is its first
-        run.
+        Find every sentence in an agent’s instructions that is no longer true, prove each one
+        against the actual repository, and leave behind a CI gate so the lies cannot come back.
+        The outcome is not a report — it is a permanent check, of which the report is the first
+        run. This page is that method, written up: I built it for my own repositories, published
+        what it found, and use it as the diagnostic first step when looking at how a team works
+        with agents.
       </p>
 
       <h2>The problem</h2>
@@ -79,7 +81,7 @@ import { site, auditMailto } from '../../data/site.ts';
         still wrong.
       </p>
 
-      <h2>What you get</h2>
+      <h2>What it produces</h2>
       <p>Seven deliverables, named, so that done is not a matter of opinion.</p>
       <ol>
         <li>
@@ -120,81 +122,49 @@ import { site, auditMailto } from '../../data/site.ts';
         In scope: the agent-context layer of one repository, or up to three inside one
         organization — every instruction file, rules file, memory file and decision log an agent
         reads, plus the CI configuration that is supposed to enforce them. Out of scope: general
-        code, security and performance review, and writing your documentation for you. Saying
-        that plainly is what keeps a fixed price fixed.
+        code, security and performance review, and writing the documentation for you. Saying
+        that plainly is what keeps a bounded audit bounded.
       </p>
       <p>
         It fits teams of roughly ten to five hundred developers where agents are genuinely in
         the daily loop, at least one context file is older than about three months, more than
-        one person edits it, and the team controls its own CI. It is honestly the wrong purchase
-        for a two-person startup with a week-old context file — there is no drift yet — or for a
-        team without CI, which cannot receive half the deliverable.
+        one person edits it, and the team controls its own CI. It finds nothing at a two-person
+        startup with a week-old context file — there is no drift yet — and a team without CI
+        cannot receive half of what it produces. A clean result is a result: findings are never
+        inflated to make the audit look necessary.
       </p>
 
-      <h2>Timeline and price</h2>
-      <div class="table-scroll" role="region" aria-label="Packages and prices" tabindex="0">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Package</th>
-              <th scope="col">Price</th>
-              <th scope="col">What it is</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Audit</td>
-              <td>£3,000 fixed</td>
-              <td>Everything above, kickoff to read-out in ten working days</td>
-            </tr>
-            <tr>
-              <td>Audit + remediation week</td>
-              <td>£5,000 fixed</td>
-              <td>Guardrails and the highest-severity fixes land as reviewed pull requests</td>
-            </tr>
-            <tr>
-              <td>Small single repository</td>
-              <td>From £2,000</td>
-              <td>The same audit, scoped down honestly</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <h2>How it runs</h2>
       <p>
-        Terms: half on signature, half on delivery of the read-out. Ten working days is
-        deliberately generous — a fixed date I always hit is worth more than a fast one I might
-        miss. What I need from you: read access to the repository (or a working session inside
-        your environment if access is the blocker), a named counterpart for kickoff and
-        read-out, and permission for the two pull requests that carry the assertion suite and
-        the gate.
-      </p>
-      <p>
-        <strong>Founding-client terms, through October:</strong> if the read-out does not name at
-        least three things worth fixing, the second half is waived and you keep the assertion suite
-        and the gate. Given what the best-kept repository in my own portfolio contained, I consider
-        that a safe promise — but you should not have to take my word for it.
+        Kickoff to read-out in ten working days — deliberately generous, because a fixed date
+        always hit is worth more than a fast one sometimes missed. It needs read access to the
+        repository (or a working session inside the team’s environment if access is the
+        blocker), a named counterpart for kickoff and read-out, and permission for the two pull
+        requests that carry the assertion suite and the gate. Thirty days later, the re-check.
       </p>
 
       <h2>Why the evidence is public</h2>
       <p>
         The tool is <a href="https://groundtruth.sh">open source and installable in a minute</a
-        >, the method is written up as <a href="/work/agent-operated-codebase/"
+        >, the practice it came from is written up as <a href="/work/agent-operated-codebase/"
           >a case study with counted figures</a
         >, and the receipts come from a production system with real users and real money moving
-        through it. The audit costs less than one day of a ten-person engineering team, and far
-        less than a single incident caused by an agent confidently acting on an instruction that
-        stopped being true.
+        through it. I ran the audit on my own best-kept repository first and published the four
+        findings rather than the marketing — because a method that has never caught its own
+        author is not one worth trusting with anyone else’s repository.
       </p>
     </div>
 
     <div class="mt-14 rounded-lg border border-line bg-band p-6 sm:p-8">
-      <h2 class="text-xl">Start with an email</h2>
+      <h2 class="text-xl">Run it, or talk about it</h2>
       <p class="mt-3 text-muted">
-        Two or three sentences about your team, your repositories and how agents are used is
-        enough. I will reply with whether the audit fits — and say so plainly if it does not.
+        The tool and the format above are enough to run this on your own repositories today —
+        that is a genuinely good outcome and it costs nothing. And if agents write a meaningful
+        share of your team’s code, I would like to compare notes either way: what drifted, what
+        the gate caught, what no assertion could express.
       </p>
       <p class="mt-5">
-        <a href={auditMailto} class="link-underline text-lg">{site.email}</a>
+        <a href={conversationMailto} class="link-underline text-lg">{site.email}</a>
       </p>
     </div>
   </section>

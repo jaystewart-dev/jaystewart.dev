@@ -11,7 +11,7 @@ import { yearsOfExperience } from './experience.ts';
 export const site = {
   name: 'Jay Stewart',
   origin: 'https://jaystewart.dev',
-  role: 'Backend and platform engineer',
+  role: 'AI-native software engineer',
   location: 'Bristol, UK',
   locality: 'Bristol',
   region: 'England',
@@ -23,54 +23,54 @@ export const site = {
 
   /**
    * Used as the default meta description and the OG description on the home
-   * page, and as the JSON-LD description of the site. It leads with the audit
-   * because this string is what a search result and a shared link show, and
-   * the audit is what the site is currently selling.
+   * page, and as the JSON-LD description of the site. It leads with the
+   * measured practice because that is what the site now argues: evidence of
+   * AI-native engineering, not an offer. (The audit-offer version of this
+   * string was retired 2026-08-16 with the strategy that needed it.)
    *
    * The years figure is interpolated rather than written out, and it has now
    * been wrong twice: hardcoded as "twelve" while `yearsOfExperience()` two
    * files away returned fourteen, and then correctly interpolating a fourteen
-   * that itself counted a six-year career break as experience. Both were
-   * claims about the author on the string that advertises an audit of claims
-   * nobody checks. It now derives from the same `roles` array the About-page
-   * timeline renders, with breaks excluded, so the number cannot contradict
-   * the history shown directly beneath it.
+   * that itself counted a six-year career break as experience. It derives
+   * from the same `roles` array the About-page timeline renders, with breaks
+   * excluded, so the number cannot contradict the history shown beneath it.
    */
-  description: `Fixed-price agent-readiness audits: every claim in your CLAUDE.md, rules and memory files verified against the repository, with a CI gate left behind so the lies cannot come back. Run by a backend and platform engineer with ${yearsOfExperience()} years on systems that handle payments, transactions and personal data.`,
+  description: `Production systems where AI agents write most of the code — run inside verification gates, measured from git history, and written up honestly. ${yearsOfExperience()} years of backend engineering either side of a six-year break, now researching what AI-native delivery actually changes.`,
 
   /** Short form, used in the footer and structured data. */
-  tagline: 'Backend and platform engineer · agent-operated production systems',
+  tagline: 'AI-native software engineer · agent-operated production systems, measured',
 } as const;
 
 /**
- * Prefilled mailto for an audit enquiry, used by the home page, the offer page
- * and the sample deliverable.
+ * Prefilled mailto for starting a conversation about agent-native
+ * engineering, used by the home page, the method page, the sample report and
+ * the contact page.
  *
- * It lives here rather than in each page for the reason this file exists: all
- * three entry points must carry the same subject line, so that replies thread
- * as one conversation rather than three. It also means the offer's name — still
- * provisional — is one edit here rather than three that can be half-done.
+ * It lives here rather than in each page for the reason this file exists:
+ * every entry point must carry the same subject line, so that replies thread
+ * as one conversation rather than several. The subject deliberately invites
+ * a conversation rather than naming an offer — there is none published.
  */
-export const auditMailto = `mailto:${site.email}?subject=${encodeURIComponent('Agent-readiness audit')}`;
+export const conversationMailto = `mailto:${site.email}?subject=${encodeURIComponent('Agents in your team')}`;
 
 export type NavItem = {
   readonly href: string;
   readonly label: string;
   /**
    * Marks the one item that is the site's primary call to action, so it reads
-   * as an offer rather than as the second of six equal-weight links. Exactly
-   * one item should carry it — the point is contrast.
+   * as an invitation rather than as the second of six equal-weight links.
+   * Exactly one item should carry it — the point is contrast.
    */
   readonly emphasis?: boolean;
 };
 
 export const nav: readonly NavItem[] = [
-  { href: '/audit/', label: 'Audit', emphasis: true },
   { href: '/work/', label: 'Work' },
   { href: '/notes/', label: 'Notes' },
   { href: '/work/agent-operated-codebase/', label: 'Agents' },
   { href: '/about/', label: 'About' },
   { href: '/philosophy/', label: 'Philosophy' },
+  { href: '/contact/', label: 'Contact', emphasis: true },
 ];
 
 /** Absolute URL for a site-relative path. */
