@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { site, auditMailto } from '../../data/site.ts';
+import { site, conversationMailto } from '../../data/site.ts';
 
 /* The assertion snippets and the run output are held as strings rather than
    written into the markup, because both contain braces and Astro reads a brace
@@ -400,24 +400,24 @@ exit 1`;
         are still load-bearing, now held in place rather than trusted.
       </p>
       <p>
-        Delivered alongside this page: the rest of the findings, the full assertion suite, the
+        Produced alongside this page: the rest of the findings, the full assertion suite, the
         gate wired into CI, the context-economics read on which standing rules are never cited,
         a recorded hour walking the findings, and the same suite re-run thirty days later with a
-        note on what came back. Those are described on{' '}
-        <a href="/audit/">the audit page</a>, with the scope and the price.
+        note on what came back. The full method is written up on{' '}
+        <a href="/audit/">the audit page</a>.
       </p>
     </div>
 
     <div class="mt-14 rounded-lg border border-line bg-band p-6 sm:p-8">
       <h2 class="text-xl">Your context layer has never been checked</h2>
       <p class="mt-3 text-muted">
-        Mine had four false claims, and this run found six more. Two or three sentences about
-        your team, your repositories and how agents are used is enough to tell whether the audit
-        fits — I will say so plainly if it does not.
+        Mine had four false claims, and this run found six more. The tool is open source and the
+        format above is the whole trick — run it on your own repositories, and if agents write a
+        meaningful share of your team’s code, I would like to hear what it finds.
       </p>
       <p class="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3">
-        <a href={auditMailto} class="btn btn-primary">Start with an email</a>
-        <a href="/audit/" class="link-underline">Scope, deliverables and price</a>
+        <a href={conversationMailto} class="btn btn-primary">Compare notes by email</a>
+        <a href="/audit/" class="link-underline">The method, written up</a>
       </p>
     </div>
   </section>
