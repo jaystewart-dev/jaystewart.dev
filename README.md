@@ -160,6 +160,15 @@ The slug is the URL path with slashes replaced by hyphens, which is how
 it to `<Figure src={…} alt="…" />`. Until then `Figure` renders a correctly
 sized placeholder, so adding the real image shifts nothing.
 
+`astro:assets` resizes and re-encodes at build time through sharp, which is a
+direct devDependency rather than an inherited one: under pnpm, Astro resolves
+sharp from the project root and cannot see the nested copy in its own
+dependency tree. The build fails loudly if it is missing, so this is a note
+about why the dependency is declared, not a warning about a silent failure.
+Photographs are stripped of EXIF on the way in — the source files come off a
+phone and carry device and location metadata into what is a public
+repository.
+
 ## Deployment
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`: build, stealth
