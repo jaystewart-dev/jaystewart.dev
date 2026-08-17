@@ -1,10 +1,24 @@
 ---
-title: My development environment is a server
-description: One always-on machine, provisioned like production, that is simultaneously a warm CI runner and the place I actually work — why, and what it cost.
+title: My development environment was a server
+description: One always-on machine, provisioned like production, that was simultaneously a warm CI runner and the place I worked — why, what it cost, and the reversal thirteen days later.
 date: 2026-07-28
 topic: Infrastructure
 order: 1
 ---
+
+> **Update, 10 August 2026.** Thirteen days after this was published, I
+> destroyed the box and reversed the model: the laptop — now a 16 GB M4
+> Air — is the workstation again. The CI half had already stopped paying
+> for itself; every workflow had moved back to GitHub-hosted runners, and
+> the main system's merge gate now runs on the dev machine at push time.
+> What the reversal bought back is the two costs at the bottom of this
+> piece that a server could never fix: the hard dependency on
+> connectivity — with no fixed base, a dead link was a lost day — and the
+> hardware that emulators and Xcode need. The first cost did not
+> disappear; the single point of failure moved into my bag, and it is
+> managed by pushing everything daily rather than by backups. The piece
+> stays as written, because the reasoning was sound on the day it was
+> published, and the costs it named honestly are the ones that won.
 
 Not a container and not a hosted workspace. One always-on machine, provisioned
 with the same infrastructure-as-code discipline as production, that is
