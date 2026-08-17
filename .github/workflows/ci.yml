@@ -66,6 +66,13 @@ jobs:
       - name: Check internal links
         run: pnpm check:links
 
+      # A social image is only ever seen inside somebody else's crop. LinkedIn's
+      # mobile Featured card is the tightest one measured — it throws away 13%
+      # of the width — and the padding used to be exactly what it removed, so
+      # every image shipped with its text shaved and nothing noticed.
+      - name: Check social images survive the crop
+        run: pnpm check:og
+
       # The site ships no framework runtime by design. This is the assertion
       # that keeps it true — an accidental client-side component import would
       # otherwise pass every other check in this file.
