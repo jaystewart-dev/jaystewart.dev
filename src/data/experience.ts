@@ -3,9 +3,12 @@
  *
  * Three editorial decisions are encoded here rather than left to the template:
  *
- * 1. Thrive ran alongside the G&V role. Listed as a contract engagement so the
- *    overlapping dates read as what they were, rather than as two simultaneous
- *    full-time jobs.
+ * 1. Thrive ran alongside the G&V role, and both were day-rate contracts.
+ *    Both are labelled as such so the overlapping dates read as what they
+ *    were, rather than as two simultaneous full-time jobs. G&V was recorded
+ *    here as permanent until 2026-08-16, when checking this file against the
+ *    LinkedIn profile turned up the disagreement and Jay confirmed the
+ *    profile was the correct one.
  * 2. The current transit role is deliberately unnamed. See src/data/stealth.ts
  *    for what that constraint covers and why.
  * 3. The 2020–2026 career break is a first-class entry rather than a gap
@@ -78,12 +81,12 @@ export const roles: Role[] = [
   },
   {
     company: 'G&V Venture Brands',
-    title: 'Backend engineer',
+    title: 'Backend engineer — contract',
     start: '2017-07',
     end: '2020-03',
     period: 'Jul 2017 — Mar 2020',
     location: 'Bristol',
-    kind: 'permanent',
+    kind: 'contract',
     summary:
       'Backend engineer at a venture-brand agency, building and maintaining high-traffic e-commerce platforms — including work on Dyson’s store.',
     detail: [
