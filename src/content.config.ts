@@ -8,14 +8,14 @@ import { z } from 'zod';
  * Content schemas.
  *
  * These are the guardrail for content written months apart. A case study
- * missing its summary, or with a `status` that is not one of the four the
- * design renders, fails the build rather than rendering a gap.
+ * missing its summary, or with a `status` that is not one the design
+ * renders, fails the build rather than rendering a gap.
  */
 
 /** Where a project actually is, stated plainly. Ordered by maturity. */
 const status = z.enum([
   'In production', // real users, real money or real consequences
-  'Running, pre-launch', // deployed and operating, not yet publicly launched
+  'Parked, pre-launch', // built and deployed, never publicly launched; workers off, development parked
   'Released', // shipped and usable, low or unknown usage
   'Archived', // no longer worked on
 ]);
