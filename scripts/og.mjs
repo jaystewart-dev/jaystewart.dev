@@ -121,6 +121,29 @@ const pages = [
 ];
 
 /**
+ * Horizontal padding, and why it is not the round 80 it used to be.
+ *
+ * A 1200x630 image is the OG standard, and most surfaces show all of it. The
+ * LinkedIn mobile app does not: its Featured card renders the preview in a box
+ * of roughly 1.65:1, and fills it by matching height and cropping the sides.
+ * Measured off a real phone screenshot on 2026-08-16 — card image box 676x409,
+ * and solving the source-to-screen mapping from known ink positions put the
+ * crop at 76-79px per side, or about 13% of the width.
+ *
+ * The old padding was 80px, which is the crop almost to the pixel. Every image
+ * therefore rendered on LinkedIn with its eyebrow, headline and footer flush
+ * against the edges and the outermost glyphs shaved — "jaystewart.dev" losing
+ * its j, "Shorter pieces" starting hard against the frame.
+ *
+ * 136px keeps roughly 55px of visible margin after that crop, and simply looks
+ * a little more generous everywhere else. `scripts/check-og-safe-area.mjs`
+ * asserts every generated image against it, because this is exactly the class
+ * of thing that looks fine in an image viewer and is wrong in the only place
+ * anyone sees it.
+ */
+const PAD_X = 136;
+
+/**
  * The layout, as a plain object tree. satori accepts React elements; this is
  * the same shape without needing JSX in a build script.
  */
@@ -140,7 +163,7 @@ function template({ eyebrow, title, note }) {
         flexDirection: 'column',
         justifyContent: 'space-between',
         backgroundColor: colour.paper,
-        padding: '72px 80px',
+        padding: `72px ${PAD_X}px`,
         fontFamily: 'Inter',
       },
     },
