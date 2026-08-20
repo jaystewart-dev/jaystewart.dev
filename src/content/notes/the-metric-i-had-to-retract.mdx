@@ -7,13 +7,14 @@ order: 1
 draft: true
 ---
 
-Since April I have been building a production SaaS almost entirely with coding
-agents. One person, real users, five months of history. What I did not have was
-a single number about whether any of it worked.
+Since March I have not written code by hand. I run a production SaaS — one
+person, real users — where coding agents do the implementation and what I
+contribute is attention, direction, and judgment about what is worth building.
+Five months of that, and I had no numbers at all about whether it was working.
 
 So I had an agent write a script to backfill delivery metrics out of git. It
-took a morning. By the afternoon three of its four findings had been retracted,
-using its own output.
+took a morning. By the afternoon most of what it found had been retracted, using
+its own output.
 
 I am going to be exact about who did what in this piece, because the subject is
 misplaced confidence and it would be absurd to be loose about it. **The agent
@@ -23,24 +24,9 @@ the same agent, on the same day, before I had reviewed anything.
 
 That sequence is the interesting part, so it is what this is about.
 
-## The number that survived
+## The metric
 
-**Of 1,802 non-merge commits between 16 April and 19 August, 1,648 were
-agent-touched — 91.5%.** A commit counts if Claude authored it or co-authored
-it, and both are recorded by the tooling rather than reconstructed later.
-
-It holds up because it is almost too simple to get wrong. It also means less
-than it sounds like: it counts **participation, not authorship.** A commit an
-agent started and I rewrote still carries the trailer. The sentence it supports
-is _an agent had a hand in nine of ten commits_, and never _an agent wrote nine
-tenths of the code._
-
-That distinction is not pedantry. The second sentence is the one people want to
-quote, and it is not in the data.
-
-## The metric that did not survive
-
-The script also produced a rework rate — some signal about whether all that
+The script produced a rework rate — some signal about whether all that
 volume was being paid for later. It was defined as a commit meeting **two**
 conditions:
 
@@ -116,18 +102,22 @@ A metric that fails _in the direction you already expect_ gets published.
 
 ## The comparison that also had to go
 
-The other tempting number was agent commits against human commits — same
-history, same repository, one rate each. They came out nearly identical, which
-would have made a very quotable sentence.
+The same script offered a second temptation: split that fix rate by whether a
+commit was agent-written or not, and compare. The two came out nearly identical,
+which would have made a very quotable sentence about agents matching humans on
+quality.
 
-The human population is 154 commits out of 1,802. It includes dependabot, and
-my own commits that simply lost the trailer. And it is doing visibly different
-work: 19.6% documentation against 11.5%, 7.3% schema against 1.9%.
+There is no control group here, and there was never going to be one. The
+non-agent commits are a tenth of the history, they include a dependency bot, and
+they are doing visibly different work — roughly twice the documentation, four
+times the schema. Two groups doing different things at a ten-to-one size ratio
+cannot be compared by setting their rates side by side.
 
-Two groups doing different things at a ten-to-one size ratio cannot be compared
-by setting their rates side by side. There is no control group here. There was
-never going to be one — I am one person, and I cannot run the counterfactual
-where I wrote the same five months by hand.
+I am one person who has not written code by hand since March. I cannot run the
+counterfactual where I wrote the same five months myself, so no number from this
+repository can answer whether agents are better or worse than me at anything.
+Worth saying plainly, because it is the comparison everyone wants and the one
+this data will never support.
 
 ## What we kept instead of deleting it
 
