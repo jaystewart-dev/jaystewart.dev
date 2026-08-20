@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import CaseStudyCard from '../components/CaseStudyCard.astro';
 import { site, conversationMailto } from '../data/site.ts';
-import { yearsOfExperience } from '../data/experience.ts';
+import { careerStartYear } from '../data/experience.ts';
 
 const studies = (await getCollection('caseStudies', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
@@ -13,7 +13,7 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
 );
 
-const years = yearsOfExperience();
+const startYear = careerStartYear();
 ---
 
 <Base title={`${site.name} — ${site.role}`} description={site.description} bareTitle>
@@ -26,15 +26,16 @@ const years = yearsOfExperience();
 
     <div class="mt-8 max-w-2xl space-y-5 text-lg text-muted">
       <p>
-        {years} years of backend engineering. Most of it agency work on e-commerce platforms — high-traffic
-        stores processing transactions and customer data, including Dyson’s. The kind of systems where
-        an outage means lost orders rather than a failed build.
+        Backend engineering since {startYear}. Most of it agency work on e-commerce platforms —
+        high-traffic stores processing transactions and customer data, including Dyson’s. The
+        kind of systems where an outage means lost orders rather than a failed build.
       </p>
       <p>
-        Then I stopped, and spent six years travelling. I came back to engineering in March
-        2026, started building with coding agents, and the two production systems written up
-        below are what came of it — not as a portfolio list, but as the decisions, trade-offs
-        and mistakes that actually made them.
+        Then both my clients dried up at the start of the pandemic, and I stopped — six years
+        travelling, no software in any of them. I came back to engineering in March 2026,
+        started building with coding agents, and the two production systems written up below are
+        what came of it — not as a portfolio list, but as the decisions, trade-offs and mistakes
+        that actually made them.
       </p>
       <p>
         More than 8 in 10 commits across those systems are agent-written — counted from git
@@ -43,6 +44,13 @@ const years = yearsOfExperience();
         <a href="/work/agent-operated-codebase/" class="link-underline text-accent">
           How that works
         </a> is stated plainly rather than left to be inferred.
+      </p>
+      <p>
+        Writing the code is the smaller half. The same sessions provision and configure the
+        servers, run the deploys, read production logs back over SSH, drive the service CLIs and
+        tool integrations the stack depends on, and maintain the decision records the next
+        session reads before it touches anything. What I built is the system they operate inside
+        — the gates, the context layer, and the checks that fail when either goes stale.
       </p>
       <p>
         Building that way moved the interesting questions. Not whether agents can write code —
@@ -95,8 +103,21 @@ const years = yearsOfExperience();
         </div>
         <div>
           <dt class="eyebrow">The measurements</dt>
+          {
+            /*
+            A start month, never a duration. "Five months" was both stale on
+            arrival and wrong: the earliest of the two production repositories
+            was created on 2026-04-16 and the second on 2026-05-01, so every
+            commit the metrics count postdates April 2026 — the March restart
+            is when the work resumed, not when the counted history begins.
+            A duration also invites a reader to do the arithmetic against
+            today's date and find it does not add up; a start month is
+            self-updating and cannot be argued with. Same rule the spoken
+            version follows (delivery-co, conversation-ladder.md).
+          */
+          }
           <dd class="mt-1.5 text-muted">
-            Delivery metrics from 5 months of agent-operated production history — authorship,
+            Delivery metrics from every agent-operated commit since April 2026 — authorship,
             rework, cycle time, cost — publishing to{' '}
             <a href="/notes/" class="link-underline">the notes</a> as they land.
           </dd>

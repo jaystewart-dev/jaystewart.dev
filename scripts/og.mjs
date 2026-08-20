@@ -29,8 +29,11 @@ import satori from 'satori';
 // from 22.18 (this repo needs Node 22+, and CI resolves `node-version: '22'`
 // to current). Worth it: the About image used to hardcode "Twelve years" while
 // the About page it previews computed the real figure two files away — the
-// same claim, maintained twice, wrong once.
-import { yearsOfExperience } from '../src/data/experience.ts';
+// same claim, maintained twice, wrong once. It is a span rather than a
+// duration now, for the reasons on `careerStartYear`, and a card has no room
+// to name the career break beside a years figure — which is exactly the
+// context a duration needs and a start year does not.
+import { careerStartYear } from '../src/data/experience.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = join(root, 'public/og');
@@ -101,7 +104,7 @@ const pages = [
   {
     slug: 'about',
     eyebrow: 'About',
-    title: `${yearsOfExperience()} years of backend engineering`,
+    title: `Backend engineering since ${careerStartYear()}`,
     note: 'From e-commerce for Dyson to production SaaS, either side of a six-year break',
   },
   { slug: 'philosophy', eyebrow: 'Philosophy', title: 'How I think about building things' },

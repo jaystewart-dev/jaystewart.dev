@@ -48,6 +48,21 @@ branch. Direction is short written instructions — sometimes dictated from a
 phone. A session ends in a pull request like anyone else's, and the pull
 request meets the same gates a human's would.
 
+It is also not only the code, and the commit share in the header is the
+narrowest available reading of what is happening. The same sessions provision
+and configure the servers the work runs on, drive the deploys and read the
+logs back over SSH when production is misbehaving, operate the service CLIs
+and tool integrations the stack depends on — hosting, database branching,
+error reporting, the release path — and maintain the decision records and
+context files the next session will read before touching any of it. Generated
+diff is simply the part of that with a number attached.
+
+That breadth is the reason for everything below rather than a separate boast.
+An agent that only writes code is contained by code review. An agent that
+also touches infrastructure, releases and its own standing instructions is
+not, because two of those three produce no diff for anyone to review — which
+is why the gates in this write-up are built where they are.
+
 The economics of this are lopsided in a way that took a while to internalise.
 Generation is effectively unbounded — ten sessions produce diff faster than
 any one person can meaningfully read. Review attention is the fixed resource.
