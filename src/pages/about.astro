@@ -1,16 +1,16 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import { roles, yearsOfExperience } from '../data/experience.ts';
+import { careerStartYear, roles } from '../data/experience.ts';
 import { site } from '../data/site.ts';
 import portrait from '../assets/media/jay-stewart.jpg';
 
-const years = yearsOfExperience();
+const startYear = careerStartYear();
 ---
 
 <Base
   title="About"
-  description={`Jay Stewart — ${years} years of backend engineering, from Magento e-commerce for Dyson to production SaaS handling payments, video and infrastructure, either side of a six-year break. Remote-first, based in Bristol, UK.`}
+  description={`Jay Stewart — backend engineering since ${startYear}, from Magento e-commerce for Dyson to production SaaS handling payments, video and infrastructure, either side of a six-year break. Remote-first, based in Bristol, UK.`}
 >
   <section class="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-20">
     <Image
@@ -44,9 +44,18 @@ const years = yearsOfExperience();
 
       <h2>The years before</h2>
       <p>
-        Most of it was agency backend work on e-commerce, which is an unglamorous place to learn
-        the things that matter. High-traffic stores processing real transactions and real
-        customer data, including work on Dyson’s platform. The systems were not novel. They were
+        I came to it late, and sideways. I decided I wanted to learn web development; my closest
+        friend at the time was already a developer and gave me the first lesson. I took a
+        part-time cleaning job in a business centre and spent the rest of my time teaching
+        myself, and about six months later one of the companies in that same building hired me
+        as a junior developer. That was {startYear}, and it was luck as much as anything — which
+        is worth saying, because coming back in 2026 happened by a route just as unplanned.
+      </p>
+      <p>
+        Most of what followed was agency backend work on e-commerce, which is an unglamorous
+        place to learn the things that matter. High-traffic stores processing real transactions
+        and real customer data, including work on Dyson’s platform. The systems were not novel.
+        They were
         {' '}<em>consequential</em> — an outage was lost orders, a bad migration was a support queue,
         and a mishandled payment was somebody’s actual money.
       </p>
@@ -58,10 +67,14 @@ const years = yearsOfExperience();
 
       <h2>Then six years off</h2>
       <p>
-        In March 2020 I stopped, and did not work again until March 2026. I travelled, lived
-        simply, and mostly did not think about software. It was deliberate, and I am not going
-        to dress it up as a sabbatical with a thesis attached — I had had enough, I could afford
-        to stop, so I stopped.
+        Both of my clients dried up at the start of the pandemic — the agency contract and the
+        clinic whose booking system I had been running for four years. In March 2020 the work
+        was simply not there, and I did not go looking for more. I travelled instead, lived
+        simply, and did not work again until March 2026.
+      </p>
+      <p>
+        I am not going to dress that up as a sabbatical with a thesis attached. The work went, I
+        had had enough, and I could afford to stop — so I stopped.
       </p>
       <p>
         I mention it because the dates on this page would otherwise imply six years of quiet
@@ -75,6 +88,14 @@ const years = yearsOfExperience();
         bottleneck had moved. I am technical co-founder of an early-stage transit company and I
         run AgendaProfe alongside it. In practice that means I do all of it: schema design, API,
         mobile, infrastructure as code, CI, monitoring, and the on-call rotation of one.
+      </p>
+      <p>
+        Most of that is delegated to agents, and not only the code. They provision the servers,
+        run the deploys, go into a live system over SSH when something is wrong, drive the
+        service CLIs and tool integrations the stack depends on, and keep the decision records
+        current so the next session starts on policy rather than on instinct. What is left for
+        me is the direction and the gates — which turns out to be the larger job, and the one
+        that does not delegate.
       </p>
       <p>
         Two production systems in the months since is not a claim about how hard I work. It is a

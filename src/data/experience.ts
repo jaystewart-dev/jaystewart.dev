@@ -1,7 +1,7 @@
 /**
  * Employment history.
  *
- * Three editorial decisions are encoded here rather than left to the template:
+ * Four editorial decisions are encoded here rather than left to the template:
  *
  * 1. Thrive ran alongside the G&V role, and both were day-rate contracts.
  *    Both are labelled as such so the overlapping dates read as what they
@@ -18,6 +18,9 @@
  *    the honest version and the stronger one — it is what makes the output
  *    since the restart legible as compression rather than as an ordinary
  *    career spread thin.
+ * 4. Experience is stated as a span — "since 2012" — and never as a number of
+ *    years. See `careerStartYear` below for why, and for the two occasions a
+ *    duration claim was wrong on this site before the rule existed.
  */
 
 export interface Role {
@@ -77,7 +80,7 @@ export const roles: Role[] = [
     location: '—',
     kind: 'break',
     summary:
-      'Six years away from engineering entirely: travelling, living simply, and not working. Deliberate, and not a period I want to write a lesson about. I came back to it in March 2026 after starting to build with coding agents.',
+      'Both clients dried up at the start of the pandemic, and I did not go looking for more. Six years away from engineering entirely: travelling, living simply, and not working. Not a period I want to write a lesson about. I came back to it in March 2026 after starting to build with coding agents.',
   },
   {
     company: 'G&V Venture Brands',
@@ -148,38 +151,33 @@ export const roles: Role[] = [
 ];
 
 /**
- * Years actually spent working, as the union of every non-break role interval.
+ * The year backend engineering started — the earliest non-break role.
  *
- * Deliberately not the span from the first start date. That version counted
- * the six-year career break above as experience and overstated the figure by
- * roughly six years — a claim on the selling surface that nothing checked,
- * which is the exact failure this site sells an audit of. Deriving it from
- * `roles` means the number and the timeline rendered from the same array
- * cannot disagree, and neither can go stale.
+ * A span, deliberately, and never a duration. The years figure this replaced
+ * was wrong twice: hardcoded as "twelve" while a function two files away
+ * computed fourteen, and then correctly interpolating a fourteen that itself
+ * counted the six-year career break as experience. Both shipped, and both
+ * were claims about the author on the page selling an audit of exactly that
+ * kind of claim.
  *
- * Union rather than sum because the roles overlap: Thrive ran alongside G&V,
- * and the transit role alongside the independent one. Summing durations would
- * double-count both.
+ * A more careful duration was the obvious third attempt and is not the fix.
+ * Any duration has to be reconciled against the break every single time it is
+ * written, goes stale between writings, and invites a reader to check the
+ * arithmetic against the timeline directly beneath it. A span cannot be
+ * stale, cannot disagree with the dates, and claims nothing they do not
+ * already show. The LinkedIn profile settled on the same rule first
+ * (delivery-co, linkedin.md — "no duration claim has crept back in"), and the
+ * two surfaces are checked against each other before any outreach, so the
+ * site follows it rather than inventing a second version of one history.
+ *
+ * Derived from `roles` rather than typed, so a corrected start date moves the
+ * copy with it.
  */
-export function yearsOfExperience(now: Date = new Date()): number {
-  const worked = roles
+export function careerStartYear(): number {
+  const starts = roles
     .filter((role) => role.kind !== 'break')
-    .map((role) => ({
-      from: new Date(`${role.start}-01`).getTime(),
-      to: role.end ? new Date(`${role.end}-01`).getTime() : now.getTime(),
-    }))
-    .sort((a, b) => a.from - b.from);
+    .map((role) => role.start)
+    .sort();
 
-  let total = 0;
-  let mergedTo = -Infinity;
-
-  for (const { from, to } of worked) {
-    const start = Math.max(from, mergedTo);
-    if (to > start) {
-      total += to - start;
-      mergedTo = to;
-    }
-  }
-
-  return Math.floor(total / (365.25 * 24 * 60 * 60 * 1000));
+  return Number(starts[0].slice(0, 4));
 }
