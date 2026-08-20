@@ -9,7 +9,7 @@ import Base from '../layouts/Base.astro';
 const principles = [
   {
     title: 'Alarm on meaning, not liveness',
-    body: `A health check that returns "ok" when the port is open tells you the process is running. It does not tell you the process is doing anything. I learned this from an outage where every bus vanished from a map and the uptime check stayed green for the duration — the service was alive, serving, and doing no work at all.`,
+    body: `A health check that returns "ok" when the port is open tells you the process is running. It does not tell you the process is doing anything. This one came from a regression that hid every bus from a map while the uptime check stayed green for the duration — the service was alive, serving, and doing no work at all.`,
     evidence: 'Detector heartbeats report work done, not that they are up.',
   },
   {
