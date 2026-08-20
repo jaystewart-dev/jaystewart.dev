@@ -1,0 +1,163 @@
+---
+title: The metric I had to retract
+description: I built a rework metric for five months of agent-written code and falsified it the same afternoon. The gate I was proudest of passed 89.6% of commits, and its pass rate rose with volume — which is exactly the direction my hypothesis pointed.
+date: 2026-08-20
+topic: Measurement
+order: 1
+draft: true
+---
+
+Since April I have been building a production SaaS almost entirely with coding
+agents. One person, real users, five months of history. What I did not have was
+a single number about whether any of it worked.
+
+So I wrote a script to backfill delivery metrics out of git. It took a morning.
+By the afternoon I had retracted three of its four findings, using its own
+output.
+
+The retraction is the more useful half, so that is what this is about.
+
+## The number that survived
+
+**Of 1,802 non-merge commits between 16 April and 19 August, 1,648 were
+agent-touched — 91.5%.** A commit counts if Claude authored it or co-authored
+it, and both are recorded by the tooling rather than reconstructed later.
+
+It holds up because it is almost too simple to get wrong. It also means less
+than it sounds like: it counts **participation, not authorship.** A commit an
+agent started and I rewrote still carries the trailer. The sentence it supports
+is _an agent had a hand in nine of ten commits_, and never _an agent wrote nine
+tenths of the code._
+
+That distinction is not pedantry. The second sentence is the one people want to
+quote, and it is not in the data.
+
+## The metric that did not survive
+
+I also wanted a rework rate — some signal about whether all that volume was
+being paid for later. I defined it as a commit that met **two** conditions:
+
+1. Its subject line says it is a fix or a revert.
+2. It touches a file whose previous commit landed less than seven days earlier.
+
+I was rather pleased with the second condition. Subject lines alone are noisy —
+routine maintenance on year-old code reads as a fix. Adding recency seemed to
+isolate the case that actually matters: churn on work that is still warm. I
+wrote in the script's header that both halves were needed.
+
+Then I measured how many commits the recency half actually excludes.
+
+| Window  | Commits passing the gate |
+| ------- | -----------------------: |
+| 1 day   |                    75.6% |
+| 7 days  |                **89.6%** |
+| 30 days |                    93.7% |
+
+The gate removed about one commit in ten. At a **one-day** window it still
+passed three quarters of them. The working set in a single-developer repository
+is small and hot, so nearly everything touches something recent. My careful
+second condition was doing almost nothing, and the compound metric was the
+subject-line rate wearing a second condition for credibility.
+
+## The part that actually matters
+
+A weak filter is embarrassing. A filter that moves with the thing you are
+measuring is worse, and that is what this one does.
+
+| Month | Commits | Gate pass rate |
+| ----- | ------: | -------------: |
+| April |     125 |          72.8% |
+| May   |     152 |          73.7% |
+| June  |     482 |          89.0% |
+| July  |     975 |      **94.4%** |
+
+More commits mechanically means a higher chance that any given file was touched
+recently. The gate does not hold still while volume changes — **it loosens.**
+So a metric gated on it drifts upward with volume on its own, with no change in
+quality whatsoever.
+
+Which brings me to the finding I lost.
+
+## The headline was the thing I already believed
+
+The claim I had written down that morning was: _rework rate co-moves with
+commit volume, peaking in July at the height of agent parallelism._ July was
+the month I had the most agent sessions running at once, and the month with the
+most unreviewed work piling up. The chart agreed. It confirmed something I had
+written in my own notes weeks earlier about parallelism being a multiplier on
+mistakes.
+
+Two things were wrong with it.
+
+**It is not even monotonic.** May runs a 34.2% fix rate against June's 23.4%,
+on a third of the commits. One counterexample in five data points is not a
+relationship.
+
+**And the confound points the same way as the hypothesis.** If the gate loosens
+as volume rises, then "rework rises with volume" is what the instrument
+produces whether or not it is true of the code. I could not have distinguished
+the finding I wanted from the artifact I built, because they predict the same
+chart.
+
+That is the shape worth watching for. A metric that fails randomly gets caught.
+A metric that fails _in the direction you already expect_ gets published.
+
+## The comparison I also had to drop
+
+The other tempting number was agent commits against human commits — same
+history, same repository, one rate each. They came out nearly identical, which
+would have made a very quotable sentence.
+
+The human population is 154 commits out of 1,802. It includes dependabot, and
+my own commits that simply lost the trailer. And it is doing visibly different
+work: 19.6% documentation against 11.5%, 7.3% schema against 1.9%.
+
+Two groups doing different things at a ten-to-one size ratio cannot be compared
+by setting their rates side by side. There is no control group here. There was
+never going to be one — I am one person, and I cannot run the counterfactual
+where I wrote the same five months by hand.
+
+## What I did instead of deleting it
+
+Every column is still generated: the subject-line rate, the gate pass rate, and
+the fix rate inside and outside the gate. That last pair is the direct evidence
+the gate does not discriminate — the two run together in May and July and
+**invert** in August.
+
+Keeping them makes the confound visible to the next person instead of inherited
+by them. What did get deleted is the column _name_. It used to be
+`rework_rate_pct`, and a column called that is a claim. It is
+`fix_subject_pct` now, which is all it ever measured.
+
+Three things are still absent and staying absent: pull-request cycle time,
+time-to-green, and review-to-merge latency. Git holds no timestamp for when a
+pull request opened, when its checks first went green, or when a review landed.
+Those need the forge's API. I would rather have a gap than a proxy assembled
+out of commit dates, because once it is drawn on a chart it looks exactly like
+a measurement.
+
+## The check that would have caught it in five minutes
+
+If you are building a metric for your own AI adoption — and the pressure to
+produce one is considerable right now — here is the cheap test I should have
+run first.
+
+**Before reporting any conditional rate, report the base rate of each condition
+on its own.** What fraction of _everything_ passes filter A? What fraction
+passes filter B? If one of them passes 90% of your population, it is not a
+filter, it is decoration, and your compound metric is the other condition with
+better marketing.
+
+**Then ask whether either condition moves with your independent variable.** If
+you are measuring something against volume, and one of your filters gets more
+permissive as volume rises, the relationship you are about to report may be
+arithmetic rather than evidence.
+
+Neither check is sophisticated. Both take minutes. I skipped them because the
+definition sounded rigorous when I wrote it down, and a definition that sounds
+rigorous is exactly the kind you forget to test.
+
+The whole argument for measuring an agent-operated system is that the claims
+about it are otherwise unfalsifiable. That argument only works if the
+measurements are falsifiable too — which means occasionally one of them has to
+die in public.
