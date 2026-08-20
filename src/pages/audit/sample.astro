@@ -241,8 +241,8 @@ exit 1`;
           <dd>
             <pre><code>{assertionSymbol}</code></pre>
             <p class="cite">
-              Reported as a suspected finding and confirmed by hand before it went in the
-              report.{' '}
+              Reported as a suspected finding and confirmed against the re-export before it went
+              in the report.{' '}
               <code>symbol_at_path</code> is regex-based and{' '}
               <a
                 href="https://github.com/jaystewart-dev/groundtruth/blob/main/docs/adr/0003-regex-based-symbol-matching-for-mvp.md"
@@ -316,10 +316,10 @@ exit 1`;
             <p class="cite">
               Every mechanical check verifies one file against the repository. This finding is
               two files disagreeing with each other, and both pass. It comes out of the
-              contradiction pass, which is a person reading each context file against the others
-              — and it is the reason this is an audit rather than a tool you install. The report
-              says plainly that nothing guards this one; a green suite that implied otherwise
-              would be worse than no suite.
+              contradiction pass, which reads every context file against the others rather than
+              each against the repository — and it is the reason this is an audit rather than a
+              tool you install. The report says plainly that nothing guards this one; a green
+              suite that implied otherwise would be worse than no suite.
             </p>
           </dd>
         </dl>
