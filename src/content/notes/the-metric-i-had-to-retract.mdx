@@ -1,181 +1,125 @@
 ---
-title: The metric I had to retract
-description: An agent built me a rework metric, asserted in its own header that the design was sound, and produced a finding that confirmed something I already believed. The same agent killed it four hours later. The gate it rested on passed 89.6% of commits.
+title: The measurement that told me what I wanted to hear
+description: I asked an AI to measure whether my work was going well. It gave me an answer that matched what I already believed — and when I checked how it worked, the answer had been manufactured by the method rather than found in the work.
 date: 2026-08-20
 topic: Measurement
 order: 1
 draft: true
 ---
 
-Since March I have not written code by hand. I run a production SaaS — one
-person, real users — where coding agents do the implementation and what I
-contribute is attention, direction, and judgment about what is worth building.
-Five months of that, and I had no numbers at all about whether it was working.
+Since March I have not written a line of code by hand. I run a small software
+product — real users, one person — where AI does the building and my job is
+deciding what gets built and whether it is any good.
 
-So I had an agent write a script to backfill delivery metrics out of git. It
-took a morning. By the afternoon most of what it found had been retracted, using
-its own output.
+Five months of that, and I had no idea whether it was working. So I asked the AI
+to go through the project's history and measure it.
 
-I am going to be exact about who did what in this piece, because the subject is
-misplaced confidence and it would be absurd to be loose about it. **The agent
-wrote the script, chose the definitions, and produced the findings. The belief
-that made the wrong finding attractive was mine.** The retraction came out of
-the same agent, on the same day, before I had reviewed anything.
+It gave me an answer. The answer was wrong, and it was wrong in the most
+dangerous way available: it agreed with me.
 
-That sequence is the interesting part, so it is what this is about.
+## What I wanted to know
 
-## The metric
+A simple thing. When you work fast, do you end up fixing more of your own mess
+afterwards?
 
-The script produced a rework rate — some signal about whether all that
-volume was being paid for later. It was defined as a commit meeting **two**
-conditions:
+Every change to the project is saved with a short note describing it. Some of
+those notes say things like "fix" or "undo". So you can count them, and get a
+rough sense of how much of the work is repair rather than progress.
 
-1. Its subject line says it is a fix or a revert.
-2. It touches a file whose previous commit landed less than seven days earlier.
+Counting the word "fix" on its own is too crude, though. Tidying up something
+you wrote a year ago is not the same as patching something you broke last
+Tuesday. So the measurement used two rules. To count as repair, a change had to
+**say it was a fix**, and it had to **touch something that had been worked on in
+the last week**.
 
-The second condition is the one that makes this look like careful work. Subject
-lines alone are noisy — routine maintenance on year-old code reads as a fix.
-Recency appears to isolate the case that actually matters: churn on work that is
-still warm. The script's own header said so, in as many words: **both halves
-are needed.**
+Two rules sounds more careful than one. That was the whole problem.
 
-Nobody had checked whether the second half did anything.
+## The answer I liked
 
-| Window  | Commits passing the gate |
-| ------- | -----------------------: |
-| 1 day   |                    75.6% |
-| 7 days  |                **89.6%** |
-| 30 days |                    93.7% |
+The result came back: the busier the month, the more repair work.
 
-The gate removed about one commit in ten. At a **one-day** window it still
-passed three quarters of them. The working set in a single-developer repository
-is small and hot, so nearly everything touches something recent. The careful
-second condition was doing almost nothing, and the compound metric was the
-subject-line rate wearing a second condition for credibility.
+The busiest month by far had been July, when I had the most AI sessions running
+at once. And weeks earlier I had written a note to myself saying that running
+lots of things in parallel multiplies whatever you are doing — including your
+mistakes.
 
-## The part that actually matters
+So here was a chart, made from my own project, agreeing with something I had
+already decided was true.
 
-A weak filter is embarrassing. A filter that moves with the thing you are
-measuring is worse, and that is what this one does.
+I believed it immediately. That is the part worth paying attention to.
 
-| Month | Commits | Gate pass rate |
-| ----- | ------: | -------------: |
-| April |     125 |          72.8% |
-| May   |     152 |          73.7% |
-| June  |     482 |          89.0% |
-| July  |     975 |      **94.4%** |
+## What checking it found
 
-More commits mechanically means a higher chance that any given file was touched
-recently. The gate does not hold still while volume changes — **it loosens.**
-So a metric gated on it drifts upward with volume on its own, with no change in
-quality whatsoever.
+The second rule — _touched something worked on in the last week_ — was supposed
+to be the careful one. It turns out it excluded almost nothing. **Nearly nine in
+ten changes passed it.** Even when I narrowed it from a week to a single day, it
+still let three quarters through.
 
-Which brings me to the finding I nearly published.
+The reason is obvious in hindsight. I am one person working on one project, so
+I am always circling the same handful of files. Practically everything I touch
+was touched recently. The rule that was supposed to be a filter was a formality.
 
-## It confirmed something I had already written down
+Then the worse part. Because the rule is about _recent_ activity, it gets easier
+to pass the busier you are. In a quiet month it let through seven changes in ten.
+In the busiest month, more than nine.
 
-The headline was: _rework rate co-moves with commit volume, peaking in July at
-the height of agent parallelism._
+So the measurement gets bigger when I get busier — **on its own, whether or not
+anything has actually gone wrong.**
 
-July was the month I had the most agent sessions running at once, and the month
-with the most unreviewed work piling up. And weeks earlier, in my own operating
-notes, I had written that parallelism is a multiplier on whatever it is pointed
-at, including a mistake. Here was a chart agreeing with me, out of my own
-repository, produced by a process I had not yet inspected.
+Which means my finding, "working faster produces more repair work," is what this
+method produces no matter what. It was not a discovery about my work. It was a
+description of how busy I had been, wearing a costume.
 
-I would have believed it. That is the whole problem.
+An everyday version: suppose you measured how many of your emails were urgent by
+counting the ones that say "urgent" _and_ arrived in the last hour. On a busy
+day, everything arrived in the last hour — so busy days automatically look more
+urgent, and you would conclude that being busy makes people needier. It doesn't.
+Your ruler is just made of the same stuff you are trying to measure.
 
-Two things were wrong with it.
+## The kind of wrong that gets published
 
-**It is not even monotonic.** May runs a 34.2% fix rate against June's 23.4%,
-on a third of the commits. One counterexample in five data points is not a
-relationship.
+A measurement that produces nonsense gets caught, because someone looks at it
+and says that cannot be right.
 
-**And the confound points the same way as the hypothesis.** If the gate loosens
-as volume rises, then "rework rises with volume" is what the instrument
-produces whether or not it is true of the code. The finding and the artifact
-predict the same chart, so the chart cannot tell them apart — and neither could
-I, from looking at it.
+A measurement that produces the answer you were already expecting does not get
+that look. It gets nodded at, and repeated, and eventually it ends up on a slide
+with the caveats stripped off.
 
-That is the shape worth watching for. A metric that fails randomly gets caught.
-A metric that fails _in the direction you already expect_ gets published.
+That is the whole lesson, and it is not really about software:
 
-## The comparison that also had to go
+**A result that surprises you gets checked. A result that flatters you gets
+used.**
 
-The same script offered a second temptation: split that fix rate by whether a
-commit was agent-written or not, and compare. The two came out nearly identical,
-which would have made a very quotable sentence about agents matching humans on
-quality.
+The uncomfortable footnote is that the AI which built the flawed measurement is
+also the one that found the flaw. Not on its own initiative — it found it
+because checking the method was a scheduled job, with time set aside, and the
+instruction was _try to break this_ rather than _does this look right?_ My own
+review had not happened yet. It was still on the list when the whole thing fell
+over.
 
-There is no control group here, and there was never going to be one. The
-non-agent commits are a tenth of the history, they include a dependency bot, and
-they are doing visibly different work — roughly twice the documentation, four
-times the schema. Two groups doing different things at a ten-to-one size ratio
-cannot be compared by setting their rates side by side.
+I do not think that means AI cannot be trusted with measurement. I think it
+means the checking step has to be somebody's actual job, has to happen before
+anyone sees the number, and has to be phrased as an attack. "Review this" tends
+to come back agreeing with you — and agreement was already the problem.
 
-I am one person who has not written code by hand since March. I cannot run the
-counterfactual where I wrote the same five months myself, so no number from this
-repository can answer whether agents are better or worse than me at anything.
-Worth saying plainly, because it is the comparison everyone wants and the one
-this data will never support.
+## What I do now, before believing any number
 
-## What we kept instead of deleting it
+Two questions, and neither requires knowing anything about software.
 
-Every column is still generated: the subject-line rate, the gate pass rate, and
-the fix rate inside and outside the gate. That last pair is the direct evidence
-the gate does not discriminate — the two run together in May and July and
-**invert** in August.
+**First: how much does each rule actually rule out?** If one of your conditions
+lets nine out of ten things through, it is not doing any work. Your careful
+two-part measurement is a one-part measurement with a decoration attached.
 
-Keeping them makes the confound visible to the next reader instead of inherited
-by them. What did get deleted is the column _name_. It used to be
-`rework_rate_pct`, and a column called that is a claim. It is
-`fix_subject_pct` now, which is all it ever measured.
+**Second: does anything in the method change along with the thing being
+studied?** If you are asking whether being busy causes problems, and part of
+your method quietly gets more generous when you are busy, then the answer is
+built into the question.
 
-Three things are still absent and staying absent: pull-request cycle time,
-time-to-green, and review-to-merge latency. Git holds no timestamp for when a
-pull request opened, when its checks first went green, or when a review landed.
-Those need the forge's API. I would rather have a gap than a proxy assembled
-out of commit dates, because once it is drawn on a chart it looks exactly like
-a measurement.
+Both take five minutes. Neither is clever. They get skipped because a method
+that _sounds_ careful is exactly the kind nobody tests — and because the result
+agreed with what everybody already thought.
 
-## The check that would have caught it in five minutes
-
-If you are building a metric for your own AI adoption — and the pressure to
-produce one is considerable right now — here is the cheap test that should run
-before anyone reads the output.
-
-**Before reporting any conditional rate, report the base rate of each condition
-on its own.** What fraction of _everything_ passes filter A? What fraction
-passes filter B? If one of them passes 90% of your population, it is not a
-filter, it is decoration, and your compound metric is the other condition with
-better marketing.
-
-**Then ask whether either condition moves with your independent variable.** If
-you are measuring something against volume, and one of your filters gets more
-permissive as volume rises, the relationship you are about to report may be
-arithmetic rather than evidence.
-
-Neither check is sophisticated. Both take minutes.
-
-## The uncomfortable bit, which is the reason to write any of this down
-
-My working rule is that agents do the implementation and I supply the judgment.
-The measurement layer is where that rule is supposed to matter most, because a
-number is the thing that survives into a slide with none of its caveats
-attached.
-
-What happened is that the implementation, the definition, the finding, **and
-the check that killed the finding** all came from the agent. My contribution
-was a prior that would have made the wrong answer easy to accept, and a review
-step that had not happened yet.
-
-I do not think the lesson is that agents cannot be trusted with measurement.
-The instrument caught its own error inside four hours, which is faster than
-most review cycles I have worked in. But it is not the division of labour I
-describe when I describe how I work, and noticing that is worth more than the
-metric was.
-
-The argument for measuring an agent-operated system at all is that the claims
-about it are otherwise unfalsifiable. That argument only holds if the
-measurements are falsifiable too — which means occasionally one of them has to
-die in public.
+The reason to measure any of this is that otherwise the claims people make about
+working with AI cannot be checked at all. That only means something if the
+measurements can be checked too. Which occasionally requires one of them to die
+in public.
