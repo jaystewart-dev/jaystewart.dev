@@ -6,7 +6,7 @@
  * change it and no chance of two pages disagreeing.
  */
 
-import { yearsOfExperience } from './experience.ts';
+import { careerStartYear } from './experience.ts';
 
 export const site = {
   name: 'Jay Stewart',
@@ -28,14 +28,18 @@ export const site = {
    * AI-native engineering, not an offer. (The audit-offer version of this
    * string was retired 2026-08-16 with the strategy that needed it.)
    *
-   * The years figure is interpolated rather than written out, and it has now
-   * been wrong twice: hardcoded as "twelve" while `yearsOfExperience()` two
-   * files away returned fourteen, and then correctly interpolating a fourteen
-   * that itself counted a six-year career break as experience. It derives
-   * from the same `roles` array the About-page timeline renders, with breaks
-   * excluded, so the number cannot contradict the history shown beneath it.
+   * Experience is a span rather than a years figure, interpolated from the
+   * same `roles` array the About-page timeline renders — see
+   * `careerStartYear` for the two occasions a duration was wrong here, and
+   * for why a more careful duration was not the fix.
+   *
+   * "Write most of the code" is deliberately not the whole sentence any more.
+   * It is the counted claim and it stays first, but agents operate the
+   * servers, deploys and release path here too, and a description that stops
+   * at code generation describes something narrower than the practice the
+   * case study documents.
    */
-  description: `Production systems where AI agents write most of the code — run inside verification gates, measured from git history, and written up honestly. ${yearsOfExperience()} years of backend engineering either side of a six-year break, now researching what AI-native delivery actually changes.`,
+  description: `Production systems where AI agents write most of the code — and operate the servers, deploys and release path around it. Run inside verification gates and measured from git history. Backend engineering since ${careerStartYear()}, either side of a six-year break, now researching what AI-native delivery actually changes.`,
 
   /** Short form, used in the footer and structured data. */
   tagline: 'AI-native software engineer · agent-operated production systems, measured',
