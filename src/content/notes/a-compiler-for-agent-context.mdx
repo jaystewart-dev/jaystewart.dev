@@ -20,10 +20,10 @@ Code that lies gets caught by a compiler. Agent context that lies gets followed.
 
 ## The finding that started it
 
-Auditing a production repository of my own, I found four live examples in one
-file: environment variables for infrastructure decommissioned months earlier, a
-configuration block pointing at a database that no longer existed, and a stated
-pull-request policy the project itself had stopped following.
+An audit of a production repository of my own turned up four live examples in
+one file: environment variables for infrastructure decommissioned months
+earlier, a configuration block pointing at a database that no longer existed,
+and a stated pull-request policy the project itself had stopped following.
 
 Every one of those had been true when it was written. That is what makes it a
 drift problem rather than a carelessness problem, and drift is exactly the kind
