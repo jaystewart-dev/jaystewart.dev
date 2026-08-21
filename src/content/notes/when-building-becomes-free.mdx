@@ -1,0 +1,142 @@
+---
+title: When building is free, judgment is the job
+description: Agents made producing software nearly free. The judgment in front of the work and behind it got no cheaper at all, and my capacity for it is fixed. That inversion — not the speed — is what actually changed about the work.
+date: 2026-08-20
+topic: Working with agents
+order: 1
+draft: true
+---
+
+Since March I have not written a line of code by hand. I run a small software
+product — real users, one person — where AI does the building and I decide what
+gets built.
+
+The thing nobody warned me about is not that the AI writes bad code. Mostly it
+writes fine code. It is that **producing work got dramatically cheaper, and
+checking it got no cheaper at all.**
+
+That sounds like a small observation. It reorganised my entire week.
+
+## When it caught up with me
+
+In July I had more agent sessions running at once than in any other month. The
+output was extraordinary: more work merged into the project in those four weeks
+than in the previous three months put together.
+
+I did not read all of it properly. I could not have.
+
+The bill arrived in August. Over fifty-four hours in the middle of the month,
+fourteen finished pieces of work went past me without a real review — I
+approved them because they looked right, the tests passed, and there were more
+waiting behind them.
+
+Here is the part that should worry anyone doing this: **nothing broke.** The
+product kept working. No alarm went off, no customer complained. There is no
+signal that tells you that you have quietly stopped checking things. You only
+find out later, when something you never looked at turns out to matter.
+
+## Why the two halves come apart
+
+Producing and checking used to be roughly coupled. Writing something took hours,
+so reviewing it took a sensible fraction of those hours, and both scaled with
+the same person doing them.
+
+Agents break the coupling. I can start a second one, and a third. Each doubles
+what arrives. **None of them doubles my ability to look at what arrived.**
+
+So the constraint moves. It used to sit on how fast I could produce. Now it
+sits on how much I can genuinely absorb in a day — and unlike agent capacity,
+that number does not go up. Not by paying more, not by trying harder. It is
+roughly fixed, and it is the ceiling on the whole operation.
+
+And _checking_ is too small a word for that resource. The same fixed budget
+pays for deciding what should be built in the first place. Both are judgment,
+and neither can be handed to the thing doing the work: one goes in front of it,
+one behind. Checking is only the half that announces itself — a diff exists, it
+sits there waiting to be read. A badly chosen direction
+produces no artefact to review at all. It produces a week of competent work
+pointed at the wrong thing, and agents produce that faster too.
+
+## What "checking" actually means, and why it is hard
+
+It is not reading a diff and thinking _looks reasonable_. That is the failure
+mode, because _looks reasonable_ is precisely what a competent agent produces
+every single time, including when it is wrong.
+
+Earlier today I asked one to measure something about my own work. It came back
+with a confident, well-argued answer that agreed with something I already
+believed. I was pleased for about an hour. Then the method turned out to have
+manufactured the answer — the result was baked into how the measurement worked,
+and it would have come out that way regardless of the truth.
+
+Nothing about it looked wrong. It looked like good work, because in every
+respect except the one that mattered it was good work.
+
+**That is the whole difficulty. The output of a capable agent is fluent,
+internally consistent, and confident whether or not it is right.** All the
+surface cues you normally use to decide whether something deserves a closer
+look have stopped carrying information.
+
+## This note is the example
+
+Every version of this piece was produced by an agent, at my direction, over a
+few hours of one afternoon. Four times I read one back and found something that
+could not have been found from inside the thing that wrote it:
+
+- It described **my** reasoning about decisions I had never made — the agent had
+  designed the thing and then written me into the story as its author.
+- It opened by saying I had no idea whether my work was going well, which is
+  not true. I ship software people use. I could see that fine.
+- It led with a number that was technically correct and measured the wrong
+  thing.
+- And the whole subject was wrong, which took me four readings to name.
+
+None of those are coding errors. Every one of them is a judgment call, and each
+took me under a minute once I actually read the thing properly.
+
+The last one is a different animal from the other three, and it is the one
+worth sitting with. The first three I caught by checking. The fourth — the
+subject being wrong — was not a checking failure at all. Four capable versions
+were produced before anybody established what the piece was for, and no amount
+of reading them more carefully would have produced that. It had to be decided.
+
+The reading is the work, and so is the deciding. **The bottleneck was never the
+writing.**
+
+## What I actually do about it
+
+Four rules, none clever, all learned by getting it wrong first.
+
+**One thing at a time.** For anything genuinely new, one stream of work, not
+three. Parallel agents multiply whatever you point them at, and that includes
+pointing them somewhere slightly wrong.
+
+**Freeze things on purpose.** My main product stops taking new features at the
+end of this month, on a date set in advance and not conditional on how the
+month goes. The freeze is not about the code. It is about capping how much
+surface I have to keep an eye on, so the amount needing my attention stops
+growing.
+
+**Checking is a scheduled job, not a feeling.** It gets its own block of time,
+before anything is published or shipped — not squeezed in afterwards when
+enthusiasm is high and scepticism is low.
+
+**Ask for an attack, not a review.** "Does this look right?" comes back
+agreeing with you almost every time. "Find what is wrong with this" comes back
+with something. Today's flawed measurement was killed by an agent — the same
+one that built it — purely because the instruction was the second kind.
+
+## The uncomfortable part
+
+I would like to end by saying I have solved this. I have not. Every one of
+those rules is a way of _rationing_ a fixed resource, and none of them makes
+the resource bigger.
+
+The honest summary of working this way is that my output is no longer limited
+by how much I can build. It is limited by how much I can be responsible for.
+Those are different quantities, and only one of them has been transformed by
+AI.
+
+If you are rolling agents out across a team, the question worth asking is not
+how much faster people ship. It is who is reading all of it now, and what
+happened to the things they used to do with those hours.
