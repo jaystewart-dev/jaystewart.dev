@@ -64,15 +64,15 @@ const isCurrent = (href: string) => href === current;
       </ul>
     </nav>
 
-    <div class="flex items-center gap-3">
-      <a
-        href="/contact/"
-        class="hidden text-[0.9375rem] text-muted transition-colors hover:text-accent sm:inline"
-      >
-        Contact
-      </a>
-      <ThemeToggle />
-    </div>
+    {
+      /* Contact is in `nav` above, carrying the one `emphasis` flag. A second
+        link to it used to sit here, muted, and appeared from 640px up — the
+        exact widths where the nav already shows it. That put the same label
+        and the same href in one landmark twice, with only the nav copy marked
+        `aria-current` on /contact/, and hid the spare at the one width where
+        a second entry point would have been worth having. */
+    }
+    <ThemeToggle />
   </div>
 </header>
 

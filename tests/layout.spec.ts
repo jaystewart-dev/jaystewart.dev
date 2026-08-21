@@ -82,3 +82,76 @@ test.describe('wide tables', () => {
     await expect.poll(() => scroller.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0);
   });
 });
+
+test.describe('the footer meets the page', () => {
+  test.use({ viewport: { width: 1280, height: 900 } });
+
+  /**
+   * The footer is a band, and opens with a margin so it is not welded to body
+   * copy sitting on paper. A page whose own last section is a band does not
+   * want that margin: it renders as a stripe of paper between two identical
+   * bands, which reads as a seam rather than as breathing room.
+   *
+   * `Base` takes `flushFooter` for exactly this, and the prop is the kind of
+   * thing the next page to end on a band forgets. So rather than trusting the
+   * six pages that set it today, this derives the answer from what actually
+   * paints: if the last full-bleed block on the page is the band colour, the
+   * gap above the footer must be zero, and if it is not, the gap must be there.
+   */
+  for (const route of routes) {
+    test(`${route} has no stripe of paper above the footer`, async ({ page }) => {
+      await page.goto(route);
+
+      const { gap, endsOnBand, band } = await page.evaluate(() => {
+        const main = document.querySelector('main')!;
+        const footer = document.querySelector('footer')!;
+        const band = getComputedStyle(document.documentElement)
+          .getPropertyValue('--c-band')
+          .trim();
+
+        // Walk the last-child chain for the deepest block that both paints a
+        // background and spans the page — a centred card that happens to be
+        // band-coloured leaves paper either side of it, so it does not close
+        // the page the way a full-bleed section does.
+        let el: Element | null = main;
+        let last: string | null = null;
+        while (el) {
+          const style = getComputedStyle(el);
+          const spansPage = el.getBoundingClientRect().width >= main.clientWidth;
+          if (style.backgroundColor !== 'rgba(0, 0, 0, 0)' && spansPage) {
+            last = style.backgroundColor;
+          }
+          el = el.lastElementChild;
+        }
+
+        // Both sides as rgb(), so the comparison does not depend on the
+        // notation the palette happens to be written in.
+        const probe = document.createElement('span');
+        probe.style.color = band;
+        document.body.append(probe);
+        const bandRgb = getComputedStyle(probe).color;
+        probe.remove();
+
+        return {
+          gap: footer.getBoundingClientRect().top - main.getBoundingClientRect().bottom,
+          endsOnBand: last !== null && last === bandRgb,
+          band: bandRgb,
+        };
+      });
+
+      if (endsOnBand) {
+        expect(
+          gap,
+          `${route} ends on the band (${band}) — the footer should sit flush against it, ` +
+            `so pass \`flushFooter\` to Base. Found a ${gap}px stripe of paper.`,
+        ).toBe(0);
+      } else {
+        expect(
+          gap,
+          `${route} ends on paper — the footer needs its gap, so it should not pass ` +
+            '`flushFooter` to Base.',
+        ).toBeGreaterThan(0);
+      }
+    });
+  }
+});
