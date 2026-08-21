@@ -14,6 +14,7 @@ export const routes = [
   '/audit/',
   '/audit/sample/',
   '/notes/',
+  '/notes/when-building-becomes-free/',
   '/notes/development-environment-is-a-server/',
   '/notes/a-compiler-for-agent-context/',
   '/about/',
