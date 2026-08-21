@@ -110,6 +110,11 @@ const pages = [
   { slug: 'philosophy', eyebrow: 'Philosophy', title: 'How I think about building things' },
   { slug: 'notes', eyebrow: 'Notes', title: 'Shorter pieces' },
   {
+    slug: 'notes-when-building-becomes-free',
+    eyebrow: 'Note · Working with agents',
+    title: 'When building is free, judgment is the job',
+  },
+  {
     slug: 'notes-development-environment-is-a-server',
     eyebrow: 'Note · Infrastructure',
     title: 'My development environment is a server',
