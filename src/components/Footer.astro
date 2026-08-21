@@ -2,10 +2,20 @@
 import { site } from '../data/site.ts';
 import metrics from '../data/metrics.json';
 
+interface Props {
+  /**
+   * Drops the gap above the footer, for a page whose last section is already
+   * on the band. Set by `Base`, never by a page directly — see the note there.
+   */
+  flush?: boolean;
+}
+
+const { flush = false } = Astro.props;
+
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-24 border-t border-line bg-band">
+<footer class:list={['border-t border-line bg-band', flush ? 'mt-0' : 'mt-24']}>
   <div class="mx-auto max-w-wide px-5 py-12 sm:px-8">
     <div class="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
       <div class="max-w-sm">
