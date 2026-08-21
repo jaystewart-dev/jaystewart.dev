@@ -17,6 +17,22 @@ interface Props {
   /** Suppresses indexing and the canonical link. Used by the 404 page, which
       has no canonical URL of its own — it is served for arbitrary paths. */
   noindex?: boolean;
+  /**
+   * Set by a page whose last section is full-bleed `bg-band` — a closing call
+   * to action, typically.
+   *
+   * The footer is itself a band, and opens with `mt-24` so it is not welded to
+   * body copy sitting on paper. On a page that already ends on a band, that
+   * margin renders as a 6rem stripe of paper between two identical bands: a
+   * seam that reads as a mistake rather than as breathing room. Flush, the two
+   * bands meet and the footer's top border is the only division — which is the
+   * intended reading, the page closing into its footer.
+   *
+   * `tests/layout.spec.ts` asserts this holds for every route, so a new page
+   * that ends on a band and forgets the prop fails CI rather than shipping the
+   * stripe.
+   */
+  flushFooter?: boolean;
 }
 
 const {
@@ -26,6 +42,7 @@ const {
   ogType = 'website',
   schema = [],
   noindex = false,
+  flushFooter = false,
 } = Astro.props;
 
 const pageTitle = bareTitle ? title : `${title} — ${site.name}`;
@@ -172,7 +189,7 @@ const jsonLd = {
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    <Footer />
+    <Footer flush={flushFooter} />
 
     <Analytics />
   </body>

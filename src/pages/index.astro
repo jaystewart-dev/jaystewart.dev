@@ -157,11 +157,11 @@ const startYear = careerStartYear();
         <a href="/notes/" class="link-underline text-sm text-accent">All notes →</a>
       </div>
 
-      <ul class="mt-10 divide-y divide-line border-y border-line">
+      <ul class="notes-list mt-10 divide-y divide-line border-y border-line">
         {
           notes.map((note) => (
-            <li class="group relative flex flex-wrap items-baseline gap-x-4 gap-y-1 py-5">
-              <span class="w-28 shrink-0 font-mono text-xs text-muted">{note.data.topic}</span>
+            <li class="group relative py-5">
+              <span class="font-mono text-xs text-muted">{note.data.topic}</span>
               <h3 class="text-lg">
                 <a
                   href={`/notes/${note.id}/`}
@@ -203,3 +203,44 @@ const startYear = careerStartYear();
     </p>
   </section>
 </Base>
+
+<style>
+  /* The topic column is sized from the longest topic on the page, not to a
+     fixed width.
+
+     It was `w-28`, and `topic` is an unbounded string in the content schema:
+     "Working with agents" needed about 8.5rem, wrapped inside 7rem, and made
+     that row a line taller than its neighbours so the three titles no longer
+     shared a rhythm. Any width picked by hand is one topic away from the same
+     bug, so the column measures itself instead — `max-content` on the list,
+     `subgrid` on each row, giving every row one shared column exactly as wide
+     as the longest topic needs.
+
+     Only from 640px up. Below that there is not enough width for two columns,
+     and the row falls back to the stacked block layout it already used when
+     the old flex row wrapped. Browsers without `subgrid` get that same stacked
+     row, which is a degradation rather than a break. */
+  @media (min-width: 640px) {
+    .notes-list {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+    }
+
+    .notes-list > li {
+      display: grid;
+      grid-column: 1 / -1;
+      grid-template-columns: subgrid;
+      align-items: baseline;
+      column-gap: 1.5rem;
+    }
+
+    .notes-list > li > span {
+      margin-bottom: 0;
+    }
+  }
+
+  .notes-list > li > span {
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+</style>

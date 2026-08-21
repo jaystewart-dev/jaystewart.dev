@@ -43,7 +43,13 @@ const schema = [
 ];
 ---
 
-<Base title={data.title} description={data.description} ogType="article" schema={schema}>
+<Base
+  title={data.title}
+  description={data.description}
+  ogType="article"
+  schema={schema}
+  flushFooter
+>
   <article>
     <header class="border-b border-line bg-band">
       <div class="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-20">
