@@ -44,7 +44,8 @@ import portrait from '../../assets/media/jay-stewart.jpg';
         This is the drift report format, populated with the real findings from that audit. Every
         claim is cited to file and line, verified against the code before it is reported, and
         carries a fix rather than a complaint. A suspected finding that turns out to be false is
-        labelled as such with its reasoning — never silently dropped.
+        labelled as such with its reasoning — never silently dropped. And a clean result is a
+        result: findings are never inflated to make the method look necessary.
       </p>
       <div class="table-scroll" role="region" aria-label="Example drift report" tabindex="0">
         <table>
@@ -83,17 +84,19 @@ import portrait from '../../assets/media/jay-stewart.jpg';
         still wrong.
       </p>
 
-      <h2>What it produces</h2>
-      <p>Seven deliverables, named, so that done is not a matter of opinion.</p>
+      <h2>What the method produces</h2>
+      <p>
+        Five artifacts — and the middle three keep running in the repository after the audit is
+        over, which is the point.
+      </p>
       <ol>
         <li>
           <strong>The drift report.</strong> Every claim in the context layer that is currently false,
           cited to file and line, severity-rated, each with a concrete fix.
         </li>
         <li>
-          <strong>The assertion suite.</strong> A <code>.groundtruth.jsonc</code> committed into your
-          repository — your own sentences turned into executable checks. This is the deliverable that
-          outlives the engagement.
+          <strong>The assertion suite.</strong> A <code>.groundtruth.jsonc</code> committed into the
+          repository — the context layer’s own sentences turned into executable checks.
         </li>
         <li>
           <strong>The gate.</strong>{' '}
@@ -103,47 +106,13 @@ import portrait from '../../assets/media/jay-stewart.jpg';
         <li>
           <strong>The contradiction pass.</strong> Every context file read against the others for
           direct contradictions, not just individually false statements. No assertion can express
-          a claim about two files disagreeing, which is why this is an audit and not a download.
+          a claim about two files disagreeing, which is why this is a method and not a download.
         </li>
         <li>
           <strong>The context-economics read.</strong> Which standing rules are load-bearing, which
           are never cited, and what to prune.
         </li>
-        <li>
-          <strong>The read-out.</strong> One recorded hour walking the findings, ending in a sequenced
-          remediation plan your team can execute without me.
-        </li>
-        <li>
-          <strong>The thirty-day re-check.</strong> The gate re-run a month after delivery, with a
-          short note on what came back and why.
-        </li>
       </ol>
-
-      <h2>Scope, and fit</h2>
-      <p>
-        In scope: the agent-context layer of one repository, or up to three inside one
-        organization — every instruction file, rules file, memory file and decision log an agent
-        reads, plus the CI configuration that is supposed to enforce them. Out of scope: general
-        code, security and performance review, and writing the documentation for you. Saying
-        that plainly is what keeps a bounded audit bounded.
-      </p>
-      <p>
-        It fits teams of roughly ten to five hundred developers where agents are genuinely in
-        the daily loop, at least one context file is older than about three months, more than
-        one person edits it, and the team controls its own CI. It finds nothing at a two-person
-        startup with a week-old context file — there is no drift yet — and a team without CI
-        cannot receive half of what it produces. A clean result is a result: findings are never
-        inflated to make the audit look necessary.
-      </p>
-
-      <h2>How it runs</h2>
-      <p>
-        Kickoff to read-out in ten working days — deliberately generous, because a fixed date
-        always hit is worth more than a fast one sometimes missed. It needs read access to the
-        repository (or a working session inside the team’s environment if access is the
-        blocker), a named counterpart for kickoff and read-out, and permission for the two pull
-        requests that carry the assertion suite and the gate. Thirty days later, the re-check.
-      </p>
 
       <h2>Why the evidence is public</h2>
       <p>
@@ -171,7 +140,7 @@ import portrait from '../../assets/media/jay-stewart.jpg';
       />
 
       <div>
-        <h2 class="text-xl">Run it, or talk about it</h2>
+        <h2 class="text-xl">Run it yourself, or compare notes</h2>
         <p class="mt-3 text-muted">
           The tool and the format above are enough to run this on your own repositories today —
           that is a genuinely good outcome and it costs nothing. And if agents write a
