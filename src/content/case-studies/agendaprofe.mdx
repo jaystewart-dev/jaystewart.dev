@@ -1,6 +1,6 @@
 ---
 title: AgendaProfe
-summary: Scheduling, payments and live video teaching for independent language teachers, running in production in Mexico.
+summary: Scheduling, payments and live video teaching for independent language teachers, live in production since May 2026.
 description: An engineering case study on AgendaProfe — a production SaaS handling cross-border payouts, self-hosted live video with AI captions, and a two-tier release gate, designed and operated by one engineer.
 status: In production
 period: 2026 — present
@@ -53,7 +53,11 @@ mine.
 **The launch market was Mexico, and Stripe Connect does not serve it.** Payouts
 are the entire value proposition for a teacher — a booking system that cannot
 pay them is a calendar. This one fact forced a second payout rail before
-launch rather than after.
+launch rather than after. The two-rail design is also what keeps the product
+market-agnostic rather than market-bound: Stripe Connect pays teachers in the
+UK, US, EEA, Canada and Switzerland, and the manual rail covers everywhere it
+does not — so the system is built for international use, and the launch market
+happened to be the one place the easy rail could not reach.
 
 **Teachers are on Android, students are on anything.** The mobile client is
 Android-only, which is a scope decision rather than an oversight. Building for
