@@ -43,6 +43,22 @@ export const site = {
 
   /** Short form, used in the footer and structured data. */
   tagline: 'AI-native software engineer · agent-operated production systems, measured',
+
+  /**
+   * BCP 47 tags for the Person node's `knowsLanguage`, in confidence order.
+   *
+   * Spanish is here and deliberately nowhere in `description`, `role` or
+   * `tagline`. It is a true, checkable fact — six years living in Mexico,
+   * and AgendaProfe ships es-MX as its default teacher locale with a
+   * bilingual help centre — but it is not what the site argues, and the
+   * targets are UK and remote-first roles that do not screen on it. So it
+   * goes in the machine-readable layer and in one clause on the About page,
+   * where it costs nothing and contradicts nothing.
+   *
+   * The claim being made is professional working proficiency, not native.
+   * Do not promote it into the primary positioning strings above.
+   */
+  languages: ['en-GB', 'es'],
 } as const;
 
 /**
