@@ -9,8 +9,15 @@
  *    here as permanent until 2026-08-16, when checking this file against the
  *    LinkedIn profile turned up the disagreement and Jay confirmed the
  *    profile was the correct one.
- * 2. The current transit role is deliberately unnamed. See src/data/stealth.ts
- *    for what that constraint covers and why.
+ * 2. The transit role is deliberately unnamed, and it is end-dated rather
+ *    than current. It was `end: null` until 2026-08-24. Two reasons: the
+ *    project has been frozen permanently since 2026-08-15, so "present" was a
+ *    false claim on a public page; and the route since 2026-08-23 is
+ *    contracting, where a live co-founder role reads to a client as an
+ *    availability question rather than as experience. The role stays — it is
+ *    real, recent, and the only founder-level operating experience here. It
+ *    stops being current. The same change lands on the LinkedIn profile and in
+ *    delivery-co/cv.md; three surfaces, one history.
  * 3. The 2020–2026 career break is a first-class entry rather than a gap
  *    between two dates. The independent role used to start in March 2020,
  *    which quietly covered six years of not working at all; every project on
@@ -42,8 +49,8 @@ export const roles: Role[] = [
     company: 'Undisclosed — early-stage transit startup',
     title: 'Technical co-founder',
     start: '2026-05',
-    end: null,
-    period: 'May 2026 — present',
+    end: '2026-08',
+    period: 'May 2026 — Aug 2026',
     location: 'Remote',
     kind: 'founder',
     summary:
