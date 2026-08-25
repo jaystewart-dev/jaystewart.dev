@@ -1,6 +1,23 @@
 ---
 import Base from '../layouts/Base.astro';
 import { site, contractMailto, conversationMailto } from '../data/site.ts';
+
+/**
+ * The secondary ask below links out as "production systems built almost
+ * entirely with coding agents", not "where agents write most of the code".
+ *
+ * That second phrasing was the site's old leading positioning. It was demoted
+ * out of the meta description on 2026-08-25 for the reason site.ts records —
+ * to a hiring manager or a contract recruiter it reads as "he cannot code" —
+ * and then survived here as link text on the page the CV's header line sends
+ * that exact reader to. It is also an authorship claim, and the metric behind
+ * it supports participation rather than authorship share
+ * (hq, record/reviews/2026-08-20-authorship-attribution-audit.md).
+ *
+ * The counted claim on the home page stays exactly as it is: "more than 8 in
+ * 10 commits ... written or co-written by an agent, counted from git history"
+ * is that audit's own prescribed wording, and it travels with its definition.
+ */
 ---
 
 <Base
@@ -23,7 +40,7 @@ import { site, contractMailto, conversationMailto } from '../data/site.ts';
     <p class="mt-5 max-w-xl text-lg text-muted">
       Separately: I run{' '}
       <a href="/work/agent-operated-codebase/" class="link-underline"
-        >production systems where agents write most of the code</a
+        >production systems built almost entirely with coding agents</a
       >, and I am still interested in what that actually changes inside real engineering teams —
       if yours builds with agents,{' '}
       <a href={conversationMailto} class="link-underline">twenty minutes comparing notes</a> is welcome

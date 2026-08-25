@@ -18,6 +18,11 @@
  *    real, recent, and the only founder-level operating experience here. It
  *    stops being current. The same change lands on the LinkedIn profile and in
  *    delivery-co/cv.md; three surfaces, one history.
+ *    The 2026-08-24 change set `end` and `period` and stopped there — the
+ *    summary below still read "I own the mobile app" and about.astro still
+ *    said "I am technical co-founder", so the page contradicted its own data
+ *    for a day. Both fixed 2026-08-25. When a role's dates change here, the
+ *    prose describing it has to move with them, on this page and on /about/.
  * 3. The 2020–2026 career break is a first-class entry rather than a gap
  *    between two dates. The independent role used to start in March 2020,
  *    which quietly covered six years of not working at all; every project on
@@ -54,11 +59,11 @@ export const roles: Role[] = [
     location: 'Remote',
     kind: 'founder',
     summary:
-      'Technical co-founder of a company building live information for public transit riders. I own the mobile app, the operations console and the data backend that turns anonymous signals into positions riders can act on.',
+      'Technical co-founder of a company building live information for public transit riders. I owned the mobile app, the operations console and the data backend that turns anonymous signals into positions riders can act on. Parked.',
     detail: [
       'Designed a privacy-first architecture: no accounts, no personal data, nothing that identifies a rider.',
       'Set the integrity rule the product is built around — the system never invents a position, and says plainly when it does not know.',
-      'Operate the whole stack: a React Native app, a Next.js console, Postgres, and a containerised detector service.',
+      'Operated the whole stack: a React Native app, a Next.js console, Postgres, and a containerised detector service.',
     ],
     stack: ['React Native', 'Next.js', 'Postgres', 'Fly.io', 'GitHub Actions'],
   },
