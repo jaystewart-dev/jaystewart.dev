@@ -5,6 +5,24 @@ import { careerStartYear, roles } from '../data/experience.ts';
 import { site } from '../data/site.ts';
 import portrait from '../assets/media/jay-stewart.jpg';
 
+/**
+ * The transit role is past tense in the "Now" section below, and that is
+ * load-bearing rather than a style choice.
+ *
+ * `experience.ts` end-dated it to 2026-08 on 2026-08-24 because the project
+ * has been frozen permanently since 2026-08-15, so "present" was a false
+ * claim on a public page — and because the route since 2026-08-23 is
+ * contracting, where a live co-founder role reads to a client as an
+ * availability question rather than as experience.
+ *
+ * That change touched the data and missed this prose, which went on saying
+ * "I am technical co-founder of an early-stage transit company" for a day:
+ * one deploy, two surfaces, disagreeing about the same fact. Found and fixed
+ * 2026-08-25. The role is real and recent and stays on the page; it is not
+ * current. Three surfaces, one history — this page, the LinkedIn profile and
+ * delivery-co/cv.md.
+ */
+
 const startYear = careerStartYear();
 ---
 
@@ -85,9 +103,10 @@ const startYear = careerStartYear();
       <h2>Now</h2>
       <p>
         What brought me back was coding agents — not the novelty, but the discovery that the
-        bottleneck had moved. I am technical co-founder of an early-stage transit company and I
-        run AgendaProfe alongside it. In practice that means I do all of it: schema design, API,
-        mobile, infrastructure as code, CI, monitoring, and the on-call rotation of one.
+        bottleneck had moved. I build and run AgendaProfe, and I spent the summer as technical
+        co-founder of an early-stage transit company, now parked. In practice that means I do
+        all of it: schema design, API, mobile, infrastructure as code, CI, monitoring, and the
+        on-call rotation of one.
       </p>
       <p>
         Most of that is delegated to agents, and not only the code. They provision the servers,
