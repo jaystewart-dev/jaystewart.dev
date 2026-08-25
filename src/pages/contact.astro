@@ -17,6 +17,16 @@ import { site, contractMailto, conversationMailto } from '../data/site.ts';
  * The counted claim on the home page stays exactly as it is: "more than 8 in
  * 10 commits ... written or co-written by an agent, counted from git history"
  * is that audit's own prescribed wording, and it travels with its definition.
+ *
+ * The Location line below reads "{site.location} — UK-based and available
+ * now. ..." rather than "UK-based in {site.location} and available now. ...".
+ * The interpolation used to sit inside the canonical availability sentence,
+ * which made this page a variant of it: delivery-co/contracting.md requires
+ * that sentence verbatim on every written surface. Moving the location ahead
+ * of it keeps the fact and leaves the sentence contiguous, so the
+ * text_matches_across assertion in delivery-co/.groundtruth.jsonc can check
+ * this file at all — that kind normalizes whitespace and Markdown, never
+ * template interpolation.
  */
 ---
 
@@ -73,7 +83,7 @@ import { site, contractMailto, conversationMailto } from '../data/site.ts';
       <div>
         <dt class="eyebrow">Location</dt>
         <dd class="mt-1.5 text-lg">
-          UK-based in {site.location} and available now. Currently on a temporary working trip abroad,
+          {site.location} — UK-based and available now. Currently on a temporary working trip abroad,
           with a daily overlap from about 13:00 UK and flexibility outside it. Back in the UK early
           in the engagement, and on site from then.
         </dd>
