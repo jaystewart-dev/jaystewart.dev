@@ -1,31 +1,33 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site } from '../data/site.ts';
+import { site, contractMailto, conversationMailto } from '../data/site.ts';
 ---
 
 <Base
   title="Contact"
-  description={`Get in touch with Jay Stewart — available for senior TypeScript and Next.js contract work, remote on UK hours. ${site.email}`}
+  description={`Get in touch with Jay Stewart — UK-based and available for a three-to-six-month senior TypeScript and Next.js contract. ${site.email}`}
 >
   <section class="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-24">
     <p class="eyebrow">Contact</p>
     <h1 class="mt-3 text-4xl sm:text-5xl">Let’s talk.</h1>
 
     <p class="mt-6 max-w-xl text-lg text-muted">
-      I run{' '}
-      <a href="/work/agent-operated-codebase/" class="link-underline"
-        >production systems where agents write most of the code</a
-      >, and I am researching what that actually changes inside real engineering teams — if
-      yours builds with agents, twenty minutes comparing notes is the most useful email you can
-      send me.
+      <strong class="text-ink">I am available for contract work</strong> — three to six months, senior
+      TypeScript, Next.js and Postgres, outside IR35 preferred. I contracted for four years before
+      the break, on two concurrent engagements, one of which I built and then ran for the same client
+      for four years. Ideally somewhere the hard problems are in the system rather than the interface,
+      and where I would be reviewing other people’s code as well as writing my own.{' '}
+      <a href={contractMailto} class="link-underline">Start that conversation</a>.
     </p>
 
     <p class="mt-5 max-w-xl text-lg text-muted">
-      <strong class="text-ink">I am available for contract work</strong> — three to six months, senior
-      TypeScript, Next.js and Postgres, remote on UK hours. I contracted for four years before the
-      break, on two concurrent engagements, one of which I built and then ran for the same client
-      for four years. Ideally somewhere the hard problems are in the system rather than the interface,
-      and where I would be reviewing other people’s code as well as writing my own.
+      Separately: I run{' '}
+      <a href="/work/agent-operated-codebase/" class="link-underline"
+        >production systems where agents write most of the code</a
+      >, and I am still interested in what that actually changes inside real engineering teams —
+      if yours builds with agents,{' '}
+      <a href={conversationMailto} class="link-underline">twenty minutes comparing notes</a> is welcome
+      whether or not there is a role behind it.
     </p>
 
     <dl class="mt-12 space-y-8">
@@ -54,7 +56,9 @@ import { site } from '../data/site.ts';
       <div>
         <dt class="eyebrow">Location</dt>
         <dd class="mt-1.5 text-lg">
-          Remote — based in {site.location}; abroad until early 2027, sooner for the right role
+          UK-based in {site.location} and available now. Currently on a temporary working trip abroad,
+          with a daily overlap from about 13:00 UK and flexibility outside it. Back in the UK early
+          in the engagement, and on site from then.
         </dd>
       </div>
     </dl>

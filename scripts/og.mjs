@@ -66,7 +66,7 @@ const colour = {
 
 /** Every page that needs an image, and the text on it. */
 const pages = [
-  { slug: 'default', eyebrow: 'AI-native software engineer', title: 'Jay Stewart' },
+  { slug: 'default', eyebrow: 'Senior backend and full-stack engineer', title: 'Jay Stewart' },
   {
     slug: 'work',
     eyebrow: 'Case studies',
