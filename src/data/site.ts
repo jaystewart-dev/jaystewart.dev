@@ -49,8 +49,8 @@ export const site = {
 
 /**
  * Prefilled mailto for starting a conversation about agent-native
- * engineering, used by the home page, the method page, the sample report and
- * the contact page.
+ * engineering, used by the home page and the contact page. It also served the
+ * /audit/ pages until they were removed on 2026-08-25.
  *
  * It lives here rather than in each page for the reason this file exists:
  * every entry point must carry the same subject line, so that replies thread

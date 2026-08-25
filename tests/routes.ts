@@ -11,8 +11,6 @@ export const routes = [
   '/work/agendaprofe/',
   '/work/realtime-transit/',
   '/work/agent-operated-codebase/',
-  '/audit/',
-  '/audit/sample/',
   '/notes/',
   '/notes/when-building-becomes-free/',
   '/notes/development-environment-is-a-server/',
