@@ -11,7 +11,7 @@ import { careerStartYear } from './experience.ts';
 export const site = {
   name: 'Jay Stewart',
   origin: 'https://jaystewart.dev',
-  role: 'AI-native software engineer',
+  role: 'Senior backend and full-stack engineer',
   location: 'Bristol, UK',
   locality: 'Bristol',
   region: 'England',
@@ -23,26 +23,28 @@ export const site = {
 
   /**
    * Used as the default meta description and the OG description on the home
-   * page, and as the JSON-LD description of the site. It leads with the
-   * measured practice because that is what the site now argues: evidence of
-   * AI-native engineering, not an offer. (The audit-offer version of this
-   * string was retired 2026-08-16 with the strategy that needed it.)
+   * page, and as the JSON-LD description of the site.
+   *
+   * It leads with the systems and stopped leading with the method on
+   * 2026-08-25. The reader this site is written for changed: the primary
+   * route is a 3-to-6-month contract, so the person reading this string is a
+   * hiring manager or a contract recruiter, and to that reader "agents write
+   * most of the code" as an opening reads as "he cannot code". The practice
+   * is the tiebreak that makes the candidate memorable, never the pitch —
+   * hq, record/reviews/2026-08-24-contracting-assessment.md, part five. So
+   * the counted claim stays, second. (The audit-offer version of this string
+   * was retired 2026-08-16 with the strategy that needed it; the research
+   * framing that replaced it was demoted here for the same kind of reason.)
    *
    * Experience is a span rather than a years figure, interpolated from the
    * same `roles` array the About-page timeline renders — see
    * `careerStartYear` for the two occasions a duration was wrong here, and
    * for why a more careful duration was not the fix.
-   *
-   * "Write most of the code" is deliberately not the whole sentence any more.
-   * It is the counted claim and it stays first, but agents operate the
-   * servers, deploys and release path here too, and a description that stops
-   * at code generation describes something narrower than the practice the
-   * case study documents.
    */
-  description: `Production systems where AI agents write most of the code — and operate the servers, deploys and release path around it. Run inside verification gates and measured from git history. Backend engineering since ${careerStartYear()}, either side of a six-year break, now researching what AI-native delivery actually changes.`,
+  description: `Senior backend and full-stack engineer — production systems where being wrong costs somebody money, since ${careerStartYear()}. E-commerce and payments in Bristol, then a live scheduling, payments and video platform on Next.js, React Native and Postgres. Built almost entirely with coding agents, inside verification gates measured from git history. UK-based and available for contract work.`,
 
   /** Short form, used in the footer and structured data. */
-  tagline: 'AI-native software engineer · agent-operated production systems, measured',
+  tagline: 'Senior backend and full-stack engineer · production systems where money moves',
 } as const;
 
 /**
@@ -54,8 +56,22 @@ export const site = {
  * every entry point must carry the same subject line, so that replies thread
  * as one conversation rather than several. The subject deliberately invites
  * a conversation rather than naming an offer — there is none published.
+ *
+ * As of 2026-08-25 this is the *secondary* ask. `contractMailto` below is the
+ * primary one.
  */
 export const conversationMailto = `mailto:${site.email}?subject=${encodeURIComponent('Agents in your team')}`;
+
+/**
+ * Prefilled mailto for the ask the site now leads with: availability for a
+ * 3-to-6-month contract.
+ *
+ * Two subjects rather than one, deliberately. They are different
+ * conversations with different people — a hiring manager with a role to fill,
+ * and an engineering team comparing notes on agent practice — and threading
+ * them together would lose which of the two an inbox is looking at.
+ */
+export const contractMailto = `mailto:${site.email}?subject=${encodeURIComponent('Contract availability')}`;
 
 export type NavItem = {
   readonly href: string;
