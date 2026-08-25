@@ -17,7 +17,7 @@
  *    availability question rather than as experience. The role stays — it is
  *    real, recent, and the only founder-level operating experience here. It
  *    stops being current. The same change lands on the LinkedIn profile and in
- *    delivery-co/cv.md; three surfaces, one history.
+ *    livelihood/cv.md; three surfaces, one history.
  *    The 2026-08-24 change set `end` and `period` and stopped there — the
  *    summary below still read "I own the mobile app" and about.astro still
  *    said "I am technical co-founder", so the page contradicted its own data
@@ -178,7 +178,7 @@ export const roles: Role[] = [
  * arithmetic against the timeline directly beneath it. A span cannot be
  * stale, cannot disagree with the dates, and claims nothing they do not
  * already show. The LinkedIn profile settled on the same rule first
- * (delivery-co, linkedin.md — "no duration claim has crept back in"), and the
+ * (livelihood, linkedin.md — "no duration claim has crept back in"), and the
  * two surfaces are checked against each other before any outreach, so the
  * site follows it rather than inventing a second version of one history.
  *
