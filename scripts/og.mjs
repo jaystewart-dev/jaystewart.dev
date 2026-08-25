@@ -90,18 +90,6 @@ const pages = [
     note: 'The practice, the gates, and where the context layer rotted',
   },
   {
-    slug: 'audit',
-    eyebrow: 'The method · Agent-readiness audit',
-    title: 'Your agents obey instructions nobody has checked',
-    note: 'Every claim verified against the repository · a CI gate left behind',
-  },
-  {
-    slug: 'audit-sample',
-    eyebrow: 'Sample deliverable',
-    title: 'A page from a real drift report',
-    note: 'Claim · evidence · severity · the CI assertion left behind',
-  },
-  {
     slug: 'about',
     eyebrow: 'About',
     title: `Backend engineering since ${careerStartYear()}`,
