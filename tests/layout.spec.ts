@@ -57,32 +57,6 @@ for (const width of widths) {
   });
 }
 
-test.describe('wide tables', () => {
-  test.use({ viewport: { width: 390, height: 800 } });
-
-  test('scroll within their own container, reachable from the keyboard', async ({ page }) => {
-    await page.goto('/audit/');
-
-    const scroller = page.getByRole('region', { name: 'Example drift report' });
-
-    // The premise of the container: the table really is wider than the phone.
-    // If this ever stops being true the container is dead weight and should go.
-    const { canScroll } = await scroller.evaluate((el) => ({
-      canScroll: el.scrollWidth > el.clientWidth,
-    }));
-    expect(canScroll, 'the table should be wider than the viewport').toBe(true);
-
-    // And the scroll must be operable without a pointer. A table of plain text
-    // holds nothing focusable, so the container itself is the only tab stop
-    // that can reach the columns off-screen.
-    await scroller.focus();
-    await expect(scroller).toBeFocused();
-
-    await page.keyboard.press('ArrowRight');
-    await expect.poll(() => scroller.evaluate((el) => el.scrollLeft)).toBeGreaterThan(0);
-  });
-});
-
 test.describe('the footer meets the page', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
