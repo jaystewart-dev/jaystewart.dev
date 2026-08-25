@@ -87,7 +87,7 @@ export const roles: Role[] = [
     location: '—',
     kind: 'break',
     summary:
-      'Both clients dried up at the start of the pandemic, and I did not go looking for more. Six years away from engineering entirely: travelling, living simply, and not working. Not a period I want to write a lesson about. I came back to it in March 2026 after starting to build with coding agents.',
+      'Six years away from engineering entirely: travelling, living simply, and not working. Not a period I want to write a lesson about. What ended it was coding agents — I came back in March 2026, and everything since was built after that. Both contracts had ended at the start of the pandemic, and I did not go looking for more.',
   },
   {
     company: 'G&V Venture Brands',
