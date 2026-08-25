@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import CaseStudyCard from '../components/CaseStudyCard.astro';
-import { site, conversationMailto } from '../data/site.ts';
+import { site, conversationMailto, contractMailto } from '../data/site.ts';
 import { careerStartYear } from '../data/experience.ts';
 
 const studies = (await getCollection('caseStudies', ({ data }) => !data.draft)).sort(
@@ -21,49 +21,46 @@ const startYear = careerStartYear();
     <p class="eyebrow">{site.role} · Systems that hold money and time · Remote</p>
 
     <h1 class="mt-5 max-w-3xl text-4xl leading-[1.1] sm:text-5xl lg:text-6xl">
-      I build production systems where AI agents write most of the code.
+      I build production systems where being wrong costs somebody money.
     </h1>
 
     <div class="mt-8 max-w-2xl space-y-5 text-lg text-muted">
       <p>
         Backend engineering since {startYear}. Most of it agency work on e-commerce platforms —
         high-traffic stores processing transactions and customer data, including Dyson’s. The
-        kind of systems where an outage means lost orders rather than a failed build.
+        kind of systems where an outage means lost orders rather than a failed build. Four of
+        those years were on day rate, including a booking-and-payments platform I designed,
+        built and then ran for the same client for four years.
       </p>
       <p>
         Then both my clients dried up at the start of the pandemic, and I stopped — six years
-        travelling, no software in any of them. I came back to engineering in March 2026,
-        started building with coding agents, and the two production systems written up below are
-        what came of it — not as a portfolio list, but as the decisions, trade-offs and mistakes
-        that actually made them.
+        travelling, no software in any of them. I came back to engineering in March 2026. What I
+        build and operate now is a live scheduling, payments and video platform — web and
+        Android, Next.js, React Native, Postgres, Stripe Connect with cross-border payouts —
+        carrying real bookings and real money.
       </p>
       <p>
-        More than 8 in 10 commits across those systems were written or co-written by an agent —
-        counted from git history, not estimated — inside verification gates built so the output
-        can be trusted without depending on my attention.{' '}
+        I bring the delivery pipeline with me: a merge gate that has to be green before anything
+        lands, a coverage floor that only ratchets upward, migration-drift and deployment
+        checks, and the decision records that say why each of them exists. The two systems
+        written up below are described with their trade-offs and mistakes intact, not as a
+        portfolio list.
+      </p>
+      <p>
+        And I build almost entirely with coding agents — more than 8 in 10 commits across those
+        systems were written or co-written by an agent, counted from git history, not estimated.
+        The same sessions provision the servers, run the deploys and maintain the decision
+        records the next session reads. It is mostly a story about verification rather than
+        generation: what I built is the system they operate inside.{' '}
         <a href="/work/agent-operated-codebase/" class="link-underline text-accent">
           How that works
         </a> is stated plainly rather than left to be inferred.
       </p>
-      <p>
-        Writing the code is the smaller half. The same sessions provision and configure the
-        servers, run the deploys, read production logs back over SSH, drive the service CLIs and
-        tool integrations the stack depends on, and maintain the decision records the next
-        session reads before it touches anything. What I built is the system they operate inside
-        — the gates, the context layer, and the checks that fail when either goes stale.
-      </p>
-      <p>
-        Building that way moved the interesting questions. Not whether agents can write code —
-        they write most of mine — but what that actually does to delivery, quality and cost,
-        what should stay human, and how you would prove any of it to a skeptic. I am measuring
-        my own systems to find out, publishing the numbers as they land, and talking to teams
-        doing the same.
-      </p>
     </div>
 
     <div class="mt-10 flex flex-wrap gap-3">
-      <a href="/work/agent-operated-codebase/" class="btn btn-primary">Read the case study</a>
-      <a href="/contact/" class="btn btn-secondary">Talk to me about agents in your team</a>
+      <a href="/contact/" class="btn btn-primary">Available for contract work</a>
+      <a href="/work/agent-operated-codebase/" class="btn btn-secondary">Read the case study</a>
     </div>
   </section>
 
@@ -86,8 +83,8 @@ const startYear = careerStartYear();
         <div>
           <dt class="eyebrow">The practice</dt>
           <dd class="mt-1.5 text-muted">
-            Two production systems, more than 8 in 10 commits agent-written or co-written, run
-            solo inside verification gates —{' '}
+            Two production systems, more than 8 in 10 commits written or co-written by an agent,
+            run solo inside verification gates —{' '}
             <a href="/work/agent-operated-codebase/" class="link-underline">the case study</a>,
             including where it rotted.
           </dd>
@@ -182,25 +179,29 @@ const startYear = careerStartYear();
     class="mx-auto max-w-wide px-5 py-16 sm:px-8 sm:py-20"
   >
     <h2 id="contact-heading" class="max-w-2xl text-3xl">
-      If your team builds with agents, I want to hear how it is really going.
+      I am available for a three-to-six-month contract.
     </h2>
     <p class="mt-4 max-w-2xl text-muted">
-      I am researching how software engineering changes inside real teams as agents write more
-      of the code — the parts that work and the parts that do not. Twenty minutes, nothing sold,
-      notes compared both ways. Two or three sentences about your team and how agents are used
-      is enough to start.
+      Senior TypeScript, Next.js and Postgres — most useful where the hard part is the system
+      rather than the screen, and where I would be reviewing other people’s code as well as
+      writing my own. I contracted for four years before the break, on two concurrent
+      engagements, so this is a return rather than a first attempt.
+    </p>
+    <p class="mt-4 max-w-2xl text-muted">
+      UK-based and available now. Currently on a temporary working trip abroad, with a daily
+      overlap from about 13:00 UK and flexibility outside it. Back in the UK early in the
+      engagement, and on site from then.
     </p>
 
     <div class="mt-8 flex flex-wrap gap-3">
-      <a href={conversationMailto} class="btn btn-primary">{site.email}</a>
+      <a href={contractMailto} class="btn btn-primary">{site.email}</a>
       <a href="/contact/" class="btn btn-secondary">Other ways to reach me</a>
     </div>
 
     <p class="mt-10 max-w-2xl text-sm text-muted">
-      I am also available for contract work — three to six months, senior TypeScript and
-      Next.js, remote on UK hours, most useful where the hard part is the system rather than the
-      screen.{' '}
-      <a href="/contact/" class="link-underline">That conversation starts here</a>.
+      And if your team builds with agents, I want to hear how it is really going — twenty
+      minutes, nothing sold, notes compared both ways.{' '}
+      <a href={conversationMailto} class="link-underline">That conversation starts here</a>.
     </p>
   </section>
 </Base>
