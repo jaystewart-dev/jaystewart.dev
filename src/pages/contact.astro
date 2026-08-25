@@ -21,10 +21,10 @@ import { site, contractMailto, conversationMailto } from '../data/site.ts';
  * The Location line below reads "{site.location} — UK-based and available
  * now. ..." rather than "UK-based in {site.location} and available now. ...".
  * The interpolation used to sit inside the canonical availability sentence,
- * which made this page a variant of it: delivery-co/contracting.md requires
+ * which made this page a variant of it: livelihood/contracting.md requires
  * that sentence verbatim on every written surface. Moving the location ahead
  * of it keeps the fact and leaves the sentence contiguous, so the
- * text_matches_across assertion in delivery-co/.groundtruth.jsonc can check
+ * text_matches_across assertion in livelihood/.groundtruth.jsonc can check
  * this file at all — that kind normalizes whitespace and Markdown, never
  * template interpolation.
  */
