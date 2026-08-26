@@ -23,6 +23,27 @@ import portrait from '../assets/media/jay-stewart.jpg';
  * livelihood/cv.md.
  */
 
+/**
+ * The "Where I am" paragraph carries the canonical availability sentence
+ * verbatim, and it is contiguous on purpose.
+ *
+ * It read "Bristol is home, and where I will be from early 2027; sooner if the
+ * right role wants me in the room" until 2026-08-26 — a fifth wording of a
+ * sentence that livelihood/contracting.md requires verbatim on every written
+ * surface, and the only one that named a date. A client reading this page came
+ * away with "not in the UK until early 2027" while the home page, the contact
+ * page and the GitHub profile README all said "back in the UK early in the
+ * engagement, and on site from then". Naming a month is the specific failure
+ * livelihood/cv.md § The blanks decided against: a month tells a client he
+ * cannot start properly until it arrives.
+ *
+ * The location fact moves ahead of the sentence rather than into it, the same
+ * fix contact.astro already made, so the sentence stays contiguous and the
+ * text_matches_across assertion in livelihood/.groundtruth.jsonc can check
+ * this file. That assertion did not list this page, which is why the drift
+ * survived a green gate; it lists it now.
+ */
+
 const startYear = careerStartYear();
 ---
 
@@ -142,10 +163,11 @@ const startYear = careerStartYear();
 
       <h2>Where I am</h2>
       <p>
-        UK-based — Bristol is home, and where I will be from early 2027; sooner if the right
-        role wants me in the room. Right now I am working remotely from abroad, with a daily
-        overlap of UK hours. Remote-first either way: everything on this site was built and
-        operated that way. British citizen — no visa or sponsorship needed in the UK.
+        Bristol is home. UK-based and available now. Currently on a temporary working trip
+        abroad, with a daily overlap from about 13:00 UK and flexibility outside it. Back in the
+        UK early in the engagement, and on site from then. Remote-first either way: everything
+        on this site was built and operated that way. British citizen — no visa or sponsorship
+        needed in the UK.
       </p>
     </div>
   </section>

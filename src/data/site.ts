@@ -8,10 +8,29 @@
 
 import { careerStartYear } from './experience.ts';
 
+/**
+ * The job title is "Senior full-stack engineer", set 2026-08-26.
+ *
+ * It was "Senior backend and full-stack engineer" — accurate, and two words
+ * longer than the thing a recruiter types. `role` is not decoration: it is the
+ * JSON-LD `jobTitle` in Base.astro, the <title> of the home page, and the
+ * eyebrow above the H1, so it is the closest thing this site has to a title
+ * field. One title now spans four surfaces — here, experience.ts, the LinkedIn
+ * position and livelihood/cv.md — and livelihood/contracting.md's target
+ * sentence was changed from "product engineer" to match on the same day.
+ *
+ * Dropping "backend" costs the one word that was doing real work, and it is a
+ * deliberate trade rather than an oversight: eight years of literal Backend
+ * Engineer titles are still in the timeline on /about/, and the description
+ * below still leads with systems where being wrong costs somebody money.
+ * What is bought is the term with the largest matching surface that stays
+ * true — narrower options each cost more, per livelihood/contracting.md
+ * § The target.
+ */
 export const site = {
   name: 'Jay Stewart',
   origin: 'https://jaystewart.dev',
-  role: 'Senior backend and full-stack engineer',
+  role: 'Senior full-stack engineer',
   location: 'Bristol, UK',
   locality: 'Bristol',
   region: 'England',
@@ -41,10 +60,10 @@ export const site = {
    * `careerStartYear` for the two occasions a duration was wrong here, and
    * for why a more careful duration was not the fix.
    */
-  description: `Senior backend and full-stack engineer — production systems where being wrong costs somebody money, since ${careerStartYear()}. E-commerce and payments in Bristol, then a live scheduling, payments and video platform on Next.js, React Native and Postgres. Built almost entirely with coding agents, inside verification gates measured from git history. UK-based and available for contract work.`,
+  description: `Senior full-stack engineer — production systems where being wrong costs somebody money, since ${careerStartYear()}. E-commerce and payments in Bristol, then a live scheduling, payments and video platform on Next.js, React Native and Postgres. Built almost entirely with coding agents, inside verification gates measured from git history. UK-based and available for contract work.`,
 
   /** Short form, used in the footer and structured data. */
-  tagline: 'Senior backend and full-stack engineer · production systems where money moves',
+  tagline: 'Senior full-stack engineer · production systems where money moves',
 } as const;
 
 /**
