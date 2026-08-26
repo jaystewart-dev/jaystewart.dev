@@ -47,8 +47,9 @@ Concretely: development runs on the laptop, not a remote server — a
 parallel, each in its own git worktree on its own branch, run either in a
 terminal or in Claude Code's web client. Direction is dictated more often
 than typed. A session ends in a pull request and gets closed; I review the
-pull request myself, then run a gate against its exact head before merging
-to main, shipping to preview, and promoting to production.
+pull request myself, then hand it to a skill built for exactly this step —
+check out its exact head, run the gate, merge to main, ship preview,
+promote to production — rather than doing each by hand.
 
 It is also not only the code, and the commit share in the header is the
 narrowest available reading of what is happening. The same sessions provision
@@ -193,6 +194,16 @@ record argues from the same constraints I would. Most bad agent output traces
 to missing context rather than missing capability, and a decision log is
 context in the one form that survives being handed to something that was not
 there at the time.
+
+One of AgendaProfe's decision records is the clearest case of why this
+matters rather than just an example: a product-analytics audit found the
+mobile app recording zero bookings, payments or messages across its entire
+production life, while keeping it in step with the web app had produced
+nearly half of recent commits. That became a decision record freezing mobile
+development, not a one-off call I'd have to remember to repeat. The next
+session that considers mirroring a web change into mobile — the exact
+"helpful" move the paragraph above warns about — reads why not, instead of
+re-deriving it or, worse, not knowing to ask.
 
 This is the single highest-leverage practice in this whole write-up, and it
 is also where the story turns.
