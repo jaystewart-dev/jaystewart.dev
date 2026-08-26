@@ -27,6 +27,8 @@ metrics:
     from: agendaprofe.decisionRecords
 ---
 
+import { count } from '../../lib/metrics.ts';
+
 An independent language teacher runs a business with none of the tooling a
 school would hand them. Booking happens in WhatsApp. Payment happens by
 transfer, or in cash, or not at all until someone remembers to ask. Reminders
@@ -102,8 +104,16 @@ Two clients, one API, six backing services.
   />
   <Arrow />
   <Row>
-    <Node title="Postgres" meta="Neon · Prisma" detail="74 models" />
-    <Node title="Background jobs" meta="Inngest" detail="29 functions" />
+    <Node
+      title="Postgres"
+      meta="Neon · Prisma"
+      detail={`${count('agendaprofe.databaseModels')} models`}
+    />
+    <Node
+      title="Background jobs"
+      meta="Inngest"
+      detail={`${count('agendaprofe.backgroundJobs')} functions`}
+    />
     <Node
       title="Live video"
       meta="Self-hosted LiveKit"
