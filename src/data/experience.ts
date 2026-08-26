@@ -1,7 +1,7 @@
 /**
  * Employment history.
  *
- * Four editorial decisions are encoded here rather than left to the template:
+ * Six editorial decisions are encoded here rather than left to the template:
  *
  * 1. Thrive ran alongside the G&V role, and both were day-rate contracts.
  *    Both are labelled as such so the overlapping dates read as what they
@@ -51,7 +51,27 @@
  *    founder framing for a day after the profile and the CV stopped using it.
  *    The founding is not hidden by this: `kind: 'founder'` still tags the
  *    entry, the summary still says built and run solo, and the transit entry
- *    above still reads "Technical co-founder".
+ *    still reads "Technical co-founder".
+ * 6. The array is ordered current-role-first, not by start date, decided
+ *    2026-08-26. It read transit-then-independent, which is strictly reverse
+ *    chronological by `start` — the transit role began in May 2026 and the
+ *    independent one in March — and it disagreed with the LinkedIn profile,
+ *    where a position with no end date always renders above an ended one.
+ *    That ordering is not a setting on LinkedIn, so the profile could not be
+ *    moved to match and this file was.
+ *
+ *    Matching the profile is the smaller half of the reason. The Experience
+ *    section opened on a role whose summary ends "Parked." while the live
+ *    one sat beneath it, which is the same inversion as decision 5 above and
+ *    the one livelihood/linkedin.md's re-target undid across every other
+ *    surface on 2026-08-25: the transit role is real, recent and the only
+ *    founder-level operating experience here, and it was never the headline
+ *    act. Under the contract route a prominent co-founder entry also reads
+ *    to a client as an availability question rather than as experience.
+ *
+ *    So the rule, and it is pinned by a test: entries with `end: null` come
+ *    first, and everything after them runs newest-end-date first. The break
+ *    stays where its dates put it.
  */
 
 export interface Role {
@@ -70,6 +90,22 @@ export interface Role {
 
 export const roles: Role[] = [
   {
+    company: 'Independent',
+    title: 'Senior full-stack engineer',
+    start: '2026-03',
+    end: null,
+    period: 'Mar 2026 — present',
+    location: 'Remote',
+    kind: 'founder',
+    summary:
+      'Designing and running small products end to end — architecture, code, infrastructure and the on-call pager. AgendaProfe is the largest and the one carrying real money. All of it built since coming back to engineering in March 2026.',
+    detail: [
+      'AgendaProfe — scheduling, payments and live video teaching for independent teachers. In production.',
+      'groundtruth — a small open-source CLI that checks agent-context files against the repository they describe.',
+    ],
+    stack: ['TypeScript', 'Next.js', 'Postgres', 'Stripe', 'Terraform', 'React Native'],
+  },
+  {
     company: 'Undisclosed — early-stage transit startup',
     title: 'Technical co-founder',
     start: '2026-05',
@@ -85,22 +121,6 @@ export const roles: Role[] = [
       'Operated the whole stack: a React Native app, a Next.js console, Postgres, and a containerised detector service.',
     ],
     stack: ['React Native', 'Next.js', 'Postgres', 'Fly.io', 'GitHub Actions'],
-  },
-  {
-    company: 'Independent',
-    title: 'Senior full-stack engineer',
-    start: '2026-03',
-    end: null,
-    period: 'Mar 2026 — present',
-    location: 'Remote',
-    kind: 'founder',
-    summary:
-      'Designing and running small products end to end — architecture, code, infrastructure and the on-call pager. AgendaProfe is the largest and the one carrying real money. All of it built since coming back to engineering in March 2026.',
-    detail: [
-      'AgendaProfe — scheduling, payments and live video teaching for independent teachers. In production.',
-      'groundtruth — a small open-source CLI that checks agent-context files against the repository they describe.',
-    ],
-    stack: ['TypeScript', 'Next.js', 'Postgres', 'Stripe', 'Terraform', 'React Native'],
   },
   {
     company: 'Travelling',
