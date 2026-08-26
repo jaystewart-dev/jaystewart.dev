@@ -33,6 +33,25 @@
  * 4. Experience is stated as a span — "since 2012" — and never as a number of
  *    years. See `careerStartYear` below for why, and for the two occasions a
  *    duration claim was wrong on this site before the rule existed.
+ * 5. The independent role is titled "Senior full-stack engineer" and not
+ *    "Founder and engineer", decided by Jay on 2026-08-26. It is the same
+ *    title the LinkedIn position and livelihood/cv.md's header carry, in this
+ *    file's own sentence case rather than their title case — every other
+ *    `title` here is sentence case, so matching capitalisation exactly would
+ *    make this the one entry that looked pasted in,
+ *    and livelihood/contracting.md's target sentence was changed from
+ *    "product engineer" to match on the same day — one title across four
+ *    surfaces, chosen on market mechanics rather than self-description:
+ *    full-stack is the broadest term still true of the work and the one a
+ *    recruiter actually types.
+ *
+ *    "Founder" was true and is the thing being given up. It led with the
+ *    venture rather than the work, which is the same inversion the 2026-08-25
+ *    re-target undid everywhere else and missed here — the site kept the
+ *    founder framing for a day after the profile and the CV stopped using it.
+ *    The founding is not hidden by this: `kind: 'founder'` still tags the
+ *    entry, the summary still says built and run solo, and the transit entry
+ *    above still reads "Technical co-founder".
  */
 
 export interface Role {
@@ -69,7 +88,7 @@ export const roles: Role[] = [
   },
   {
     company: 'Independent',
-    title: 'Founder and engineer',
+    title: 'Senior full-stack engineer',
     start: '2026-03',
     end: null,
     period: 'Mar 2026 — present',
