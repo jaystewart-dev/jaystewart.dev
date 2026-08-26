@@ -57,3 +57,51 @@ describe('careerStartYear', () => {
     expect(careerStartYear()).toBeLessThan(Number(gap.start.slice(0, 4)));
   });
 });
+
+describe('the order roles are rendered in', () => {
+  /**
+   * about.astro renders `roles` in array order, so this array is the running
+   * order of the Experience section. It disagreed with the LinkedIn profile
+   * until 2026-08-26: it was sorted strictly by `start`, which put the
+   * transit role (May 2026, ended) above the independent one (March 2026,
+   * live), while LinkedIn always renders a position with no end date above an
+   * ended one. That is not a setting on LinkedIn, so the file moved.
+   *
+   * The visible cost of the old order is what makes this worth a test rather
+   * than a comment: the section opened on a role whose summary ends "Parked."
+   * See decision 6 in experience.ts.
+   */
+  it('leads with the roles that have not ended', () => {
+    const firstEnded = roles.findIndex((role) => role.end !== null);
+    const lastCurrent = roles.map((role) => role.end).lastIndexOf(null);
+
+    expect(lastCurrent).toBeGreaterThanOrEqual(0);
+    expect(lastCurrent).toBeLessThan(firstEnded);
+  });
+
+  it('runs newest-first after that, ties broken by the later start', () => {
+    const ended = roles.filter((role) => role.end !== null);
+
+    for (const [index, role] of ended.slice(1).entries()) {
+      const previous = ended[index];
+      const stillDescending =
+        previous.end! > role.end! ||
+        (previous.end === role.end && previous.start >= role.start);
+
+      expect(stillDescending, `${role.company} is out of order after ${previous.company}`).toBe(
+        true,
+      );
+    }
+  });
+
+  it('puts the independent role above the transit one', () => {
+    // The specific pairing the ordering rule exists for, and the one that was
+    // wrong. Pinned by name so a re-sort cannot quietly restore it.
+    const independent = roles.findIndex((role) => role.company === 'Independent');
+    const transit = roles.findIndex((role) => role.title === 'Technical co-founder');
+
+    expect(independent).toBeGreaterThanOrEqual(0);
+    expect(transit).toBeGreaterThanOrEqual(0);
+    expect(independent).toBeLessThan(transit);
+  });
+});
