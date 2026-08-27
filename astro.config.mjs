@@ -7,7 +7,7 @@ import tailwindcss from '@tailwindcss/vite';
 // The canonical origin. Every absolute URL on the site (canonical links, OG
 // tags, sitemap entries, JSON-LD @id values) is derived from this one value,
 // so a domain change is a one-line change.
-export const SITE = 'https://jaystewart.dev';
+export const SITE = 'https://jaystewart.co.uk';
 
 export default defineConfig({
   site: SITE,

@@ -39,7 +39,7 @@ describe('project key', () => {
 
 describe('reporting guard', () => {
   it('reports only from the canonical apex host', () => {
-    expect(analytics.host).toBe('jaystewart.dev');
+    expect(analytics.host).toBe('jaystewart.co.uk');
   });
 
   it('names a bare hostname, since it is compared against location.hostname', () => {
