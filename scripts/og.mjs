@@ -223,7 +223,7 @@ function template({ eyebrow, title, note }) {
             color: colour.muted,
           },
         },
-        [el('div', {}, 'jaystewart.dev'), el('div', {}, 'Bristol, UK')],
+        [el('div', {}, 'jaystewart.co.uk'), el('div', {}, 'Bristol, UK')],
       ),
     ],
   );

@@ -1,4 +1,4 @@
-# CLAUDE.md — jaystewart.dev
+# CLAUDE.md — jaystewart.co.uk
 
 The public portfolio site: Astro, static, deployed to GitHub Pages. The
 stack, the architecture, the four decisions worth explaining, and how to
