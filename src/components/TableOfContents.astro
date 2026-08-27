@@ -1,0 +1,67 @@
+---
+/**
+ * A page's `##` sections, rendered twice for two different jobs rather than
+ * once and repositioned with CSS: below `lg` it is a closed-by-default
+ * `<details>` a reader opens on purpose (screen space is scarce there), and
+ * from `lg` up it is an always-visible sticky rail (screen space isn't). A
+ * `<details>` cannot be forced open only above a breakpoint with CSS alone,
+ * so this is two render paths, not one repositioned element — call it once
+ * per variant, each gated by the caller on the same `sections.length > 2`
+ * check.
+ */
+interface Props {
+  sections: { slug: string; text: string }[];
+  variant: 'mobile' | 'desktop';
+}
+
+const { sections, variant } = Astro.props;
+---
+
+{
+  variant === 'mobile' ? (
+    <details class="group mb-14 rounded-md border border-line lg:hidden">
+      <summary class="eyebrow flex cursor-pointer list-none items-center justify-between px-4 py-3">
+        Contents
+        <span
+          aria-hidden="true"
+          class="transition-transform duration-200 group-open:rotate-180"
+        >
+          ↓
+        </span>
+      </summary>
+      <ol class="space-y-1.5 border-t border-line px-4 py-3 text-sm">
+        {sections.map((section, index) => (
+          <li class="flex gap-3">
+            <span class="font-mono text-xs text-muted tabular-nums">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <a href={`#${section.slug}`} class="link-underline">
+              {section.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </details>
+  ) : (
+    <nav
+      aria-labelledby="toc-heading-desktop"
+      class="hidden lg:sticky lg:top-24 lg:block lg:self-start"
+    >
+      <h2 id="toc-heading-desktop" class="eyebrow">
+        Contents
+      </h2>
+      <ol class="mt-3 space-y-1.5 text-sm">
+        {sections.map((section, index) => (
+          <li class="flex gap-3">
+            <span class="font-mono text-xs text-muted tabular-nums">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <a href={`#${section.slug}`} class="link-underline">
+              {section.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}

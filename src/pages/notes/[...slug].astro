@@ -6,6 +6,7 @@ import Node from '../../components/diagrams/Node.astro';
 import Row from '../../components/diagrams/Row.astro';
 import Arrow from '../../components/diagrams/Arrow.astro';
 import Figure from '../../components/Figure.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
 import { absolute, site } from '../../data/site.ts';
 
 export async function getStaticPaths() {
@@ -14,8 +15,10 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 const { data } = entry;
+
+const sections = headings.filter((h) => h.depth === 2);
 
 const formatted = data.date.toLocaleDateString('en-GB', {
   year: 'numeric',
@@ -37,38 +40,66 @@ const schema = [
 ---
 
 <Base title={data.title} description={data.description} ogType="article" schema={schema}>
-  <article class="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-20">
-    <nav aria-label="Breadcrumb" class="mb-6">
-      <a href="/notes/" class="eyebrow transition-colors hover:text-accent">← Notes</a>
-    </nav>
+  <article>
+    <div class="mx-auto max-w-content px-5 pt-16 sm:px-8 sm:pt-20">
+      <nav aria-label="Breadcrumb" class="mb-6">
+        <a href="/notes/" class="eyebrow transition-colors hover:text-accent">← Notes</a>
+      </nav>
 
-    <div class="flex flex-wrap items-center gap-3">
-      <span class="tag">{data.topic}</span>
-      <time
-        datetime={data.date.toISOString().slice(0, 10)}
-        class="font-mono text-xs text-muted"
-      >
-        {formatted}
-      </time>
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="tag">{data.topic}</span>
+        <time
+          datetime={data.date.toISOString().slice(0, 10)}
+          class="font-mono text-xs text-muted"
+        >
+          {formatted}
+        </time>
+      </div>
+
+      <h1 class="mt-4 text-3xl sm:text-4xl">{data.title}</h1>
+      <p class="mt-4 text-lg text-muted">{data.description}</p>
+
+      {
+        data.repo && (
+          <p class="mt-5 text-sm">
+            <a href={data.repo} rel="noopener" class="link-underline text-accent">
+              Source on GitHub ↗
+            </a>
+          </p>
+        )
+      }
     </div>
 
-    <h1 class="mt-4 text-3xl sm:text-4xl">{data.title}</h1>
-    <p class="mt-4 text-lg text-muted">{data.description}</p>
+    <div
+      class:list={[
+        'mx-auto px-5 pb-16 sm:px-8 sm:pb-20',
+        sections.length > 2 ? 'max-w-wide' : 'max-w-content',
+      ]}
+    >
+      <div
+        class:list={[
+          sections.length > 2 &&
+            'lg:grid lg:grid-cols-[minmax(0,45rem)_14rem] lg:justify-center lg:gap-x-12',
+        ]}
+      >
+        <div class="mx-auto w-full max-w-content lg:mx-0 lg:max-w-none">
+          <hr class="mt-10 border-line" />
 
-    {
-      data.repo && (
-        <p class="mt-5 text-sm">
-          <a href={data.repo} rel="noopener" class="link-underline text-accent">
-            Source on GitHub ↗
-          </a>
-        </p>
-      )
-    }
+          {
+            sections.length > 2 && (
+              <div class="mt-10">
+                <TableOfContents sections={sections} variant="mobile" />
+              </div>
+            )
+          }
 
-    <hr class="mt-10 border-line" />
+          <div class="prose mt-10">
+            <Content components={{ Diagram, Node, Row, Arrow, Figure }} />
+          </div>
+        </div>
 
-    <div class="prose mt-10">
-      <Content components={{ Diagram, Node, Row, Arrow, Figure }} />
+        {sections.length > 2 && <TableOfContents sections={sections} variant="desktop" />}
+      </div>
     </div>
   </article>
 </Base>
