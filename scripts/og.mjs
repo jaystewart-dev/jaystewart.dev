@@ -112,6 +112,12 @@ const pages = [
     eyebrow: 'Note · Open source',
     title: 'A compiler for agent context',
   },
+  {
+    slug: 'contract',
+    eyebrow: 'Contract',
+    title: 'Available for a three-to-six-month contract',
+    note: 'Senior TypeScript, Next.js and Postgres · outside IR35',
+  },
   { slug: 'contact', eyebrow: 'Contact', title: 'Let’s talk' },
   { slug: '404', eyebrow: '404', title: 'That page does not exist' },
 ];

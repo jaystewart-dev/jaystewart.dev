@@ -17,6 +17,7 @@ export const routes = [
   '/notes/a-compiler-for-agent-context/',
   '/about/',
   '/philosophy/',
+  '/contract/',
   '/contact/',
   '/404.html',
 ] as const;
