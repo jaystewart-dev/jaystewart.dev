@@ -1,19 +1,19 @@
 {
-  "countedAt": "2026-08-05",
+  "countedAt": "2026-08-27",
   "projects": {
     "agendaprofe": {
-      "databaseModels": 74,
-      "migrations": 25,
-      "apiRoutes": 269,
-      "appPages": 105,
-      "testFiles": 855,
-      "workflows": 18,
-      "decisionRecords": 109,
-      "backgroundJobs": 29,
+      "databaseModels": 82,
+      "migrations": 33,
+      "apiRoutes": 288,
+      "appPages": 111,
+      "testFiles": 947,
+      "workflows": 0,
+      "decisionRecords": 131,
+      "backgroundJobs": 31,
       "mobileFlows": 39,
-      "linesOfCode": 377887,
-      "commits": 1937,
-      "agentCommits": 1649,
+      "linesOfCode": 427121,
+      "commits": 2017,
+      "agentCommits": 1719,
       "since": 2026
     },
     "transit": {
@@ -22,27 +22,22 @@
       "decisionRecords": 95,
       "routes": 35,
       "linesOfCode": 81740,
-      "commits": 1404,
-      "agentCommits": 1045,
+      "commits": 1406,
+      "agentCommits": 1046,
       "since": 2026
     },
     "groundtruth": {
       "testFiles": 3,
-      "workflows": 2,
-      "linesOfCode": 1365,
-      "commits": 14,
-      "since": 2026
-    },
-    "anvil": {
-      "terraformLines": 559,
-      "commits": 12,
+      "workflows": 3,
+      "linesOfCode": 1587,
+      "commits": 23,
       "since": 2026
     },
     "practice": {
       "systems": 2,
-      "commits": 3341,
-      "agentCommits": 2694,
-      "decisionRecords": 204
+      "commits": 3423,
+      "agentCommits": 2765,
+      "decisionRecords": 226
     }
   }
 }
