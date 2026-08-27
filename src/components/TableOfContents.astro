@@ -8,6 +8,11 @@
  * so this is two render paths, not one repositioned element — call it once
  * per variant, each gated by the caller on the same `sections.length > 2`
  * check.
+ *
+ * Both variants mark the section currently under the reader as
+ * `aria-current="location"`, driven by the script at the bottom of this file.
+ * Every page with a contents list gets it, because every page with a contents
+ * list renders this component.
  */
 interface Props {
   sections: { slug: string; text: string }[];
@@ -31,11 +36,11 @@ const { sections, variant } = Astro.props;
       </summary>
       <ol class="space-y-1.5 border-t border-line px-4 py-3 text-sm">
         {sections.map((section, index) => (
-          <li class="flex gap-3">
-            <span class="font-mono text-xs text-muted tabular-nums">
+          <li class="toc-item flex gap-3">
+            <span class="toc-index font-mono text-xs text-muted tabular-nums transition-colors">
               {String(index + 1).padStart(2, '0')}
             </span>
-            <a href={`#${section.slug}`} class="link-underline">
+            <a href={`#${section.slug}`} class="link-underline transition-colors" data-toc-link>
               {section.text}
             </a>
           </li>
@@ -52,11 +57,11 @@ const { sections, variant } = Astro.props;
       </h2>
       <ol class="mt-3 space-y-1.5 text-sm">
         {sections.map((section, index) => (
-          <li class="flex gap-3">
-            <span class="font-mono text-xs text-muted tabular-nums">
+          <li class="toc-item flex gap-3">
+            <span class="toc-index font-mono text-xs text-muted tabular-nums transition-colors">
               {String(index + 1).padStart(2, '0')}
             </span>
-            <a href={`#${section.slug}`} class="link-underline">
+            <a href={`#${section.slug}`} class="link-underline transition-colors" data-toc-link>
               {section.text}
             </a>
           </li>
@@ -65,3 +70,96 @@ const { sections, variant } = Astro.props;
     </nav>
   )
 }
+
+<style>
+  /* The whole row moves, number included — the number is what a reader counts
+     position by, so leaving it grey would highlight half the entry. */
+  [data-toc-link][aria-current] {
+    color: var(--c-accent);
+    text-decoration-color: var(--c-accent);
+  }
+
+  .toc-item:has([data-toc-link][aria-current]) .toc-index {
+    color: var(--c-accent);
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    // Both variants render on every page that has a contents list, so this
+    // script ships twice and must wire itself up once.
+    if (window.__tocScrollSpy) return;
+    window.__tocScrollSpy = true;
+
+    const start = () => {
+      const links = [...document.querySelectorAll('[data-toc-link]')];
+      if (links.length === 0) return;
+
+      // Headings in document order, taken from the links rather than from the
+      // prose: a link whose target went missing is simply skipped.
+      const headings = [...new Set(links.map((link) => link.hash.slice(1)))]
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
+      if (headings.length === 0) return;
+
+      let currentId = null;
+
+      const paint = (id) => {
+        if (id === currentId) return;
+        currentId = id;
+        for (const link of links) {
+          if (link.hash.slice(1) === id) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        }
+      };
+
+      // The line a section becomes current at is the line an anchor jump lands a
+      // heading on, so the highlight always agrees with what clicking the link
+      // would have done. One source of truth for both: `scroll-padding-top`.
+      const line = () =>
+        parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 80;
+
+      const update = () => {
+        const y = line() + 1;
+
+        // Nothing is current above the first heading — the reader is still in
+        // the page header, not in a section.
+        let active = null;
+        for (const heading of headings) {
+          if (heading.getBoundingClientRect().top > y) break;
+          active = heading.id;
+        }
+
+        // A short last section may never reach the line, so it would otherwise
+        // never light up. Once the page cannot scroll further, it is what is on
+        // screen.
+        const atEnd =
+          window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+
+        paint(atEnd ? headings[headings.length - 1].id : active);
+      };
+
+      let queued = false;
+      const schedule = () => {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(() => {
+          queued = false;
+          update();
+        });
+      };
+
+      window.addEventListener('scroll', schedule, { passive: true });
+      window.addEventListener('resize', schedule, { passive: true });
+      update();
+    };
+
+    // The mobile list renders above the prose, so at this point the headings it
+    // links to are not parsed yet and looking them up would find nothing.
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start, { once: true });
+    } else {
+      start();
+    }
+  })();
+</script>

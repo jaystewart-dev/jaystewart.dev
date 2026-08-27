@@ -4,10 +4,10 @@ Source for [jaystewart.dev](https://jaystewart.dev) — engineering case studies
 and notes.
 
 The site is deliberately small: static HTML, no client-side framework, and
-about five kilobytes of inline JavaScript in total — a theme toggle and an
-analytics beacon, both hand-rolled. Everything below explains why it is built
-the way it is, because the repository is public and is therefore part of the
-portfolio.
+about five kilobytes of inline JavaScript in total — a theme toggle, a contents
+scroll-spy and an analytics beacon, all hand-rolled. Everything below explains
+why it is built the way it is, because the repository is public and is therefore
+part of the portfolio.
 
 ## Stack
 
