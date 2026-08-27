@@ -1,0 +1,379 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, contractMailto, conversationMailto } from '../data/site.ts';
+import { careerStartYear } from '../data/experience.ts';
+
+/**
+ * The page written for the contract buyer, and the one artifact that can be
+ * sent today.
+ *
+ * WHY IT EXISTS, given the rest of the site already says "available for
+ * contract work" in three places.
+ *
+ * The primary route is a warm-network senior product-engineering contract
+ * (livelihood/contracting.md), and the CV cannot be sent: it names a limited
+ * company that will not exist until it is incorporated on an offer
+ * (pipeline.md, Marketable row 1). So for the whole stretch between now and
+ * an offer, the only artifact that can go in a recruiter's hand is a URL —
+ * and the URL opened on the AI-native argument, which contracting.md itself
+ * records as reading "he cannot code" to a sceptical hiring manager. The
+ * meta description was demoted for exactly that reason on 2026-08-25; the
+ * shape of the site still led with it.
+ *
+ * The other three surfaces each do a different job. The home page argues the
+ * practice, /about/ is a memoir, /contact/ is a set of addresses. None of
+ * them answers a recruiter's fifteen seconds or a hiring manager's one
+ * paragraph, and every fact needed to was already written in livelihood and
+ * had never reached a public surface — the proposition in three registers,
+ * and the five facts from 2012 to 2020 a contract buyer actually wants, of
+ * which the record notes that none currently lead anywhere public.
+ *
+ * FOUR THINGS ARE DELIBERATELY NOT ON THIS PAGE.
+ *
+ * 1. The day rate. £500 is a spoken instrument — one number, then silence
+ *    (contracting.md § The rate). Published, it becomes a ceiling, forfeits
+ *    the silence, and cannot be moved for a role worth more. "On request" is
+ *    not evasion here; it is the negotiation staying where it works.
+ * 2. Named references. Both are still to be asked for (Marketable row 2), and
+ *    a page claiming "references available" before they are given is the one
+ *    kind of overclaim this site cannot afford to make.
+ * 3. Any counted figure. The agent-authorship share still carries an
+ *    unverified definitions flag, `metrics.json` was last counted on
+ *    2026-08-05 and is now behind a recount, and this is the page a reader
+ *    checks hardest. Everything numerical is one click away in the case
+ *    study, with its definition attached.
+ * 4. The playbooks. `engineering-playbooks` is the artifact contracting.md
+ *    names as the answer to "no public evidence of working alongside other
+ *    engineers since 2020" — and it is still a private repository, so there
+ *    is nothing to link. When it goes public, it belongs in § What you can
+ *    look at below.
+ *
+ * THE AVAILABILITY SENTENCE IS VERBATIM AND CONTIGUOUS, and this page is the
+ * sixth surface carrying it. The same rule that governs /contact/ and
+ * /about/ governs it: no interpolation, no markup and no emphasis inside the
+ * sentence, because livelihood's `text_matches_across` assertion normalizes
+ * whitespace and Markdown and nothing else. It is listed in
+ * livelihood/.groundtruth.jsonc in the same change that created this file —
+ * a green gate over a partial list is worse than no gate, which that file
+ * learned by committing the error itself on 2026-08-26.
+ */
+
+const startYear = careerStartYear();
+
+/**
+ * The recruiter block: everything asked on a first call, in the order it is
+ * asked, answerable without reading a sentence of prose.
+ *
+ * "Incorporated on offer" is stated rather than smoothed over. The company
+ * genuinely does not exist yet, saying otherwise on a public page is the
+ * exact defect that keeps the CV in a drawer, and it happens to answer the
+ * question an agency would have asked anyway.
+ */
+const termsBefore = [
+  {
+    term: 'Role',
+    value: 'Senior full-stack engineer — TypeScript, Next.js, Node, Postgres.',
+  },
+  { term: 'Length', value: 'Three to six months, renewable.' },
+  {
+    term: 'Engagement',
+    value:
+      'Through my own UK limited company, incorporated on offer. Outside IR35 preferred; umbrella for inside-IR35 work.',
+  },
+  { term: 'Day rate', value: 'On request.' },
+];
+
+/**
+ * Availability is rendered between these two arrays rather than as a row in
+ * either, and the split is the whole reason there are two.
+ *
+ * It has to be one contiguous, uninterpolated, unmarked-up text node for the
+ * reason in the header comment, so it cannot be a string in a `.map()` beside
+ * the others without the risk that a later edit reaches for a `<strong>` or an
+ * `{site.location}` and quietly breaks the assertion in livelihood. Keeping it
+ * in the template makes that visible at the point of editing.
+ *
+ * It sits fourth because that is where it is asked on a first call — after the
+ * rate and before the paperwork. Appending it to the end would have been the
+ * implementation deciding the running order.
+ */
+const termsAfter = [
+  {
+    term: 'Based',
+    value:
+      'Bristol, UK. Remote-first — everything on this site was built and operated that way.',
+  },
+  {
+    term: 'Right to work',
+    value: 'British citizen. No visa or sponsorship needed in the UK.',
+  },
+  {
+    term: 'Cover',
+    value: 'Professional indemnity and public liability in place before the start date.',
+  },
+];
+---
+
+<Base
+  title="Contract availability"
+  description={`Jay Stewart is available for a three-to-six-month senior TypeScript, Next.js and Postgres contract — outside IR35 through his own limited company. Contracted for four years before a six-year break, and building production payments systems since ${startYear}. ${site.email}`}
+>
+  <section class="mx-auto max-w-content px-5 pt-16 pb-14 sm:px-8 sm:pt-24">
+    <p class="eyebrow">Contract</p>
+    <h1 class="mt-3 text-4xl sm:text-5xl">Available for a three-to-six-month contract.</h1>
+
+    <p class="mt-6 text-lg text-muted">
+      Senior TypeScript, Next.js and Postgres. I build and run production systems where money
+      moves, and I have done since {startYear} — e-commerce backends including work on Dyson’s store,
+      then a booking-and-payments platform I designed and kept running for four years as a contractor.
+      Most useful where the hard part is the system rather than the screen, and where I would be reviewing
+      other people’s code as well as writing my own.
+    </p>
+
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a href={contractMailto} class="btn btn-primary">{site.email}</a>
+      <a href="/work/agendaprofe/" class="btn btn-secondary">See what I built</a>
+    </div>
+  </section>
+
+  <section aria-labelledby="terms-heading" class="border-y border-line bg-band py-14 sm:py-16">
+    <div class="mx-auto max-w-content px-5 sm:px-8">
+      <h2 id="terms-heading" class="text-2xl">The short version</h2>
+
+      <dl class="mt-8 space-y-5">
+        {
+          termsBefore.map((fact) => (
+            <div class="grid gap-1 sm:grid-cols-[9rem_1fr] sm:gap-x-8">
+              <dt class="eyebrow sm:pt-1">{fact.term}</dt>
+              <dd class="text-muted">{fact.value}</dd>
+            </div>
+          ))
+        }
+
+        {/* Verbatim and contiguous — see the note above `termsAfter`. */}
+        <div class="grid gap-1 sm:grid-cols-[9rem_1fr] sm:gap-x-8">
+          <dt class="eyebrow sm:pt-1">Availability</dt>
+          <dd class="text-muted">
+            UK-based and available now. Currently on a temporary working trip abroad, with a
+            daily overlap from about 13:00 UK and flexibility outside it. Back in the UK early
+            in the engagement, and on site from then.
+          </dd>
+        </div>
+
+        {
+          termsAfter.map((fact) => (
+            <div class="grid gap-1 sm:grid-cols-[9rem_1fr] sm:gap-x-8">
+              <dt class="eyebrow sm:pt-1">{fact.term}</dt>
+              <dd class="text-muted">{fact.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-content px-5 py-16 sm:px-8">
+    <h2 class="text-3xl">This is a return, not a first attempt.</h2>
+    <p class="mt-4 text-muted">
+      The part of the record that matters to a contract client is the part furthest from the top
+      of my CV, so it is here rather than at the bottom of a page about me.
+    </p>
+
+    <ul class="mt-10 space-y-8">
+      <li>
+        <h3 class="text-xl">I have contracted before, for four years.</h3>
+        <p class="mt-2 text-muted">
+          Two concurrent engagements in Bristol, both on day rate, both direct with the client:
+          a booking-and-payments platform for a chiropractic clinic, and backend work at a
+          venture-brand agency. Both ended in March 2020. What is new this time is the machinery
+          rather than the work — I ran those self-employed, and a limited company is what the
+          market runs on now.
+        </p>
+      </li>
+      <li>
+        <h3 class="text-xl">I kept one client for four years.</h3>
+        <p class="mt-2 text-muted">
+          I designed and built the clinic’s scheduling and card processing in 2016 and then
+          operated it until 2020, while the practice grew into it — including the reporting they
+          actually ran the business on. Contract clients buy renewal rather than novelty, and
+          that is the most useful thing I can tell you about how an engagement with me tends to
+          go.
+        </p>
+      </li>
+      <li>
+        <h3 class="text-xl">Agency delivery discipline.</h3>
+        <p class="mt-2 text-muted">
+          Three years of fixed launch dates, client engineering teams and other people’s
+          codebases — high-traffic stores processing real transactions and real customer data.
+          An unglamorous place to learn that reliability is a feature, and the working
+          environment of most contracts.
+        </p>
+      </li>
+      <li>
+        <h3 class="text-xl">The thread is money.</h3>
+        <p class="mt-2 text-muted">
+          Transactions and customer data at scale, then booking and payments, and now booking
+          and payments on two rails with payouts that cross a border. One class of problem,
+          worked since {startYear}, where being wrong has always cost somebody their actual
+          money rather than a failed build.
+        </p>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="gap-heading" class="border-y border-line bg-band py-16">
+    <div class="mx-auto max-w-content px-5 sm:px-8">
+      <h2 id="gap-heading" class="text-2xl">The six years off</h2>
+      <p class="mt-4 text-muted">
+        I stopped in March 2020 and did not work in software again until March 2026. Both
+        contracts had ended and I did not go looking for more: I could afford not to, and after
+        eight years of agency e-commerce I wanted to find out what else there was. That turned
+        into six years of travelling.
+      </p>
+      <p class="mt-4 text-muted">
+        I am not going to dress it up as a sabbatical with a thesis attached. I stopped because
+        I wanted to and could, and I came back for the same reason. What brought me back was
+        coding agents — the discovery that the bottleneck had moved, not the novelty. Everything
+        on this site was built after March 2026.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-content px-5 py-16 sm:px-8">
+    <h2 class="text-3xl">Where I am most useful, and where I am not.</h2>
+    <p class="mt-4 text-muted">
+      Ruling out the wrong engagement early is worth more to both of us than a call that
+      discovers it in week two.
+    </p>
+
+    <div class="mt-10 grid gap-10 sm:grid-cols-2">
+      <div>
+        <p class="eyebrow">A good fit</p>
+        <ul class="mt-4 space-y-3 text-muted">
+          <li>
+            Systems with real consequences — payments, scheduling, integrations, anything where
+            a wrong state costs money or time rather than a rebuild.
+          </li>
+          <li>
+            Teams who want the delivery pipeline as well as the code: a merge gate that has to
+            be green, a coverage floor that only ratchets upward, migration-drift and deployment
+            checks, and decision records that say why each exists.
+          </li>
+          <li>
+            Reviewing other people’s code. Everything since March 2026 has been built by a team
+            of one, and this is the part of a team I actually miss.
+          </li>
+          <li>
+            Teams already building with agents, or about to be. I have run production systems
+            that way since March and measured what it did.
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <p class="eyebrow">Not a good fit</p>
+        <ul class="mt-4 space-y-3 text-muted">
+          <li>
+            Design-led frontend work. I work across the stack and write interfaces when the
+            interface is what is in the way, but I am not the person to hand a design system to.
+          </li>
+          <li>
+            PHP and Magento. Eight years of it are in my history and none of it is on offer —
+            the stack I want to be held to is the one I have shipped this year.
+          </li>
+          <li>
+            A synchronous culture with a 09:30 stand-up, until I am back in the UK. The overlap
+            starts about 13:00 and that is a real constraint rather than a soft one. An
+            asynchronous-friendly team will not notice it; a team that lives in the morning
+            will.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="evidence-heading" class="border-y border-line bg-band py-16">
+    <div class="mx-auto max-w-content px-5 sm:px-8">
+      <h2 id="evidence-heading" class="text-3xl">What you can look at</h2>
+      <p class="mt-4 text-muted">
+        Three of these are open to a stranger with no introduction from me, which is the only
+        reason they are worth listing.
+      </p>
+
+      <dl class="mt-10 space-y-7">
+        <div>
+          <dt class="text-lg">
+            <a href="https://agendaprofe.com" rel="noopener" class="link-underline">
+              AgendaProfe, live ↗
+            </a>
+          </dt>
+          <dd class="mt-2 text-muted">
+            Booking, package purchases, subscriptions, payouts that cross a border, and live
+            classes with translated captions. In production since May 2026, carrying real
+            bookings and real money. You can open a teacher’s public booking page and walk the
+            checkout without credentials.{' '}
+            <a href="/work/agendaprofe/" class="link-underline">The engineering write-up</a> has the
+            trade-offs and the mistakes intact.
+          </dd>
+        </div>
+        <div>
+          <dt class="text-lg">
+            <a href="https://groundtruth.sh" rel="noopener" class="link-underline"
+              >groundtruth ↗</a
+            >
+          </dt>
+          <dd class="mt-2 text-muted">
+            A small open-source CLI and GitHub Action that fails CI when an agent-context file
+            makes a claim the repository no longer supports. MIT, on npm, and it gates this
+            site’s own pull requests. It exists because{' '}
+            <a href="/notes/a-compiler-for-agent-context/" class="link-underline">
+              auditing my own context layer
+            </a>{' '}
+            turned up claims that had quietly gone false.
+          </dd>
+        </div>
+        <div>
+          <dt class="text-lg">
+            <a href={`${site.github}/jaystewart.dev`} rel="noopener" class="link-underline">
+              This site’s source ↗
+            </a>
+          </dt>
+          <dd class="mt-2 text-muted">
+            Static Astro, no client framework, four required CI jobs including axe and
+            Lighthouse budgets. Small, but it is the one thing here you can read end to end in
+            an afternoon and judge for yourself.
+          </dd>
+        </div>
+        <div>
+          <dt class="text-lg">The code you cannot see</dt>
+          <dd class="mt-2 text-muted">
+            AgendaProfe is private and stays private — it holds real teachers’ and students’
+            bookings, messages and payment records, so there is no browse-the-repository route
+            into it and I would not offer one. I am happy to walk through any of it on a call:
+            schema, failure modes, the decision log, the parts that went wrong first.
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-content px-5 py-16 sm:px-8 sm:py-20">
+    <h2 class="text-3xl">The next step is twenty minutes.</h2>
+    <p class="mt-4 text-muted">
+      If you have a role, tell me what the system does and where it hurts, and I will tell you
+      straight away whether I am the right person for it. If you are a recruiter, everything
+      above is what you need for a submission — ask me for the rest.
+    </p>
+    <p class="mt-4 text-muted">
+      Separately, and with no role behind it: if your team builds with coding agents, I am still
+      interested in what that actually changes inside a real engineering organization.{' '}
+      <a href={conversationMailto} class="link-underline">Twenty minutes comparing notes</a> is welcome
+      either way.
+    </p>
+
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href={contractMailto} class="btn btn-primary">{site.email}</a>
+      <a href="/contact/" class="btn btn-secondary">Other ways to reach me</a>
+    </div>
+  </section>
+</Base>

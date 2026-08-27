@@ -103,13 +103,36 @@ export type NavItem = {
   readonly emphasis?: boolean;
 };
 
+/**
+ * The emphasised slot is /contract/ rather than /contact/, changed 2026-08-27.
+ *
+ * The nav stayed at six items on purpose. A seventh would have made the two
+ * near-homographs "Contact" and "Contract" sit side by side, which is a
+ * usability defect before it is anything else, and it would have diluted the
+ * one item carrying `emphasis` — the point of which is contrast.
+ *
+ * Which of the two to keep is decided by what the reader arrived to do. The
+ * primary route is a contract (livelihood/contracting.md), so the visitor
+ * this nav is for is a recruiter or a hiring manager, and their question is
+ * "can I use him, and how" rather than "what is his email address". /contact/
+ * answers the second and is one click from the first — linked from the new
+ * page, from the home page and from the footer — so nothing became
+ * unreachable.
+ *
+ * The label is "Available" and not "Contract" for the same homograph reason —
+ * "Contract" one slot from where "Contact" used to sit reads as a typo — and
+ * because the emphasised item is a call to action rather than a destination.
+ * It states the fact the page exists to answer, in the site's own words: the
+ * home page's primary button has said "Available for contract work" since
+ * 2026-08-25.
+ */
 export const nav: readonly NavItem[] = [
   { href: '/work/', label: 'Work' },
   { href: '/notes/', label: 'Notes' },
   { href: '/work/agent-operated-codebase/', label: 'Agents' },
   { href: '/about/', label: 'About' },
   { href: '/philosophy/', label: 'Philosophy' },
-  { href: '/contact/', label: 'Contact', emphasis: true },
+  { href: '/contract/', label: 'Available', emphasis: true },
 ];
 
 /** Absolute URL for a site-relative path. */

@@ -58,8 +58,18 @@ const startYear = careerStartYear();
       </p>
     </div>
 
+    {
+      /*
+        The primary button points at /contract/ rather than /contact/ as of
+        2026-08-27. It always read "Available for contract work" and then
+        landed on a page of addresses — the reader who clicks that sentence is
+        asking what the engagement looks like, not how to send an email, and
+        /contract/ is the page that answers it. The mailto is still one click
+        further on, and the closing section below.
+      */
+    }
     <div class="mt-10 flex flex-wrap gap-3">
-      <a href="/contact/" class="btn btn-primary">Available for contract work</a>
+      <a href="/contract/" class="btn btn-primary">Available for contract work</a>
       <a href="/work/agent-operated-codebase/" class="btn btn-secondary">Read the case study</a>
     </div>
   </section>
@@ -196,7 +206,7 @@ const startYear = careerStartYear();
 
     <div class="mt-8 flex flex-wrap gap-3">
       <a href={contractMailto} class="btn btn-primary">{site.email}</a>
-      <a href="/contact/" class="btn btn-secondary">Other ways to reach me</a>
+      <a href="/contract/" class="btn btn-secondary">The engagement, in detail</a>
     </div>
 
     <p class="mt-10 max-w-2xl text-sm text-muted">
