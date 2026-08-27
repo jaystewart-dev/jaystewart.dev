@@ -22,7 +22,15 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(root, process.argv[2] ?? 'dist');
-const ORIGIN = 'https://jaystewart.dev';
+const ORIGIN = 'https://jaystewart.co.uk';
+
+// Derived, never written twice. The previous version hard-coded the origin a
+// second time inside a regex literal (`https:\/\/jaystewart\.dev`), where the
+// backslash-escaped dots hid it from every grep for the domain — so the
+// 2026-08-27 move to jaystewart.co.uk updated ORIGIN and silently left the
+// meta-tag scrape pointed at a hostname the build no longer emits, which made
+// every social image look unreferenced.
+const ORIGIN_RE = ORIGIN.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 if (!existsSync(dist)) {
   console.error(`check-links: no build at ${dist}. Run \`pnpm build\` first.`);
@@ -73,7 +81,7 @@ for (const file of pages) {
     ...[...html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)].map((m) => m[1]),
     ...[...html.matchAll(/<(?:img|script)\b[^>]*\bsrc="([^"]+)"/g)].map((m) => m[1]),
     ...[...html.matchAll(/<link\b[^>]*\bhref="([^"]+)"/g)].map((m) => m[1]),
-    ...[...html.matchAll(/<meta\b[^>]*\bcontent="(https:\/\/jaystewart\.dev[^"]*)"/g)].map(
+    ...[...html.matchAll(new RegExp(`<meta\\b[^>]*\\bcontent="(${ORIGIN_RE}[^"]*)"`, 'g'))].map(
       (m) => m[1],
     ),
   ];

@@ -1,6 +1,6 @@
-# jaystewart.dev
+# jaystewart.co.uk
 
-Source for [jaystewart.dev](https://jaystewart.dev) — engineering case studies
+Source for [jaystewart.co.uk](https://jaystewart.co.uk) — engineering case studies
 and notes.
 
 The site is deliberately small: static HTML, no client-side framework, and

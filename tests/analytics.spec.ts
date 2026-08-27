@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import { routes } from './routes.ts';
 
 /**
- * The beacon reports from `jaystewart.dev` and nowhere else.
+ * The beacon reports from `jaystewart.co.uk` and nowhere else.
  *
  * This suite runs against a production build served from localhost, which is
  * exactly the condition the host guard exists for — so the interesting

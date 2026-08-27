@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jaystewart.dev/sitemap-index.xml
+Sitemap: https://jaystewart.co.uk/sitemap-index.xml

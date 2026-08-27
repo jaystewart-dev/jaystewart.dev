@@ -12,6 +12,10 @@
 export const analytics = {
   /**
    * Project `jaystewart.dev` (538067) in the `Jay Stewart` organisation.
+   * The project keeps that name after the 2026-08-27 move to
+   * `jaystewart.co.uk` — it is PostHog's own label for project 538067,
+   * not a hostname, and renaming it there is a separate deliberate act.
+   * `host` below is the one that had to move, and did.
    *
    * A PostHog project key is publishable by design — it authorises writing
    * events and nothing else, and cannot read a single one back — so it belongs
@@ -30,7 +34,7 @@ export const analytics = {
    * suites and any fork all resolve to something else and stay silent, so the
    * project holds real traffic only and the numbers never have to be caveated.
    */
-  host: 'jaystewart.dev',
+  host: 'jaystewart.co.uk',
 
   /**
    * A visit ends after this long without a pageview. PostHog's own definition,

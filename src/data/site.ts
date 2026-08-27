@@ -29,13 +29,13 @@ import { careerStartYear } from './experience.ts';
  */
 export const site = {
   name: 'Jay Stewart',
-  origin: 'https://jaystewart.dev',
+  origin: 'https://jaystewart.co.uk',
   role: 'Senior full-stack engineer',
   location: 'Bristol, UK',
   locality: 'Bristol',
   region: 'England',
   country: 'GB',
-  email: 'jay@jaystewart.dev',
+  email: 'jay@jaystewart.co.uk',
   github: 'https://github.com/jaystewart-dev',
   githubHandle: 'jaystewart-dev',
   linkedin: 'https://www.linkedin.com/in/jaystewart-dev',
