@@ -1,6 +1,7 @@
 ---
 import Base from './Base.astro';
 import MetricGrid from '../components/MetricGrid.astro';
+import TableOfContents from '../components/TableOfContents.astro';
 import { absolute, site } from '../data/site.ts';
 import type { CollectionEntry } from 'astro:content';
 
@@ -110,31 +111,27 @@ const schema = [
       </div>
     </header>
 
-    <div class="mx-auto max-w-content px-5 py-14 sm:px-8">
-      {
-        sections.length > 2 && (
-          <nav aria-labelledby="contents-heading" class="mb-14">
-            <h2 id="contents-heading" class="eyebrow">
-              Contents
-            </h2>
-            <ol class="mt-3 space-y-1.5 text-sm">
-              {sections.map((section, index) => (
-                <li class="flex gap-3">
-                  <span class="font-mono text-xs text-muted tabular-nums">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <a href={`#${section.slug}`} class="link-underline">
-                    {section.text}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        )
-      }
+    <div
+      class:list={[
+        'mx-auto px-5 py-14 sm:px-8',
+        sections.length > 2 ? 'max-w-wide' : 'max-w-content',
+      ]}
+    >
+      <div
+        class:list={[
+          sections.length > 2 &&
+            'lg:grid lg:grid-cols-[minmax(0,45rem)_14rem] lg:justify-center lg:gap-x-12',
+        ]}
+      >
+        <div class="mx-auto w-full max-w-content lg:mx-0 lg:max-w-none">
+          {sections.length > 2 && <TableOfContents sections={sections} variant="mobile" />}
 
-      <div class="prose">
-        <slot />
+          <div class="prose">
+            <slot />
+          </div>
+        </div>
+
+        {sections.length > 2 && <TableOfContents sections={sections} variant="desktop" />}
       </div>
     </div>
 

@@ -10,7 +10,7 @@ anonymised: false
 stack:
   - Claude Code
   - Git worktrees
-  - GitHub Actions
+  - Local gate (pre-push hook)
   - TypeScript
   - Playwright
 metrics:
@@ -42,11 +42,14 @@ typing is no longer the job. The job is deciding what to build, giving an
 agent the context it cannot infer, and verifying what comes back — and the
 last of those is where nearly all of the engineering effort now lives.
 
-Concretely: development runs on a remote server, with between three and ten
-agent sessions working in parallel, each in its own git worktree on its own
-branch. Direction is short written instructions — sometimes dictated from a
-phone. A session ends in a pull request like anyone else's, and the pull
-request meets the same gates a human's would.
+Concretely: development runs on the laptop, not a remote server — a
+16GB MacBook Air M4 with between three and ten agent sessions working in
+parallel, each in its own git worktree on its own branch, run either in a
+terminal or in Claude Code's web client. Direction is dictated more often
+than typed. A session ends in a pull request and gets closed; I review the
+pull request myself, then hand it to a skill built for exactly this step —
+check out its exact head, run the gate, merge to main, ship preview,
+promote to production — rather than doing each by hand.
 
 It is also not only the code, and the commit share in the header is the
 narrowest available reading of what is happening. The same sessions provision
@@ -98,7 +101,7 @@ loop, so nothing important is allowed to depend on one.
 
 <Diagram
   caption="The path a change takes. No stage trusts the previous one; production advances only by fast-forward after the full gate passes against the exact candidate."
-  summary="Parallel agent sessions produce pull requests. Per-PR checks run types, lint, unit tests with a coverage ratchet, and context verification. Merging deploys a preview environment. A separate manual promote gate runs integration tests, end-to-end tests and a mobile native-code guard before fast-forwarding the production branch, which deploys."
+  summary="Parallel agent sessions push from their own worktrees. A local pre-push hook runs types, lint, unit tests and a coverage ratchet before the push leaves the machine, and posts the status branch protection requires. Merging deploys nothing — a separate manual command ships a preview environment. A separate manual promote command runs the full gate, including integration and end-to-end tests, against the exact candidate before fast-forwarding the production branch, which deploys."
 >
   <Row>
     <Node
@@ -108,18 +111,20 @@ loop, so nothing important is allowed to depend on one.
       tone="accent"
     />
   </Row>
-  <Arrow label="pull request" />
+  <Arrow label="push — local gate must pass first" />
   <Node
-    title="Per-PR checks"
+    title="Local gate"
     meta="Types · lint · unit · ratchets"
-    detail="+ context verification"
+    detail="Runs on the laptop, posts the status"
   />
-  <Arrow label="merge" />
+  <Arrow label="pull request, reviewed, merged" />
+  <Node title="main" meta="Deploys nothing" tone="ghost" />
+  <Arrow label="ship to preview — a manual command" />
   <Node title="Preview" meta="Disposable DB branch" tone="ghost" />
   <Arrow label="promote — a decision, not a push" />
   <Node
     title="Full gate"
-    meta="Integration · E2E · native guard"
+    meta="+ integration · E2E"
     detail="Against the exact candidate"
     tone="accent"
   />
@@ -139,12 +144,13 @@ a number someone has to defend every time it moves; a ratchet scales with the
 diff rather than with my patience, which is the only property that survives
 ten sessions merging in a day.
 
-**Guards for breakage no review can see.** The mobile release check is the
-clearest case: a build is refused when native code changed without a matching
-runtime version bump, because the crash it prevents happens only on real
-devices, after release. Agents did not invent that failure mode. They raise
-the rate at which harmless-looking diffs arrive at it, and reading more
-carefully cannot catch something the diff does not contain.
+**Guards for breakage no review can see.** A surface test on the mobile API is
+the clearest case: it fails if a route or method an installed client depends
+on disappears, because that client is still live on real phones and nobody
+reviewing a web change is thinking about it. Agents did not invent that
+failure mode. They raise the rate at which harmless-looking diffs arrive at
+it, and reading more carefully cannot catch a cross-surface break the diff
+itself doesn't show.
 
 **Probes, because a missing signal is not a signal.** Production is probed on
 a schedule, including a forged-signature request against the payment webhook
@@ -166,12 +172,13 @@ codebase — not because an agent cannot produce them, but because reading
 something I did not write is not the same as knowing it, and those three are
 where I need the whole failure surface in my head rather than on a screen.
 
-There is one hard block, too, and it is enforced by tooling rather than by
-instruction: agents in the main product repository cannot run the test suite
-locally. It exhausted the development machine's memory often enough that
-asking politely stopped counting as a control. Every check runs server-side
-instead — the same principle as everything above, applied to the machine
-rather than to the reviewer.
+There is one hard rule, too, and it is enforced by tooling rather than by
+instruction: nothing leaves the machine without the gate passing first. That
+used to mean shipping the check out to a remote CI service instead, because
+the laptop running it was an 8GB machine the test suite reliably OOM'd. Once
+the laptop was the only compute available — no server, no remote runner — the
+gate itself is what had to hold, so it moved onto a pre-push hook that blocks
+the push, not a service that reviews it after the fact.
 
 ## Decision records as the context layer
 
@@ -187,6 +194,16 @@ record argues from the same constraints I would. Most bad agent output traces
 to missing context rather than missing capability, and a decision log is
 context in the one form that survives being handed to something that was not
 there at the time.
+
+One of AgendaProfe's decision records is the clearest case of why this
+matters rather than just an example: a product-analytics audit found the
+mobile app recording zero bookings, payments or messages across its entire
+production life, while keeping it in step with the web app had produced
+nearly half of recent commits. That became a decision record freezing mobile
+development, not a one-off call I'd have to remember to repeat. The next
+session that considers mirroring a web change into mobile — the exact
+"helpful" move the paragraph above warns about — reads why not, instead of
+re-deriving it or, worse, not knowing to ask.
 
 This is the single highest-leverage practice in this whole write-up, and it
 is also where the story turns.
