@@ -1,7 +1,7 @@
 // .groundtruth.jsonc — assertions taken from this repo's CLAUDE.md and README.
 //
 // Checked on every pull request by .github/workflows/groundtruth.yml, which
-// runs the groundtruth Action (jaystewart-dev/groundtruth) by released remote
+// runs the groundtruth Action (jaystewartuk/groundtruth) by released remote
 // ref — the same resolution path a Marketplace consumer takes. A red run here
 // means the context files now say something false about this repo.
 {
