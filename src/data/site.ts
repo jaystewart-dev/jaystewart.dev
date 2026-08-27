@@ -36,9 +36,9 @@ export const site = {
   region: 'England',
   country: 'GB',
   email: 'jay@jaystewart.co.uk',
-  github: 'https://github.com/jaystewart-dev',
-  githubHandle: 'jaystewart-dev',
-  linkedin: 'https://www.linkedin.com/in/jaystewart-dev',
+  github: 'https://github.com/jaystewartuk',
+  githubHandle: 'jaystewartuk',
+  linkedin: 'https://www.linkedin.com/in/jaystewartuk',
 
   /**
    * Used as the default meta description and the OG description on the home
