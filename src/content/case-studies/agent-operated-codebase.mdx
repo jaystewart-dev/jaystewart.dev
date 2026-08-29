@@ -23,7 +23,7 @@ metrics:
 ---
 
 More than eight in ten commits across the two systems written up here —
-[AgendaProfe](/work/agendaprofe/), carrying real bookings and real money, and
+[SpiralClass](/work/spiralclass/), carrying real bookings and real money, and
 a [transit system](/work/realtime-transit/), built and since parked — were
 written or co-written by a coding agent. The figures in the header are counted from
 those repositories' histories, not estimated: a commit counts as
@@ -133,7 +133,7 @@ loop, so nothing important is allowed to depend on one.
 </Diagram>
 
 The individual mechanisms matter more than the shape. All four are
-AgendaProfe's, and its [own case study](/work/agendaprofe/) describes how each
+SpiralClass's, and its [own case study](/work/spiralclass/) describes how each
 is built; what belongs here is why an agent-operated codebase needs them in
 particular.
 
@@ -195,7 +195,7 @@ to missing context rather than missing capability, and a decision log is
 context in the one form that survives being handed to something that was not
 there at the time.
 
-One of AgendaProfe's decision records is the clearest case of why this
+One of SpiralClass's decision records is the clearest case of why this
 matters rather than just an example: a product-analytics audit found the
 mobile app recording zero bookings, payments or messages across its entire
 production life, while keeping it in step with the web app had produced
@@ -221,7 +221,7 @@ the suite, because documentation that cannot silently diverge is documentation
 still worth reading in six months. But a drift guard only reaches documents
 something can generate, and the instruction files are not among them.
 
-An audit of the AgendaProfe repository — the most disciplined one I operate,
+An audit of the SpiralClass repository — the most disciplined one I operate,
 the one everything above is true of — found four live instances of context
 drift in its instruction layer:
 

@@ -3,7 +3,7 @@ import metrics from '../data/metrics.json';
 /**
  * Resolve figures quoted in content against the generated counts.
  *
- * Content references a figure by path — `agendaprofe.apiRoutes` — rather than
+ * Content references a figure by path — `spiralclass.apiRoutes` — rather than
  * writing the number. If the counter is renamed or removed, the build fails
  * here instead of the site rendering `undefined` to a reader.
  */

@@ -55,7 +55,7 @@ function resolves(path) {
     return statSync(target).isDirectory() ? existsSync(join(target, 'index.html')) : true;
   }
 
-  // /work/agendaprofe/ is emitted as /work/agendaprofe/index.html
+  // /work/spiralclass/ is emitted as /work/spiralclass/index.html
   return existsSync(join(target, 'index.html')) || existsSync(`${target}.html`);
 }
 

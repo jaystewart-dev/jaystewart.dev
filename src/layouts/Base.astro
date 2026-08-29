@@ -49,7 +49,7 @@ const pageTitle = bareTitle ? title : `${title} — ${site.name}`;
 const canonical = new URL(Astro.url.pathname, site.origin).href;
 
 // Social images are pre-rendered by scripts/og.mjs and named after the path
-// they belong to: /work/agendaprofe/ → work-agendaprofe.png. Deriving the name
+// they belong to: /work/spiralclass/ → work-spiralclass.png. Deriving the name
 // here means a new page picks up its image by adding one entry to that script,
 // with no per-page wiring.
 const ogSlug = Astro.url.pathname.replace(/^\/|\/$/g, '').replace(/\//g, '-') || 'default';
