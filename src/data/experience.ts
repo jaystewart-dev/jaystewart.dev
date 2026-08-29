@@ -98,9 +98,9 @@ export const roles: Role[] = [
     location: 'Remote',
     kind: 'founder',
     summary:
-      'Designing and running small products end to end — architecture, code, infrastructure and the on-call pager. AgendaProfe is the largest and the one carrying real money. All of it built since coming back to engineering in March 2026.',
+      'Designing and running small products end to end — architecture, code, infrastructure and the on-call pager. SpiralClass is the largest and the one carrying real money. All of it built since coming back to engineering in March 2026.',
     detail: [
-      'AgendaProfe — scheduling, payments and live video teaching for independent teachers. In production.',
+      'SpiralClass — scheduling, payments and live video teaching for independent teachers. In production.',
       'groundtruth — a small open-source CLI that checks agent-context files against the repository they describe.',
     ],
     stack: ['TypeScript', 'Next.js', 'Postgres', 'Stripe', 'Terraform', 'React Native'],

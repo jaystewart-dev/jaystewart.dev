@@ -11,7 +11,7 @@ export const SITE = 'https://jaystewart.co.uk';
 
 export default defineConfig({
   site: SITE,
-  // Directory-style URLs (/work/agendaprofe/) rather than /work/agendaprofe.html.
+  // Directory-style URLs (/work/spiralclass/) rather than /work/spiralclass.html.
   // GitHub Pages serves index.html for a directory request, so this is the
   // format that gives clean URLs on a static host with no rewrite layer.
   trailingSlash: 'always',
@@ -28,10 +28,17 @@ export default defineConfig({
   // redirect rather than 404 for the same reason as the line above: the
   // audit's argument still exists, as the note the tool came out of, and both
   // URLs have been public since launch.
+  // /work/agendaprofe/ was the case study's URL until the product was renamed
+  // to SpiralClass on 2026-08-29. It redirects rather than 404s for a sharper
+  // reason than the two above: the old URL is a LinkedIn Featured link and is
+  // quoted in the position description's write-up line, and LinkedIn cannot
+  // edit a Featured link's URL — so that link will never be corrected, only
+  // followed.
   redirects: {
     '/working-with-agents/': '/work/agent-operated-codebase/',
     '/audit/': '/notes/a-compiler-for-agent-context/',
     '/audit/sample/': '/notes/a-compiler-for-agent-context/',
+    '/work/agendaprofe/': '/work/spiralclass/',
   },
   integrations: [mdx(), sitemap()],
   vite: { plugins: [tailwindcss()] },

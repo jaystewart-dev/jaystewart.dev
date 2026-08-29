@@ -8,7 +8,7 @@
 export const routes = [
   '/',
   '/work/',
-  '/work/agendaprofe/',
+  '/work/spiralclass/',
   '/work/realtime-transit/',
   '/work/agent-operated-codebase/',
   '/notes/',

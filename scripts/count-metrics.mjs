@@ -171,7 +171,7 @@ const countLines = (repo) =>
 /* -------------------------------------------------------------------------- */
 
 const counters = {
-  agendaprofe(repo) {
+  spiralclass(repo) {
     const web = join(repo, 'apps/web');
     return {
       databaseModels: countMatches(join(web, 'prisma/schema.prisma'), /^model\s+\w+\s*\{/gm),
@@ -277,7 +277,7 @@ for (const [key, repoPath] of Object.entries(sources)) {
  * counts under a second title made the two write-ups read as the same page
  * with different headings.
  */
-const practiceSystems = ['agendaprofe', 'transit'];
+const practiceSystems = ['spiralclass', 'transit'];
 const counted = practiceSystems.filter((key) => metrics.projects[key]);
 
 if (counted.length === practiceSystems.length) {

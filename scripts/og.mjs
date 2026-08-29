@@ -73,9 +73,9 @@ const pages = [
     title: 'Two systems and a practice, written up properly',
   },
   {
-    slug: 'work-agendaprofe',
+    slug: 'work-spiralclass',
     eyebrow: 'Case study · In production',
-    title: 'AgendaProfe',
+    title: 'SpiralClass',
     note: 'Scheduling, payments and live video teaching',
   },
   {
