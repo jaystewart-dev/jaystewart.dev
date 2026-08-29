@@ -1,7 +1,7 @@
 {
   "countedAt": "2026-08-27",
   "projects": {
-    "agendaprofe": {
+    "spiralclass": {
       "databaseModels": 82,
       "migrations": 33,
       "apiRoutes": 288,

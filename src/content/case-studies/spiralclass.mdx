@@ -1,12 +1,12 @@
 ---
-title: AgendaProfe
+title: SpiralClass
 summary: Scheduling, payments and live video teaching for independent language teachers, live in production since May 2026.
-description: An engineering case study on AgendaProfe — a production SaaS handling cross-border payouts, self-hosted live video with AI captions, and a two-tier release gate, designed and operated by one engineer.
+description: An engineering case study on SpiralClass — a production SaaS handling cross-border payouts, self-hosted live video with AI captions, and a two-tier release gate, designed and operated by one engineer.
 status: In production
 period: 2026 — present
 role: Architecture, implementation, infrastructure, operations
 order: 1
-url: https://agendaprofe.com
+url: https://spiralclass.com
 anonymised: false
 stack:
   - Next.js
@@ -18,13 +18,13 @@ stack:
   - Fly.io
 metrics:
   - label: Lines of code
-    from: agendaprofe.linesOfCode
+    from: spiralclass.linesOfCode
   - label: API routes
-    from: agendaprofe.apiRoutes
+    from: spiralclass.apiRoutes
   - label: Test files
-    from: agendaprofe.testFiles
+    from: spiralclass.testFiles
   - label: Decision records
-    from: agendaprofe.decisionRecords
+    from: spiralclass.decisionRecords
 ---
 
 import { count } from '../../lib/metrics.ts';
@@ -40,7 +40,7 @@ teacher does not have a booking problem or a payments problem — they have one
 business, and the tools do not know about each other. A booking that does not
 know whether it was paid for is not much better than a note in a diary.
 
-AgendaProfe is the attempt to make those parts one product: a public booking
+SpiralClass is the attempt to make those parts one product: a public booking
 page per teacher, package purchases and subscriptions, payouts that cross a
 border, live classes with AI-translated captions, homework and materials, and
 an admin console to run it.
@@ -88,7 +88,7 @@ Two clients, one API, six backing services.
     <Node
       title="Web app"
       meta="Next.js · Server Components"
-      detail="agendaprofe.com"
+      detail="spiralclass.com"
     />
     <Node
       title="Android app"
@@ -107,12 +107,12 @@ Two clients, one API, six backing services.
     <Node
       title="Postgres"
       meta="Neon · Prisma"
-      detail={`${count('agendaprofe.databaseModels')} models`}
+      detail={`${count('spiralclass.databaseModels')} models`}
     />
     <Node
       title="Background jobs"
       meta="Inngest"
-      detail={`${count('agendaprofe.backgroundJobs')} functions`}
+      detail={`${count('spiralclass.backgroundJobs')} functions`}
     />
     <Node
       title="Live video"
