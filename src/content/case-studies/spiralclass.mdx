@@ -402,7 +402,45 @@ something a class name could reach. The type scale had the same gap, which is
 why 47 arbitrary font sizes had grown underneath it — including 10px and 9px
 text that no part of the system ever sanctioned.
 
-Raw palette utilities went from 119 to zero. Total bypasses from 453 to about 200. The remainder is a long tail of genuinely contextual values, and the raw
+### The measurement that was wrong
+
+Wiring the type scale in dropped those 47 arbitrary sizes to zero, and I
+reported it as a win. It was not one.
+
+The scale's smallest step was 11px. The migration moved the 47 sizes — 10px and
+9px among them — onto that step. The drift count went to zero and **not one of
+those 47 pieces of text got larger.** An unnamed violation had become a named
+one, which is worse, because the name made it look decided. The written rule
+said body text is never under 17px and supporting text never under 15px.
+
+It was also the wrong half of the problem. Wiring the scale in added a second
+scale beside the framework's own rather than replacing it, and the app went on
+using the framework's: one size class appeared 802 times and another 499, at
+14px and 12px. The floor was true only of the steps almost nothing used.
+
+Three guards were watching and none of them fired. The type-scale test asserted
+that every step was at least as large as the smallest step — a tautology, so it
+certified the exact violation it existed to catch. The drift scanner counts
+_arbitrary_ values, so a named token at the wrong size is invisible to it by
+construction. And the parity test compares the palette against its CSS mirror,
+which on the same day was found agreeing with itself about an inverted dark
+surface ladder: both sides encoded the card as dimmer than the button behind it.
+
+The fix deleted the 11px step rather than raising it, moved body to 17px, and
+redefined the framework's own size keys onto the same floors — redefined rather
+than removed, because removing them would have made 1,300 class names silently
+emit nothing, and the framework does not error on a class it cannot resolve.
+
+The general lesson is the useful part, and it took three instances in one day to
+see it: **a guard that derives its bound from the thing it is guarding proves
+only that the thing equals itself.** Each of the three had to be re-pointed at
+an external constant — the literal 17 and 15, the WCAG ratio, the luminance
+ordering. A test can be green, specific, and well-commented while checking
+nothing at all.
+
+Raw palette utilities went from 119 to zero, ad-hoc scrim opacities from 51 to
+zero, and total bypasses from 453 across 104 files to 207 across 73. The
+remainder is a long tail of genuinely contextual values, and the raw
 `<button>` elements were deliberately left alone: most are drag handles and
 video-stage controls where the shared primitive would change what the element
 is, and none of them removes its focus ring.
