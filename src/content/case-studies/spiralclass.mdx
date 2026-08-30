@@ -331,6 +331,82 @@ request against the payment webhook to confirm it is still rejecting them. That
 last one is the only check in the set that would catch a signature-verification
 regression, which is exactly the kind of change that looks harmless in review.
 
+## The design system, and what measuring it found
+
+The product had a design system on paper: one canonical palette in a shared
+package, mirrored to CSS, guarded by a test that converted the CSS back to hex
+and failed on drift. That machinery was real and it worked.
+
+What it did not have was any check on whether the colours could do their jobs.
+Scoring every pairing the tokens asserted was legible turned up four roles the
+system claimed and could not perform. The gold documented as "the brand's second
+colour, for highlights and secondary emphasis" sat at 2.16:1 and could not carry
+text anywhere. Dark-mode error text failed at 4.19:1 — the one colour that most
+needs to be readable. Control borders sat at 1.39:1 in a product that is roughly
+ninety forms.
+
+One cause behind all four: the palette was authored as appearance and then
+assigned roles. Contrast was something to check afterwards, and nobody did.
+
+**The consumption layer leaked worse than the definition layer.** A scanner
+counting bypasses found 453 of them across 104 files. The 119 raw Tailwind
+palette utilities were not an aesthetic problem — they carry no `dark:`
+counterpart, so every one rendered light-on-light in dark mode. Most were
+hand-rolled pills duplicating `Badge` and `Alert` variants that already existed
+and were unused.
+
+### The direction
+
+Legibility became the governing constraint rather than a checklist item at the
+end. The strongest single mechanism is not a typeface: dyslexia does not present
+one way, so the reader sets text size, letter and word spacing and background
+tint, and the choice persists on their account rather than in one browser.
+
+A dyslexia-branded font was rejected. Controlled studies have repeatedly failed
+to show a reading-speed or accuracy advantage for OpenDyslexic or Dyslexie over
+an ordinary well-drawn sans-serif; shipping one would have been the
+legible-looking answer rather than the legible one. Atkinson Hyperlegible
+instead, whose mechanism does transfer — commonly confused characters are drawn
+as genuinely different shapes rather than mirrored ones.
+
+Colours are now derived rather than chosen: a search over OKLCH lightness for
+the smallest step that clears the ratio each role requires, solved against the
+hardest surface in its own theme. Body text targets about 13:1 — past AAA, and
+deliberately short of black-on-white's 21:1, which is the pairing most often
+reported as causing glare.
+
+### What made it stick
+
+The direction is the easy half. Four mechanisms keep it:
+
+- A **drift ratchet** counting seven kinds of bypass per file. A file may not
+  add any beyond its baseline, and a file migrated to zero is protected.
+- A **lint rule** that explains the fix where someone types it — errors on the
+  primitives, warnings on surfaces still being converted, because a rule that
+  fires 344 times on day one is a rule people disable.
+- A **contrast test** over every pairing in both themes, which asserts the
+  opposite direction too: body text must stay _under_ 16:1.
+- A **visual baseline** of 1,164 captures across 98 routes at six viewports in
+  both themes, taken before anything moved.
+
+Each caught something the others missed. The contrast test failed on its first
+run, on a colour introduced while writing the replacement palette. The
+accessibility sweep, extended to the signed-in product, found that the badge
+components used a colour the contrast test was not checking — the tinted grounds
+existed in the shared palette and had never been mirrored into CSS, so no
+utility could reach them and every variant reached for an opacity instead.
+
+That turned out to be the recurring shape: three separate defects were all one
+root cause, a token defined in the shared package but never wired through to
+something a class name could reach. The type scale had the same gap, which is
+why 47 arbitrary font sizes had grown underneath it — including 10px and 9px
+text that no part of the system ever sanctioned.
+
+Raw palette utilities went from 119 to zero. Total bypasses from 453 to about 200. The remainder is a long tail of genuinely contextual values, and the raw
+`<button>` elements were deliberately left alone: most are drag handles and
+video-stage controls where the shared primitive would change what the element
+is, and none of them removes its focus ring.
+
 ## What it cost
 
 The honest version is more useful than the brochure version.
